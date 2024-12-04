@@ -1,30 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { MsalProvider, MsalAuthenticationTemplate } from "@azure/msal-react";
+import { MsalProvider, useIsAuthenticated } from "@azure/msal-react";
 import { PublicClientApplication } from "@azure/msal-browser";
 import { msalConfig, loginRequest } from "../authConfig";
 import { AccountInfo } from "@azure/msal-browser";
-import { useIsAuthenticated } from "@azure/msal-react"; // importeer de hook
+import { useAuth } from "../context/AuthContext"; // Importeer useAuth
 
 const pca = new PublicClientApplication(msalConfig);
 
 function MicrosoftLoginButton() {
-  // State om bij te houden of de gebruiker ingelogd is
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [error, setError] = useState<string | null>(null); // State voor error
-  const [account, setAccount] = useState<AccountInfo | null>(null); // Account state
+  const isAuthenticated = useIsAuthenticated();
+  const { login } = useAuth(); // Gebruik login van de context
+  const [error, setError] = useState<string | null>(null);
 
-  // Functie voor inloggen bij klikken op de knop
-  const login = async () => {
-    console.log("Login knoppen is aangeklikt...");
-
+  const loginWithMicrosoft = async () => {
     try {
-      console.log("Start loginPopup...");
-      // Gebruik loginPopup om in te loggen
       const response = await pca.loginPopup(loginRequest);
-      console.log("Inloggen succesvol:", response);
-      setIsAuthenticated(true); // Zet inlogstatus bij succes
       const userAccount = pca.getAllAccounts()[0]; // Haal het account op
-      setAccount(userAccount); // Zet het account in de state
+      login(userAccount); // Geef account door aan de context
     } catch (err: any) {
       console.error("Login fout:", err);
       setError("Er is een fout opgetreden tijdens het inloggen.");
@@ -33,10 +25,16 @@ function MicrosoftLoginButton() {
 
   return (
     <MsalProvider instance={pca}>
-      <div>
-        <button onClick={login}>Inloggen met Microsoft</button>
-        {error && <p style={{ color: "red" }}>{error}</p>}{" "}
-      </div>
+      {!isAuthenticated ? (
+        <div>
+          <button onClick={loginWithMicrosoft}>Inloggen met Microsoft</button>
+          {error && <p style={{ color: "red" }}>{error}</p>}
+        </div>
+      ) : (
+        <div>
+          <p>Je bent ingelogd!</p>
+        </div>
+      )}
     </MsalProvider>
   );
 }

@@ -1,5 +1,8 @@
 import React from "react";
 import "../Layout/Topbar.css";
+import "./Profile";
+import Profile from "./Profile";
+import { AuthProvider } from "../context/AuthContext";
 
 const Topbar: React.FC = () => {
   return (
@@ -13,7 +16,9 @@ const Topbar: React.FC = () => {
         <button>Alerts</button>
       </div>
       <div className="profile-button">
-        <button>Profile</button>
+        <AuthProvider>
+          <Profile />
+        </AuthProvider>
       </div>
     </div>
   );
