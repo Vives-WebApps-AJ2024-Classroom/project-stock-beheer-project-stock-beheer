@@ -8,9 +8,7 @@ import { useAuth } from "../context/AuthContext"; // Importeer useAuth
 const pca = new PublicClientApplication(msalConfig);
 
 function MicrosoftLoginButton() {
-  const isAuthenticated = useIsAuthenticated();
   const { login } = useAuth(); // Gebruik login van de context
-  const [error, setError] = useState<string | null>(null);
 
   const loginWithMicrosoft = async () => {
     try {
@@ -19,22 +17,14 @@ function MicrosoftLoginButton() {
       login(userAccount); // Geef account door aan de context
     } catch (err: any) {
       console.error("Login fout:", err);
-      setError("Er is een fout opgetreden tijdens het inloggen.");
     }
   };
 
   return (
     <MsalProvider instance={pca}>
-      {!isAuthenticated ? (
-        <div>
-          <button onClick={loginWithMicrosoft}>Inloggen met Microsoft</button>
-          {error && <p style={{ color: "red" }}>{error}</p>}
-        </div>
-      ) : (
-        <div>
-          <p>Je bent ingelogd!</p>
-        </div>
-      )}
+      <div>
+        <button onClick={loginWithMicrosoft}>Login</button>
+      </div>
     </MsalProvider>
   );
 }
