@@ -1,3 +1,4 @@
+// dB.js
 const mysql = require("mysql2");
 require("dotenv").config();
 
@@ -13,18 +14,15 @@ try {
     insecureAuth: true
   });
 
-  try {
-    connection.connect((err) => {
-      if (err) {
-        console.error("Error connecting to database:", err);
-        process.exit(1);
-      }
-    });
-  } catch (err) {
-    process.exit(1);
-  }
+  connection.connect((err) => {
+    if (err) {
+      console.error("Error connecting to database:", err);
+      process.exit(1);
+    }
+    console.log("Database connected!");
+  });
 } catch (err) {
-  console.log(err);
+  console.log("Error setting up database connection:", err);
   process.exit(1);
 }
 
@@ -40,7 +38,6 @@ connection.on("connect", function () {
 });
 
 const createTables = () => {
-  // Maak tabel 'project'
   const createProjectTableQuery = `
     CREATE TABLE IF NOT EXISTS project (
       id INT AUTO_INCREMENT PRIMARY KEY,
@@ -90,4 +87,5 @@ const createTables = () => {
   });
 };
 
-module.exports = {};
+// Exporteer de connection
+module.exports = connection;
