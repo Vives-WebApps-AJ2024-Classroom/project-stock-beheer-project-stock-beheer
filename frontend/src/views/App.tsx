@@ -1,5 +1,5 @@
 import "./App.css";
-import TabelComponent from "./components/TabelComponent";
+import TabelComponent from "../components/TabelComponent";
 
 function App() {
   return (

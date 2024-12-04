@@ -8,9 +8,9 @@ export const financialData = [
   { year: "2021", profit: 3.2, expenses: 2.7 },
   { year: "2022", profit: 6.2, expenses: 2.5 },
   { year: "2023", profit: 7.1, expenses: 2.8 },
-  { year: "2024", profit: 8.0, expenses: 3.0 }
+  { year: "2024", profit: 8.0, expenses: 3.0 },
 ].map((item, index, array) => ({
   ...item,
   revenue:
-    item.profit - item.expenses + (index > 0 ? array[index - 1].profit : 0) // Add last year's profit
+    item.profit - item.expenses + (index > 0 ? array[index - 1].profit : 0), // Add last year's profit
 }));
