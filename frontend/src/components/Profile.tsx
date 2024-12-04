@@ -6,7 +6,7 @@ const Profile: React.FC = () => {
   const { isAuthenticated, account } = useAuth(); // Haal isAuthenticated en account uit de context
 
   return (
-    <div>
+    <div className="profile">
       {isAuthenticated && account ? (
         <div>Welkom, {account.name}!</div> // Weergave van de naam van het account
       ) : (
