@@ -2,6 +2,13 @@
   text-align: center;
 }
 
+.chart-and-table {
+  display: flex; /* Use Flexbox to align the items horizontally */
+  justify-content: center; /* Align the children (BarChart and Table) in the center */
+  gap: 20px; /* Space between the components */
+  padding: 20px; /* Optional padding around the components */
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
