@@ -7,20 +7,18 @@ try {
   connection = mysql.createConnection({
     password: process.env.MYSQL_PASSWORD,
     user: process.env.MYSQL_USER,
-    host: "database",
-    port: 3306,
+    host: process.env.MYSQL_HOST,
+    port: process.env.MYSQL_PORT,
     database: process.env.MYSQL_DATABASE,
     insecureAuth: true,
   });
 
   try {
     connection.connect((err) => {
-      console.log(
-        "trying to connect with this credentials",
-        process.env.MYSQL_PASSWORD,
-        process.env.MYSQL_USER,
-        process.env.MYSQL_DATABASE
-      );
+      if (err) {
+        console.error("Error connecting to database:", err);
+        process.exit(1);
+      }
     });
   } catch (err) {
     process.exit(1);
@@ -60,4 +58,4 @@ const createTable = () => {
   });
 };
 
-module.exports = { getEffects, saveEffect, loadEffect, deleteEffect };
+module.exports = {};
