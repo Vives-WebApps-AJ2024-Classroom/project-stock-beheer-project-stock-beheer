@@ -2,7 +2,11 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const app = express();
+<<<<<<< HEAD
 const port = process.env.BACKEND_PORT || 3001;
+=======
+const port = process.env.BACKEND_PORT || 5000;
+>>>>>>> 09a08dc5910032d0531fee235466848efa38e866
 const url = process.env.BACKEND_URL || "http://localhost";
 
 const controller = require("./controller");
