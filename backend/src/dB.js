@@ -54,7 +54,7 @@ const createTable = () => {
       console.error("Error creating table:", err);
       return;
     }
-    console.log("Table created successfully");
+    console.log("Connected to table");
   });
 };
 

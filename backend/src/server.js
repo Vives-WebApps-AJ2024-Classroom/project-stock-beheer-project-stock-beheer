@@ -39,6 +39,7 @@ app.use(
     {
       customCss: ".swagger-ui .topbar { display: none }",
       customSiteTitle: "Stock beheerInteractive Corridor API Documentation",
+      customfavIcon: "http://localhost:3000/favicon.ico",
     }
   )
 );
