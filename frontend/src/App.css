@@ -1,12 +1,14 @@
 .App {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
-.chart-and-table {
-  display: flex; /* Use Flexbox to align the items horizontally */
-  justify-content: center; /* Align the children (BarChart and Table) in the center */
-  gap: 20px; /* Space between the components */
-  padding: 20px; /* Optional padding around the components */
+.TabelComponent {
+  width: auto;
+  margin: auto;
 }
 
 .App-logo {
