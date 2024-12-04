@@ -1,4 +1,4 @@
-import "./App.css";
+import "../Layout/App.css";
 import TabelComponent from "../components/TabelComponent";
 
 function App() {
