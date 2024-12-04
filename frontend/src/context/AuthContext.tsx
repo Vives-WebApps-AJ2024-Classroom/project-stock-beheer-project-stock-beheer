@@ -1,10 +1,10 @@
-import React, { createContext, useState, useContext } from "react";
+import React, { createContext, useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { AccountInfo } from "@azure/msal-browser";
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  account: AccountInfo | null; // Voeg account toe aan de context
+  account: AccountInfo | null;
   login: (account: AccountInfo) => void;
   logout: () => void;
 }
@@ -20,28 +20,38 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const login = (account: AccountInfo) => {
     setIsAuthenticated(true);
     setAccount(account);
-
-    updateUser();
   };
 
   const logout = () => {
     setIsAuthenticated(false);
     setAccount(null);
   };
-  const updateUser = async () => {
-    const backendUrl = process.env.REACT_APP_BACKEND_URL;
-    const backendPort = process.env.REACT_APP_BACKEND_PORT;
-    const users = await axios.get(`${backendUrl}:${backendPort}/api/users`);
-    for (let user of users.data) {
-      if (user.name !== account?.username) {
-        await axios.put(`${backendUrl}:${backendPort}/users`, {
-          name: account?.name,
+
+  useEffect(() => {
+    const updateUser = async () => {
+      if (!account) return;
+
+      const backendUrl = process.env.REACT_APP_BACKEND_URL;
+      console.log("getting users from backend", `${backendUrl}/users`);
+      const users = await axios.get(`${backendUrl}/users`);
+      console.log(account);
+
+      const userExists = users.data.some(
+        (user: any) => user.name === account?.username
+      );
+
+      if (!userExists) {
+        await axios.post(`${backendUrl}/users`, {
+          name: account?.username,
           role: "student",
         });
-        return;
       }
+    };
+
+    if (account) {
+      updateUser();
     }
-  };
+  }, [account]); // Alleen afhankelijk van 'account'
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, account, login, logout }}>

@@ -226,15 +226,15 @@ const updateProduct = (req, res) => {
 };
 
 const createUser = (req, res) => {
-  const { username } = req.body;
-
+  const { username, role } = req.body;
+  console.log(username, role);
   if (!username) {
     return res.status(400).json({ error: "Username required" });
   }
 
   const query = "INSERT INTO users (username, role) VALUES (?, ?)";
 
-  db.query(query, [username], (err, result) => {
+  db.query(query, [username, role], (err, result) => {
     if (err) {
       return res.status(500).json({ error: "Failed to create user" });
     }

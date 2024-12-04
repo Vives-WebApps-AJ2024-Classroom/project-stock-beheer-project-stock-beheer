@@ -6,11 +6,10 @@ COPY package*.json ./
 
 RUN npm install
 
-ARG VITE_BACKEND_URL
+ARG BACKEND_URL
+ENV REACT_APP_BACKEND_URL=$BACKEND_URL
 
 COPY . .
-
-RUN npm run build
 
 EXPOSE 3000
 

@@ -16,8 +16,6 @@
 .topbar-buttons {
   display: flex;
   gap: 15px;
-  justify-content: left;
-  align-items: left;
 }
 
 .topbar .topbar-buttons button {
@@ -54,7 +52,6 @@
 }
 
 .logo {
-  position: fixed;
   left: 20px;
   margin-right: 50px;
 }

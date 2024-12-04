@@ -12,7 +12,7 @@ services:
     build:
       context: ./frontend/
       args:
-        VITE_BACKEND_URL: "${BACKEND_URL}:${BACKEND_PORT}"
+        BACKEND_URL: "${BACKEND_URL}:${BACKEND_PORT}"
     restart: always
     env_file:
       - ./.env
