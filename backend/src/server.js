@@ -2,21 +2,23 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const app = express();
+<<<<<<< HEAD
 const port = process.env.BACKEND_PORT || 5000;
+=======
+const port = process.env.BACKEND_PORT || 3001;
+>>>>>>> 99a7f17820657762d7f96d1df7a21dd8e7ec10cf
 const url = process.env.BACKEND_URL || "http://localhost";
 
-const db = require("./dB");
-
-const swaggerUi = require("swagger-ui-express");
-const swaggerJSdoc = require("swagger-jsdoc");
+const controller = require("./controller");
 
 app.use(
   cors({
-    origin: "*",
+    origin: "*"
   })
 );
 
 app.use(bodyParser.json());
+<<<<<<< HEAD
 app.use(
   "/api-docs",
   swaggerUi.serve,
@@ -45,10 +47,22 @@ app.use(
 );
 // app.get
 // app.post
+=======
+
+app.get("/projects", controller.getAllProjects);
+app.get("/producten", controller.getAllProducts);
+app.post("/projects", controller.createProject);
+app.post("/producten", controller.createProduct);
+app.put("/projects/:id", controller.updateProject);
+app.put("/producten/:id", controller.updateProduct);
+app.delete("/projects/:id", controller.deleteProject);
+app.delete("/producten/:id", controller.deleteProduct);
+>>>>>>> 99a7f17820657762d7f96d1df7a21dd8e7ec10cf
 
 app.get("/*", (req, res) => {
   res.redirect("/api-docs");
 });
+
 app.listen(port, () => {
   console.log(`Backend started on ${url}:${port}`);
 });
