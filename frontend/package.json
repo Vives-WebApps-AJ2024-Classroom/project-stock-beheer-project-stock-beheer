@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@azure/msal-browser": "^3.27.0",
+    "@azure/msal-react": "^2.2.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -10,11 +12,19 @@
     "@types/node": "^16.18.121",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
+<<<<<<< HEAD
+    "font-awesome": "^4.7.0",
+    "react": "^18.3.1",
+    "react-data-table-component": "^7.6.2",
+    "react-dom": "^18.3.1",
+    "react-microsoft-login": "^2.0.1",
+=======
     "cross-env": "^7.0.3",
     "react": "^18.3.1",
     "react-data-table-component": "^7.6.2",
     "react-dom": "^18.3.1",
     "react-scripts": "^5.0.1",
+>>>>>>> 99a7f17820657762d7f96d1df7a21dd8e7ec10cf
     "react-router-dom": "^6.28.0",
     "react-scripts": "5.0.1",
     "recharts": "^2.14.1",
