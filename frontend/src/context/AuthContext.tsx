@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext } from "react";
+import axios from "axios";
 import { AccountInfo } from "@azure/msal-browser";
 
 interface AuthContextType {
@@ -19,11 +20,27 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const login = (account: AccountInfo) => {
     setIsAuthenticated(true);
     setAccount(account);
+
+    updateUser();
   };
 
   const logout = () => {
     setIsAuthenticated(false);
     setAccount(null);
+  };
+  const updateUser = async () => {
+    const backendUrl = process.env.REACT_APP_BACKEND_URL;
+    const backendPort = process.env.REACT_APP_BACKEND_PORT;
+    const users = await axios.get(`${backendUrl}:${backendPort}/api/users`);
+    for (let user of users.data) {
+      if (user.name !== account?.username) {
+        await axios.put(`${backendUrl}:${backendPort}/users`, {
+          name: account?.name,
+          role: "student",
+        });
+        return;
+      }
+    }
   };
 
   return (

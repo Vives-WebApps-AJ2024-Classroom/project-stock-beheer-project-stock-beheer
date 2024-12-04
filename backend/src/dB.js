@@ -8,10 +8,10 @@ try {
   connection = mysql.createConnection({
     password: process.env.MYSQL_PASSWORD,
     user: process.env.MYSQL_USER,
-    host: process.env.MYSQL_HOST,
-    port: process.env.MYSQL_PORT,
+    host: "database",
+    port: "3306",
     database: process.env.MYSQL_DATABASE,
-    insecureAuth: true
+    insecureAuth: true,
   });
 
   connection.connect((err) => {
@@ -84,6 +84,22 @@ const createTables = () => {
       return;
     }
     console.log("Table 'producten' created or already exists.");
+  });
+
+  const createUsersTableQuery = `
+    CREATE TABLE IF NOT EXISTS users (
+      ID INT AUTO_INCREMENT PRIMARY KEY,
+      username VARCHAR(255) NOT NULL,
+      role VARCHAR(255) NOT NULL
+    );
+  `;
+
+  connection.query(createUsersTableQuery, (err) => {
+    if (err) {
+      console.error("Error creating table 'users':", err);
+      return;
+    }
+    console.log("Table 'users' created or already exists.");
   });
 };
 

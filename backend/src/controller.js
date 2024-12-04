@@ -58,7 +58,7 @@ const createProduct = (req, res) => {
     Bestelling_ontvangen_datum,
     Opmerkingen,
     Totaalprijs_project,
-    project_id
+    project_id,
   } = req.body;
 
   if (!project_id) {
@@ -94,7 +94,7 @@ const createProduct = (req, res) => {
       Bestelling_ontvangen_datum,
       Opmerkingen,
       Totaalprijs_project,
-      project_id
+      project_id,
     ],
     (err, result) => {
       if (err) {
@@ -178,7 +178,7 @@ const updateProduct = (req, res) => {
     Bestelling_ontvangen_datum,
     Opmerkingen,
     Totaalprijs_project,
-    project_id
+    project_id,
   } = req.body;
 
   const query = `
@@ -211,7 +211,7 @@ const updateProduct = (req, res) => {
       Opmerkingen,
       Totaalprijs_project,
       project_id,
-      id
+      id,
     ],
     (err, result) => {
       if (err) {
@@ -225,13 +225,82 @@ const updateProduct = (req, res) => {
   );
 };
 
+const createUser = (req, res) => {
+  const { username } = req.body;
+
+  if (!username) {
+    return res.status(400).json({ error: "Username required" });
+  }
+
+  const query = "INSERT INTO users (username, role) VALUES (?, ?)";
+
+  db.query(query, [username], (err, result) => {
+    if (err) {
+      return res.status(500).json({ error: "Failed to create user" });
+    }
+    res.status(201).json({ id: result.insertId, username });
+  });
+};
+
+const getAllUsers = (req, res) => {
+  const query = "SELECT * FROM users";
+
+  db.query(query, (err, results) => {
+    if (err) {
+      return res.status(500).json({ error: "Failed to retrieve users" });
+    }
+    res.status(200).json(results);
+  });
+};
+
+const deleteUser = (req, res) => {
+  const { id } = req.params;
+
+  const query = "DELETE FROM users WHERE id = ?";
+
+  db.query(query, [id], (err, result) => {
+    if (err) {
+      return res.status(500).json({ error: "Failed to delete user" });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.status(200).json({ message: "User deleted successfully" });
+  });
+};
+
+const updateUser = (req, res) => {
+  const { id } = req.params;
+  const { username, role } = req.body;
+
+  if (!username) {
+    return res.status(400).json({ error: "Username required" });
+  }
+
+  const query = "UPDATE users SET username = ?, role = ? WHERE id = ?";
+
+  db.query(query, [username, id], (err, result) => {
+    if (err) {
+      return res.status(500).json({ error: "Failed to update user" });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.status(200).json({ message: "User updated successfully" });
+  });
+};
+
 module.exports = {
   getAllProjects,
   getAllProducts,
+  getAllUsers,
   createProject,
   createProduct,
+  createUser,
   deleteProject,
   deleteProduct,
+  deleteUser,
   updateProject,
-  updateProduct
+  updateProduct,
+  updateUser,
 };
