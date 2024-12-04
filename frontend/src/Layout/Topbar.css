@@ -1,0 +1,47 @@
+/* Topbar moet over de volledige breedte van het scherm gaan */
+.topbar {
+  background-color: #2c3e50;
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%; /* Zorgt ervoor dat de topbar de volledige breedte van het scherm heeft */
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000; /* Zorg ervoor dat de topbar altijd boven de andere elementen komt */
+  box-sizing: border-box; /* Zorg ervoor dat de padding geen extra ruimte toevoegt aan de breedte */
+}
+
+/* Knoppen in de topbar moeten goed uitgelijnd zijn */
+.topbar-buttons {
+  display: flex;
+  gap: 15px;
+}
+
+.topbar .topbar-buttons button {
+  background-color: #34495e;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.topbar .topbar-buttons button:hover {
+  background-color: #1abc9c;
+}
+
+.topbar .profile-button button {
+  background-color: #34495e;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.topbar .profile-button button:hover {
+  background-color: #1abc9c;
+}
