@@ -12,7 +12,7 @@ const swaggerJSdoc = require("swagger-jsdoc");
 
 app.use(
   cors({
-    origin: "*",
+    origin: "*"
   })
 );
 
@@ -26,20 +26,20 @@ app.use(
         openapi: "3.1.0",
         info: {
           title: "Stock beheer API",
-          version: process.env.npm_package_version || "0.0.0",
+          version: process.env.npm_package_version || "0.0.0"
         },
         servers: [
           {
-            url: process.env.BACKEND_URL + ":" + process.env.BACKEND_PORT,
-          },
-        ],
+            url: process.env.BACKEND_URL + ":" + process.env.BACKEND_PORT
+          }
+        ]
       },
-      apis: ["./**/swagger.yaml"],
+      apis: ["./**/swagger.yaml"]
     }),
     {
       customCss: ".swagger-ui .topbar { display: none }",
       customSiteTitle: "Stock beheerInteractive Corridor API Documentation",
-      customfavIcon: "http://localhost:3000/favicon.ico",
+      customfavIcon: "http://localhost:3000/favicon.ico"
     }
   )
 );
