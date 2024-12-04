@@ -1,11 +1,9 @@
 /* Topbar moet over de volledige breedte van het scherm gaan */
 .topbar {
-  background-color: var(--vives-rood);
+  background-color: white;
   color: white;
   padding: 10px 20px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
   width: 100%; /* Zorgt ervoor dat de topbar de volledige breedte van het scherm heeft */
   position: fixed;
   top: 0;
@@ -18,6 +16,8 @@
 .topbar-buttons {
   display: flex;
   gap: 15px;
+  justify-content: left;
+  align-items: left;
 }
 
 .topbar .topbar-buttons button {
@@ -30,12 +30,12 @@
 }
 
 .topbar .topbar-buttons button:hover {
-  background-color: #1abc9c;
+  background-color: var(--vives-rood);
 }
 
 .topbar .profile-button button {
-  background-color: var(--vives-zwart);
-  color: white;
+  background-color: var(--vives-rood);
+  color: var(--vives-zwart);
   border: none;
   padding: 10px;
   cursor: pointer;
@@ -43,5 +43,18 @@
 }
 
 .topbar .profile-button button:hover {
-  background-color: #1abc9c;
+  background-color: var(--vives-zwart);
+  color: white;
+}
+
+.profile {
+  color: var(--vives-zwart);
+  position: fixed;
+  right: 20px;
+}
+
+.logo {
+  position: fixed;
+  left: 20px;
+  margin-right: 50px;
 }
