@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const app = express();
-const port = process.env.BACKEND_PORT || 3000;
+const port = process.env.BACKEND_PORT || 5000;
 const url = process.env.BACKEND_URL || "http://localhost";
 
 const db = require("./dB");
@@ -43,7 +43,6 @@ app.use(
     }
   )
 );
-
 // app.get
 // app.post
 

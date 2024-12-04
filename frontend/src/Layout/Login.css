@@ -1,0 +1,41 @@
+/* Stijlen voor de loginpagina */
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #f7f7f7;
+}
+
+.login-header {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.microsoft-login-button {
+  background-color: #0078d4; /* Microsoft blauw */
+  color: white;
+  font-size: 1.1rem;
+  padding: 12px 25px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  width: 250px;
+  text-align: center;
+  transition: background-color 0.3s;
+}
+
+.microsoft-login-button:hover {
+  background-color: #005a9e; /* Donkerder blauw bij hover */
+}
+
+.microsoft-login-button:focus {
+  outline: none;
+}
+
+.microsoft-login-button span {
+  font-weight: 600;
+}
