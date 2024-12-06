@@ -34,15 +34,15 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       const backendUrl = process.env.REACT_APP_BACKEND_URL;
       console.log("getting users from backend", `${backendUrl}/users`);
       const users = await axios.get(`${backendUrl}/users`);
-      console.log(account);
+      console.log(account.name);
 
       const userExists = users.data.some(
-        (user: any) => user.name === account?.username
+        (user: any) => user.name === account.name
       );
 
       if (!userExists) {
         await axios.post(`${backendUrl}/users`, {
-          name: account?.username,
+          name: account.name,
           role: "student",
         });
       }
