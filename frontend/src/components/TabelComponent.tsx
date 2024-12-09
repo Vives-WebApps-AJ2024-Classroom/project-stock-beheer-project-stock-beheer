@@ -20,9 +20,10 @@ interface Row {
   Bestelling_ontvangen_datum: string;
   Opmerkingen: string;
   Totaalprijs_project: number;
+  project_id: number;
 }
 
-function Table() {
+function Table({ selectedProjectId }: { selectedProjectId: number }) {
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -34,7 +35,10 @@ function Table() {
           throw new Error("Failed to fetch data from API");
         }
         const data = await response.json();
-        setRows(data);
+        const filteredData = data.filter(
+          (item: Row) => item.project_id === selectedProjectId
+        );
+        setRows(filteredData);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -42,8 +46,10 @@ function Table() {
       }
     };
 
-    fetchData();
-  }, []);
+    if (selectedProjectId !== 0) {
+      fetchData(); 
+    }
+  }, [selectedProjectId]);
 
   const columns = [
     {

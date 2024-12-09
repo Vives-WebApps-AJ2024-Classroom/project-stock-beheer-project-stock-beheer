@@ -45,17 +45,31 @@
   align-items: center;
 }
 
-/* Knoppen in de sidebar */
+/* Toevoeging van project-button klasse voor een specifiek uiterlijk van de knoppen */
+.sidebar ul li:hover {
+  background-color: var(
+    --vives-rood
+  ); /* Wanneer je over een item hovert, wordt het rood */
+  color: white; /* Zorg ervoor dat de tekst wit blijft wanneer het item rood wordt */
+}
+
 .project-button {
   width: 100%;
   padding: 10px;
-  background-color: var(--vives-rood); /* Gebruik dezelfde kleur als de hover */
+  background-color: var(
+    --vives-rood
+  ); /* Rood als achtergrondkleur van de knoppen */
   color: white;
   border: none;
   border-radius: 6px; /* Zelfde afgeronde hoeken als de li items */
   text-align: left;
   cursor: pointer;
   font-size: 1rem;
+  margin-bottom: 10px; /* Ruimte tussen knoppen */
+}
+
+.project-button:hover {
+  background-color: darkred; /* Donkerder rood als hover effect voor de knoppen */
 }
 
 /* Foutmelding in de sidebar */
