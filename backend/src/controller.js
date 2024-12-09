@@ -1,7 +1,7 @@
 const db = require("./dB");
 
 const getAllProjects = (req, res) => {
-  const query = "SELECT * FROM project";
+  const query = "SELECT * FROM projects";
 
   db.query(query, (err, results) => {
     if (err) {
@@ -145,7 +145,7 @@ const updateProject = (req, res) => {
     return res.status(400).json({ error: "Project name is required" });
   }
 
-  const query = "UPDATE project SET project_naam = ? WHERE id = ?";
+  const query = "UPDATE projects SET project_naam = ? WHERE id = ?";
 
   db.query(query, [project_naam, id], (err, result) => {
     if (err) {

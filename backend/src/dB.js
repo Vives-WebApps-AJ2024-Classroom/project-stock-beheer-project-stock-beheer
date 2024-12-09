@@ -11,7 +11,7 @@ try {
     host: "database",
     port: "3306",
     database: process.env.MYSQL_DATABASE,
-    insecureAuth: true
+    insecureAuth: true,
   });
 
   connection.connect((err) => {
@@ -39,7 +39,7 @@ connection.on("connect", function () {
 
 const createTables = () => {
   const createProjectTableQuery = `
-    CREATE TABLE IF NOT EXISTS project (
+    CREATE TABLE IF NOT EXISTS projects (
       id INT AUTO_INCREMENT PRIMARY KEY,
       project_naam VARCHAR(255) NOT NULL
     );
@@ -50,7 +50,7 @@ const createTables = () => {
       console.error("Error creating table 'projects':", err);
       return;
     }
-    console.log("Table 'project' created or already exists.");
+    console.log("Table 'projects' created or already exists.");
   });
 
   const createProductenTableQuery = `

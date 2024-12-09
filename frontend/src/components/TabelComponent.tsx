@@ -47,7 +47,7 @@ function Table({ selectedProjectId }: { selectedProjectId: number }) {
     };
 
     if (selectedProjectId !== 0) {
-      fetchData(); 
+      fetchData();
     }
   }, [selectedProjectId]);
 
@@ -57,38 +57,38 @@ function Table({ selectedProjectId }: { selectedProjectId: number }) {
       selector: (row: Row) => row.Leveringsadres,
       cell: (row: Row) => (
         <div title={row.Leveringsadres}>{row.Leveringsadres}</div>
-      )
+      ),
     },
     {
       name: "Datum aanvraag",
       selector: (row: Row) => row.Datum_aanvraag,
       cell: (row: Row) => (
         <div title={row.Datum_aanvraag}>{row.Datum_aanvraag}</div>
-      )
+      ),
     },
     {
       name: "Aantal",
       selector: (row: Row) => row.Aantal,
-      cell: (row: Row) => <div title={row.Aantal.toString()}>{row.Aantal}</div>
+      cell: (row: Row) => <div title={row.Aantal.toString()}>{row.Aantal}</div>,
     },
     {
       name: "Korte omschrijving",
       selector: (row: Row) => row.Korte_omschrijving,
       cell: (row: Row) => (
         <div title={row.Korte_omschrijving}>{row.Korte_omschrijving}</div>
-      )
+      ),
     },
     {
       name: "Winkel",
       selector: (row: Row) => row.Winkel,
-      cell: (row: Row) => <div title={row.Winkel}>{row.Winkel}</div>
+      cell: (row: Row) => <div title={row.Winkel}>{row.Winkel}</div>,
     },
     {
       name: "Artikelnummer",
       selector: (row: Row) => row.Artikelnummer,
       cell: (row: Row) => (
         <div title={row.Artikelnummer}>{row.Artikelnummer}</div>
-      )
+      ),
     },
     {
       name: "URL",
@@ -99,7 +99,7 @@ function Table({ selectedProjectId }: { selectedProjectId: number }) {
             Link
           </a>
         </div>
-      )
+      ),
     },
     {
       name: "Totale kostprijs excl. BTW",
@@ -108,14 +108,14 @@ function Table({ selectedProjectId }: { selectedProjectId: number }) {
         <div title={row.Totale_kostprijs_excl_BTW.toString()}>
           {row.Totale_kostprijs_excl_BTW}
         </div>
-      )
+      ),
     },
     {
       name: "Aangevraagd door",
       selector: (row: Row) => row.Aangevraagd_door,
       cell: (row: Row) => (
         <div title={row.Aangevraagd_door}>{row.Aangevraagd_door}</div>
-      )
+      ),
     },
     {
       name: "Aantal dagen levertijd",
@@ -124,7 +124,7 @@ function Table({ selectedProjectId }: { selectedProjectId: number }) {
         <div title={row.Aantal_dagen_levertijd.toString()}>
           {row.Aantal_dagen_levertijd}
         </div>
-      )
+      ),
     },
     {
       name: "Goedgekeurd door coach",
@@ -133,7 +133,7 @@ function Table({ selectedProjectId }: { selectedProjectId: number }) {
         <div title={row.Goedgekeurd_door_coach}>
           {row.Goedgekeurd_door_coach}
         </div>
-      )
+      ),
     },
     {
       name: "Bestelling ingegeven RQ nummer",
@@ -142,7 +142,7 @@ function Table({ selectedProjectId }: { selectedProjectId: number }) {
         <div title={row.Bestelling_ingegeven_RQ_nummer}>
           {row.Bestelling_ingegeven_RQ_nummer}
         </div>
-      )
+      ),
     },
     {
       name: "Bestelling door financieel dienst geplaatst",
@@ -151,7 +151,7 @@ function Table({ selectedProjectId }: { selectedProjectId: number }) {
         <div title={row.Bestelling_door_financ_dienst_geplaatst}>
           {row.Bestelling_door_financ_dienst_geplaatst}
         </div>
-      )
+      ),
     },
     {
       name: "Bestelling verzonden (verwachte aankomst)",
@@ -160,7 +160,7 @@ function Table({ selectedProjectId }: { selectedProjectId: number }) {
         <div title={row.Bestelling_verzonden_verwachtte_aankomst}>
           {row.Bestelling_verzonden_verwachtte_aankomst}
         </div>
-      )
+      ),
     },
     {
       name: "Bestelling ontvangen datum",
@@ -169,12 +169,12 @@ function Table({ selectedProjectId }: { selectedProjectId: number }) {
         <div title={row.Bestelling_ontvangen_datum}>
           {row.Bestelling_ontvangen_datum}
         </div>
-      )
+      ),
     },
     {
       name: "Opmerkingen",
       selector: (row: Row) => row.Opmerkingen,
-      cell: (row: Row) => <div title={row.Opmerkingen}>{row.Opmerkingen}</div>
+      cell: (row: Row) => <div title={row.Opmerkingen}>{row.Opmerkingen}</div>,
     },
     {
       name: "Totaalprijs project",
@@ -183,8 +183,8 @@ function Table({ selectedProjectId }: { selectedProjectId: number }) {
         <div title={row.Totaalprijs_project.toString()}>
           {row.Totaalprijs_project}
         </div>
-      )
-    }
+      ),
+    },
   ];
 
   return (
@@ -193,7 +193,20 @@ function Table({ selectedProjectId }: { selectedProjectId: number }) {
         {loading ? (
           <p>Loading...</p>
         ) : (
-          <DataTable columns={columns} data={rows} fixedHeader pagination />
+          <DataTable
+            columns={columns}
+            data={rows}
+            fixedHeader
+            pagination
+            subHeader
+            subHeaderComponent={
+              <div className="d-flex justify-content-between">
+                <div>
+                  <h4>Project ID: {selectedProjectId}</h4>
+                </div>
+              </div>
+            }
+          />
         )}
       </div>
     </>

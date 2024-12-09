@@ -13,6 +13,7 @@ services:
       context: ./frontend/
       args:
         BACKEND_URL: "${BACKEND_URL}:${BACKEND_PORT}"
+        GITHUB_CLIENT_ID: "${GITHUB_CLIENT_ID}"
     restart: always
     env_file:
       - ./.env

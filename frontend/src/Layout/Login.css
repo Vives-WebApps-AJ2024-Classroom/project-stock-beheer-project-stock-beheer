@@ -15,27 +15,13 @@
   color: #333;
 }
 
-.microsoft-login-button {
-  background-color: #0078d4; /* Microsoft blauw */
-  color: var(--vives-zwart);
-  font-size: 1.1rem;
-  padding: 12px 25px;
-  border-radius: 5px;
-  border: none;
-  cursor: pointer;
-  width: 250px;
-  text-align: center;
-  transition: background-color 0.3s;
+/* Stijlen voor de login popup */
+.login-button-container {
+  position: relative;
 }
 
-.microsoft-login-button:hover {
-  background-color: #005a9e; /* Donkerder blauw bij hover */
-}
-
-.microsoft-login-button:focus {
-  outline: none;
-}
-
-.microsoft-login-button span {
-  font-weight: 600;
+.flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
