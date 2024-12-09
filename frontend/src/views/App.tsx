@@ -2,6 +2,7 @@ import React from "react";
 import "../Layout/App.css";
 import Topbar from "../components/Topbar";
 import Sidebar from "../components/Sidebar";
+import Table from "../components/TabelComponent";
 
 const App: React.FC = () => {
   return (
@@ -9,8 +10,7 @@ const App: React.FC = () => {
       <Topbar />
       <Sidebar />
       <div className="main-content">
-        <h1>Welcome to the Dashboard</h1>
-        <p>Select a project from the sidebar to begin.</p>
+        <Table />
       </div>
     </div>
   );

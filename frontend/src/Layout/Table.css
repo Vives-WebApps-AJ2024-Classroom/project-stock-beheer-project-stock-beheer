@@ -1,6 +1,5 @@
 /* Algemene stijlen voor de container (optioneel) */
 .container {
-  max-width: 1000px; /* Maximaal een breedte van 1000px */
   margin: 0 auto;
   padding: 30px;
   font-family: "Arial", sans-serif;

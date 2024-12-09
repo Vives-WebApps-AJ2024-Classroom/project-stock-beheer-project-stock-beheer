@@ -1,50 +1,194 @@
+import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import "../Layout/Table.css";
 
 interface Row {
-  id: number;
-  Jaar: number;
-  Winst: number;
-  Verlies: number;
+  Leveringsadres: string;
+  Datum_aanvraag: string;
+  Aantal: number;
+  Korte_omschrijving: string;
+  Winkel: string;
+  Artikelnummer: string;
+  URL: string;
+  Totale_kostprijs_excl_BTW: number;
+  Aangevraagd_door: string;
+  Aantal_dagen_levertijd: number;
+  Goedgekeurd_door_coach: string;
+  Bestelling_ingegeven_RQ_nummer: string;
+  Bestelling_door_financ_dienst_geplaatst: string;
+  Bestelling_verzonden_verwachtte_aankomst: string;
+  Bestelling_ontvangen_datum: string;
+  Opmerkingen: string;
+  Totaalprijs_project: number;
 }
 
 function Table() {
-  const rows: Row[] = [
-    { id: 1, Jaar: 2015, Winst: 4000, Verlies: 1500 },
-    { id: 2, Jaar: 2016, Winst: 5000, Verlies: 2000 },
-    { id: 3, Jaar: 2017, Winst: 7000, Verlies: 3000 },
-    { id: 4, Jaar: 2018, Winst: 8000, Verlies: 4000 },
-    { id: 5, Jaar: 2019, Winst: 6000, Verlies: 2500 },
-    { id: 6, Jaar: 2020, Winst: 9000, Verlies: 3500 },
-    { id: 7, Jaar: 2021, Winst: 10000, Verlies: 4500 },
-    { id: 8, Jaar: 2022, Winst: 11000, Verlies: 5000 },
-    { id: 9, Jaar: 2023, Winst: 12000, Verlies: 5500 },
-    { id: 10, Jaar: 2024, Winst: 13000, Verlies: 6000 }
-  ];
+  const [rows, setRows] = useState<Row[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/producten");
+        if (!response.ok) {
+          throw new Error("Failed to fetch data from API");
+        }
+        const data = await response.json();
+        setRows(data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const columns = [
     {
-      name: "Jaar",
-      selector: (row: Row) => row.Jaar
+      name: "Leveringsadres",
+      selector: (row: Row) => row.Leveringsadres,
+      cell: (row: Row) => (
+        <div title={row.Leveringsadres}>{row.Leveringsadres}</div>
+      )
     },
     {
-      name: "Winst",
-      selector: (row: Row) => row.Winst
+      name: "Datum aanvraag",
+      selector: (row: Row) => row.Datum_aanvraag,
+      cell: (row: Row) => (
+        <div title={row.Datum_aanvraag}>{row.Datum_aanvraag}</div>
+      )
     },
     {
-      name: "Verlies",
-      selector: (row: Row) => row.Verlies
+      name: "Aantal",
+      selector: (row: Row) => row.Aantal,
+      cell: (row: Row) => <div title={row.Aantal.toString()}>{row.Aantal}</div>
+    },
+    {
+      name: "Korte omschrijving",
+      selector: (row: Row) => row.Korte_omschrijving,
+      cell: (row: Row) => (
+        <div title={row.Korte_omschrijving}>{row.Korte_omschrijving}</div>
+      )
+    },
+    {
+      name: "Winkel",
+      selector: (row: Row) => row.Winkel,
+      cell: (row: Row) => <div title={row.Winkel}>{row.Winkel}</div>
+    },
+    {
+      name: "Artikelnummer",
+      selector: (row: Row) => row.Artikelnummer,
+      cell: (row: Row) => (
+        <div title={row.Artikelnummer}>{row.Artikelnummer}</div>
+      )
+    },
+    {
+      name: "URL",
+      selector: (row: Row) => row.URL,
+      cell: (row: Row) => (
+        <div title={row.URL}>
+          <a href={row.URL} target="_blank" rel="noopener noreferrer">
+            Link
+          </a>
+        </div>
+      )
+    },
+    {
+      name: "Totale kostprijs excl. BTW",
+      selector: (row: Row) => row.Totale_kostprijs_excl_BTW,
+      cell: (row: Row) => (
+        <div title={row.Totale_kostprijs_excl_BTW.toString()}>
+          {row.Totale_kostprijs_excl_BTW}
+        </div>
+      )
+    },
+    {
+      name: "Aangevraagd door",
+      selector: (row: Row) => row.Aangevraagd_door,
+      cell: (row: Row) => (
+        <div title={row.Aangevraagd_door}>{row.Aangevraagd_door}</div>
+      )
+    },
+    {
+      name: "Aantal dagen levertijd",
+      selector: (row: Row) => row.Aantal_dagen_levertijd,
+      cell: (row: Row) => (
+        <div title={row.Aantal_dagen_levertijd.toString()}>
+          {row.Aantal_dagen_levertijd}
+        </div>
+      )
+    },
+    {
+      name: "Goedgekeurd door coach",
+      selector: (row: Row) => row.Goedgekeurd_door_coach,
+      cell: (row: Row) => (
+        <div title={row.Goedgekeurd_door_coach}>
+          {row.Goedgekeurd_door_coach}
+        </div>
+      )
+    },
+    {
+      name: "Bestelling ingegeven RQ nummer",
+      selector: (row: Row) => row.Bestelling_ingegeven_RQ_nummer,
+      cell: (row: Row) => (
+        <div title={row.Bestelling_ingegeven_RQ_nummer}>
+          {row.Bestelling_ingegeven_RQ_nummer}
+        </div>
+      )
+    },
+    {
+      name: "Bestelling door financieel dienst geplaatst",
+      selector: (row: Row) => row.Bestelling_door_financ_dienst_geplaatst,
+      cell: (row: Row) => (
+        <div title={row.Bestelling_door_financ_dienst_geplaatst}>
+          {row.Bestelling_door_financ_dienst_geplaatst}
+        </div>
+      )
+    },
+    {
+      name: "Bestelling verzonden (verwachte aankomst)",
+      selector: (row: Row) => row.Bestelling_verzonden_verwachtte_aankomst,
+      cell: (row: Row) => (
+        <div title={row.Bestelling_verzonden_verwachtte_aankomst}>
+          {row.Bestelling_verzonden_verwachtte_aankomst}
+        </div>
+      )
+    },
+    {
+      name: "Bestelling ontvangen datum",
+      selector: (row: Row) => row.Bestelling_ontvangen_datum,
+      cell: (row: Row) => (
+        <div title={row.Bestelling_ontvangen_datum}>
+          {row.Bestelling_ontvangen_datum}
+        </div>
+      )
+    },
+    {
+      name: "Opmerkingen",
+      selector: (row: Row) => row.Opmerkingen,
+      cell: (row: Row) => <div title={row.Opmerkingen}>{row.Opmerkingen}</div>
+    },
+    {
+      name: "Totaalprijs project",
+      selector: (row: Row) => row.Totaalprijs_project,
+      cell: (row: Row) => (
+        <div title={row.Totaalprijs_project.toString()}>
+          {row.Totaalprijs_project}
+        </div>
+      )
     }
   ];
 
   return (
     <>
       <div className="container my-5">
-        <DataTable
-          columns={columns}
-          data={rows}
-          fixedHeader
-        />
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          <DataTable columns={columns} data={rows} fixedHeader pagination />
+        )}
       </div>
     </>
   );

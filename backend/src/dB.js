@@ -11,7 +11,7 @@ try {
     host: "database",
     port: "3306",
     database: process.env.MYSQL_DATABASE,
-    insecureAuth: true,
+    insecureAuth: true
   });
 
   connection.connect((err) => {
