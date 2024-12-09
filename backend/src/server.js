@@ -21,6 +21,7 @@ app.use(bodyParser.json());
 app.get("/projects", controller.getAllProjects);
 app.get("/producten", controller.getAllProducts);
 app.get("/users", controller.getAllUsers);
+app.get("/users/:id", controller.getUserById);
 app.post("/projects", controller.createProject);
 app.post("/producten", controller.createProduct);
 app.post("/users", controller.createUser);

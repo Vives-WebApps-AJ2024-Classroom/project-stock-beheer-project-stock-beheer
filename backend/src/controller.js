@@ -226,16 +226,18 @@ const updateProduct = (req, res) => {
 };
 
 const createUser = (req, res) => {
-  const { username, role } = req.body;
-  console.log(username, role);
-  if (!username) {
-    return res.status(400).json({ error: "Username required" });
+  const { username, displayname, role } = req.body;
+  if (!username || !displayname || !role) {
+    return res
+      .status(400)
+      .json({ error: "Username, displayname and role required" });
   }
+  const query =
+    "INSERT INTO users (username, displayname, role) VALUES (?, ?, ?)";
 
-  const query = "INSERT INTO users (username, role) VALUES (?, ?)";
-
-  db.query(query, [username, role], (err, result) => {
+  db.query(query, [username, displayname, role], (err, result) => {
     if (err) {
+      console.log(err);
       return res.status(500).json({ error: "Failed to create user" });
     }
     res.status(201).json({ id: result.insertId, username });
@@ -271,15 +273,32 @@ const deleteUser = (req, res) => {
 
 const updateUser = (req, res) => {
   const { id } = req.params;
-  const { username, role } = req.body;
+  const { username, displayname, role } = req.body;
 
-  if (!username) {
-    return res.status(400).json({ error: "Username required" });
+  let fields = [];
+  let values = [];
+
+  if (username) {
+    fields.push("username = ?");
+    values.push(username);
+  }
+  if (displayname) {
+    fields.push("displayname = ?");
+    values.push(displayname);
+  }
+  if (role) {
+    fields.push("role = ?");
+    values.push(role);
   }
 
-  const query = "UPDATE users SET username = ?, role = ? WHERE id = ?";
+  if (fields.length === 0) {
+    return res.status(400).json({ error: "No fields to update" });
+  }
 
-  db.query(query, [username, id], (err, result) => {
+  values.push(id);
+  const query = `UPDATE users SET ${fields.join(", ")} WHERE id = ?`;
+
+  db.query(query, values, (err, result) => {
     if (err) {
       return res.status(500).json({ error: "Failed to update user" });
     }
@@ -290,10 +309,27 @@ const updateUser = (req, res) => {
   });
 };
 
+const getUserById = (req, res) => {
+  const { id } = req.params;
+
+  const query = "SELECT * FROM users WHERE id = ?";
+
+  db.query(query, [id], (err, results) => {
+    if (err) {
+      return res.status(500).json({ error: "Failed to retrieve user" });
+    }
+    if (results.length === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.status(200).json(results[0]);
+  });
+};
+
 module.exports = {
   getAllProjects,
   getAllProducts,
   getAllUsers,
+  getUserById,
   createProject,
   createProduct,
   createUser,

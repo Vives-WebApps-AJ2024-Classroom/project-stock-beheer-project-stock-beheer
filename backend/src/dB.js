@@ -74,7 +74,7 @@ const createTables = () => {
       Opmerkingen TEXT,
       Totaalprijs_project DECIMAL(10, 2),
       project_id INT,
-      FOREIGN KEY (project_id) REFERENCES project(id) ON DELETE SET NULL
+      FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE SET NULL
     );
   `;
 
@@ -90,7 +90,9 @@ const createTables = () => {
     CREATE TABLE IF NOT EXISTS users (
       ID INT AUTO_INCREMENT PRIMARY KEY,
       username VARCHAR(255) NOT NULL,
-      role VARCHAR(255) NOT NULL
+      displayname VARCHAR(255) NOT NULL,
+      role VARCHAR(255) NOT NULL,
+      project_ids VARCHAR(255)
     );
   `;
 

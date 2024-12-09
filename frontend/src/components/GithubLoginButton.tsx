@@ -4,15 +4,17 @@ import axios from "axios";
 
 const GitHubLoginButton = () => {
   const [accessToken, setAccessToken] = useState(null);
+  const [userId, setUserId] = useState<number | null>(null);
   interface GitHubUser {
     name?: string;
     login: string;
     avatar_url: string;
   }
 
-  const [user, setUser] = useState<GitHubUser | null>(null); // Nieuwe state voor gebruiker
+  const [user, setUser] = useState<GitHubUser | null>(null);
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
   const client_id = process.env.REACT_APP_GITHUB_CLIENT_ID;
+  const adminLogin = process.env.REACT_APP_ADMIN_LOGIN;
 
   useEffect(() => {
     const code = new URLSearchParams(window.location.search).get("code");
@@ -35,16 +37,35 @@ const GitHubLoginButton = () => {
               .then(async (userData) => {
                 setUser(userData);
                 const users = await axios.get(`${backendUrl}/users`);
-                const userExists = users.data.some(
-                  (u: any) => u.username === userData.login
-                );
-                if (userExists) {
-                  return;
+                if (users.data.length !== 0) {
+                  console.log("users", users.data);
+                  console.log("userData", userData);
+                  const userExists = users.data.some(
+                    (u: any) => u.username === userData.login
+                  );
+                  if (userExists) {
+                    const existingUser = users.data.find(
+                      (u: any) => u.username === userData.login
+                    );
+                    setUserId(existingUser.ID);
+                    if (userData.login === adminLogin) {
+                      await axios.put(
+                        `${backendUrl}/users/${existingUser.ID}`,
+                        {
+                          role: "admin",
+                        }
+                      );
+                    }
+
+                    return;
+                  }
                 }
-                await axios.post(`${backendUrl}/users`, {
-                  username: userData.name || userData.login,
+                const newUser = await axios.post(`${backendUrl}/users`, {
+                  username: userData.login,
+                  displayname: userData.name,
                   role: "student",
                 });
+                setUserId(newUser.data.ID);
               })
               .catch((error) =>
                 console.error("Error tijdens ophalen van gebruiker:", error)
