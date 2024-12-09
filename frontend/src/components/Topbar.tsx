@@ -4,7 +4,11 @@ import "./Profile";
 import Profile from "./Profile";
 import { AuthProvider } from "../context/AuthContext";
 
-const Topbar: React.FC = () => {
+interface TopbarProps {
+  onProjectsClick: () => void; // De functie die wordt aangeroepen wanneer op de Projects knop wordt geklikt
+}
+
+const Topbar: React.FC<TopbarProps> = ({ onProjectsClick }) => {
   return (
     <div className="topbar">
       <div className="logo">
@@ -16,9 +20,10 @@ const Topbar: React.FC = () => {
       </div>
 
       <div className="topbar-buttons">
+        <button onClick={onProjectsClick}>Projects</button>{" "}
+        {/* Koppel de functie aan de knop */}
         <button>Query</button>
         <button>Stores</button>
-        <button>Projects</button>
         <button>Users</button>
         <button>Alerts</button>
       </div>

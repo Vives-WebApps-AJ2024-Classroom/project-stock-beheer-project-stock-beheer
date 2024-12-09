@@ -1,19 +1,24 @@
 /* Sidebar container */
 .sidebar {
-  width: 220px; /* Iets bredere sidebar voor een betere leesbaarheid */
-  background-color: var(
-    --vives-zwart
-  ); /* Donkere achtergrond voor de sidebar */
-  color: white; /* Witte tekstkleur */
+  width: 220px;
+  background-color: var(--vives-zwart);
+  color: white;
   padding: 20px;
-  height: 100vh; /* Sidebar vult de volledige hoogte */
+  height: 100vh;
   position: fixed;
-  top: 60px; /* Onder de topbar */
+  top: 60px;
   left: 0;
-  z-index: 500; /* Zorg ervoor dat de sidebar niet boven de topbar komt */
-  overflow-y: auto; /* Voeg scroll toe als de inhoud langer is dan het scherm */
-  box-sizing: border-box; /* Zorg ervoor dat padding geen extra breedte toevoegt aan de sidebar */
-  border-right: 2px solid var(--vives-rood); /* Een subtiele rode lijn aan de rechterkant */
+  z-index: 500;
+  overflow-y: auto;
+  box-sizing: border-box;
+  border-right: 2px solid var(--vives-rood);
+  transition: transform 0.3s ease-in-out; /* Voeg een transitie toe voor een soepele overgang */
+}
+
+.sidebar.hidden {
+  transform: translateX(
+    -100%
+  ); /* Verberg de sidebar door deze naar links buiten het scherm te schuiven */
 }
 
 /* Titel van de sidebar */

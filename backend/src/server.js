@@ -9,7 +9,7 @@ const controller = require("./controller");
 
 app.use(
   cors({
-    origin: "*",
+    origin: "*"
   })
 );
 

@@ -3,8 +3,16 @@
   margin-left: 220px; /* Sidebar width + spacing */
   margin-top: 60px; /* Topbar height */
   padding: 20px;
-  width: calc(100% - 220px);
+  width: calc(100% - 220px); /* Normaal: Breedte van de main-content wordt berekend op basis van de sidebar */
+  transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out; /* Voegt een overgang toe voor de verschuiving en breedte-aanpassing */
 }
+
+/* Main content - full width when sidebar is hidden */
+.main-content.full-width {
+  margin-left: 0; /* Wanneer de sidebar is verborgen, is er geen marge aan de linkerkant */
+  width: 100%; /* De main-content neemt de volledige breedte in beslag */
+}
+
 /* General styles */
 body {
   margin: 0;
@@ -15,4 +23,5 @@ body {
 .app {
   display: flex;
   height: 100vh;
+  overflow: hidden; /* Zorg ervoor dat er geen horizontale scroll is wanneer de sidebar weg is */
 }
