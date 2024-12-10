@@ -23,7 +23,7 @@ interface Row {
   project_id: number;
 }
 
-function Table({ selectedProjectId }: { selectedProjectId: number }) {
+function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -213,4 +213,4 @@ function Table({ selectedProjectId }: { selectedProjectId: number }) {
   );
 }
 
-export default Table;
+export default ProjectTable;

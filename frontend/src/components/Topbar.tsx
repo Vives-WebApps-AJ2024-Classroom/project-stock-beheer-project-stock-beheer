@@ -2,13 +2,14 @@ import React from "react";
 import "../Layout/Topbar.css";
 import "./Profile";
 import Profile from "./Profile";
-import { AuthProvider } from "../context/AuthContext";
+import "../Layout/Login.css";
 
 interface TopbarProps {
-  onProjectsClick: () => void; // De functie die wordt aangeroepen wanneer op de Projects knop wordt geklikt
+  onViewChange: (view: string) => void; // Functie om de huidige weergave te veranderen
+  onProjectsClick: () => void; // Functie om de sidebar te toggelen
 }
 
-const Topbar: React.FC<TopbarProps> = ({ onProjectsClick }) => {
+const Topbar: React.FC<TopbarProps> = ({ onViewChange, onProjectsClick }) => {
   return (
     <div className="topbar">
       <div className="logo">
@@ -18,19 +19,12 @@ const Topbar: React.FC<TopbarProps> = ({ onProjectsClick }) => {
           style={{ width: "100px", height: "auto" }}
         />
       </div>
-
       <div className="topbar-buttons">
         <button onClick={onProjectsClick}>Projects</button>{" "}
-        {/* Koppel de functie aan de knop */}
-        <button>Query</button>
-        <button>Stores</button>
-        <button>Users</button>
-        <button>Alerts</button>
+        <button onClick={() => onViewChange("users")}>Users</button>
       </div>
       <div className="profile-button profile">
-        <AuthProvider>
-          <Profile />
-        </AuthProvider>
+        <Profile />
       </div>
     </div>
   );

@@ -2,30 +2,38 @@ import React, { useState } from "react";
 import "../Layout/App.css";
 import Topbar from "../components/Topbar";
 import Sidebar from "../components/Sidebar";
-import Table from "../components/TabelComponent";
+import ProjectTable from "../components/ProjectTable";
+import UserTable from "../components/UserTable";
 
 const App: React.FC = () => {
   const [selectedProjectId, setSelectedProjectId] = useState<number>(0);
-  const [isSidebarVisible, setIsSidebarVisible] = useState<boolean>(false); // Standaard sidebar is verborgen
+  const [isSidebarVisible, setIsSidebarVisible] = useState<boolean>(false); // Sidebar zichtbaar of niet
+  const [currentView, setCurrentView] = useState<string>("projects"); // Default weergave
 
   const handleProjectSelect = (projectId: number) => {
     setSelectedProjectId(projectId);
   };
 
   const toggleSidebar = () => {
-    setIsSidebarVisible(!isSidebarVisible); // Toggle de zichtbaarheid van de sidebar
+    setIsSidebarVisible(!isSidebarVisible); // Toggle sidebar zichtbaarheid
+  };
+
+  const handleViewChange = (view: string) => {
+    setCurrentView(view); // Wijzig de huidige weergave
   };
 
   return (
     <div className="app">
-      <Topbar onProjectsClick={toggleSidebar} />{" "}
-      {/* Geef de toggle functie door naar de Topbar */}
-      {isSidebarVisible && (
-        <Sidebar onProjectSelect={handleProjectSelect} />
-      )}{" "}
-      {/* Render de sidebar op basis van de zichtbaarheid */}
+      <Topbar
+        onProjectsClick={toggleSidebar} // Sidebar toggle functie
+        onViewChange={handleViewChange} // View change functie
+      />
+      {isSidebarVisible && <Sidebar onProjectSelect={handleProjectSelect} />}
       <div className={`main-content ${isSidebarVisible ? "" : "full-width"}`}>
-        <Table selectedProjectId={selectedProjectId} />
+        {currentView === "projects" && (
+          <ProjectTable selectedProjectId={selectedProjectId} />
+        )}
+        {currentView === "users" && <UserTable />}
       </div>
     </div>
   );
