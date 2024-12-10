@@ -22,6 +22,18 @@ const getAllProducts = (req, res) => {
   });
 };
 
+const getProductsByProjectId = (req, res) => {
+  const { id } = req.params;
+
+  const query = "SELECT * FROM products WHERE project_id = ?";
+  db.query(query, [id], (err, results) => {
+    if (err) {
+      return res.status(500).json({ error: "Failed to retrieve products" });
+    }
+    res.status(200).json(results);
+  });
+};
+
 const createProject = (req, res) => {
   const { project_naam } = req.body;
 
@@ -364,4 +376,5 @@ module.exports = {
   updateProject,
   updateProduct,
   updateUser,
+  getProductsByProjectId,
 };

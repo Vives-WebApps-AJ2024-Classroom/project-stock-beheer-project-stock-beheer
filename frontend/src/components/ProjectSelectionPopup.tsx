@@ -29,8 +29,8 @@ const ProjectSelectionPopup: React.FC<ProjectSelectionPopupProps> = ({
   };
 
   return (
-    <div className="project-popup-overlay">
-      <div className="project-popup">
+    <div className="popup-overlay">
+      <div className="popup">
         <h3>Select Projects</h3>
         <div className="project-list">
           {projects.map((project) => (

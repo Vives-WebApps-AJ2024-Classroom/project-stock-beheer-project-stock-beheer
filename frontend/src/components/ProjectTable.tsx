@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import DataTable, { Alignment } from "react-data-table-component";
+import DataTable from "react-data-table-component";
 import "../Layout/Table.css";
+import { AddOrder, OrderFormData } from "./AddOrder";
 
 interface Row {
   Leveringsadres: string;
@@ -25,6 +26,7 @@ interface Row {
 function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
   interface Project {
     id: number;
     project_naam: string;
@@ -37,7 +39,9 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`${backendUrl}/products`);
+        const response = await fetch(
+          `${backendUrl}/projects/${selectedProjectId}/products`
+        );
         if (!response.ok) {
           throw new Error("Failed to fetch data from API");
         }
@@ -260,29 +264,55 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
     },
   ];
 
+  const handleOrderAdd = () => {
+    setIsPopupOpen(true);
+  };
+
+  const handleCloseOrder = () => {
+    setIsPopupOpen(false);
+  };
+
+  const handleSaveOrder = (data: OrderFormData) => {
+    console.log("Order data opgeslagen:", data);
+  };
+
   return (
     <>
       <div className="container my-5">
         {loading ? (
           <p>Loading...</p>
         ) : (
-          <DataTable
-            columns={columns}
-            data={rows}
-            pagination
-            subHeader
-            fixedHeader
-            title={
-              project && (
-                <h4>Project: {project ? project.project_naam : "N/A"}</h4>
-              )
-            }
-            subHeaderComponent={
-              <h5>
-                Totale kostprijs excl. BTW: <h2>€{totaleKost}</h2>
-              </h5>
-            }
-          />
+          <div>
+            <DataTable
+              columns={columns}
+              data={rows}
+              pagination
+              subHeader
+              fixedHeader
+              title={
+                project && (
+                  <div className="TableTitle">
+                    <h4>Project: {project ? project.project_naam : "N/A"}</h4>
+                    <button
+                      onClick={handleOrderAdd}
+                      className="btn btn-primary"
+                    >
+                      Bestelling toevoegen
+                    </button>
+                  </div>
+                )
+              }
+              subHeaderComponent={
+                <div>
+                  <h5>Totale kostprijs excl. BTW:</h5>
+                  <h2>€{totaleKost}</h2>
+                </div>
+              }
+            />
+            {isPopupOpen && (
+              <AddOrder onClose={handleCloseOrder} onSave={handleSaveOrder} />
+            )}
+          </div>
         )}
       </div>
     </>
