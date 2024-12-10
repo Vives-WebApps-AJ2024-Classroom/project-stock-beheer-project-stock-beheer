@@ -31,7 +31,7 @@ const GitHubLoginButton = () => {
                   if (userData.login) {
                     const response = await axios.post(`${backendUrl}/users`, {
                       username: userData.login,
-                      displayname: userData.name,
+                      displayname: userData.name || userData.login,
                       role: "student",
                     });
 

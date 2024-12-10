@@ -7,28 +7,30 @@ import UserTable from "../components/UserTable";
 
 const App: React.FC = () => {
   const [selectedProjectId, setSelectedProjectId] = useState<number>(0);
-  const [isSidebarVisible, setIsSidebarVisible] = useState<boolean>(false); // Sidebar zichtbaar of niet
-  const [currentView, setCurrentView] = useState<string>("projects"); // Default weergave
+  const [isSidebarVisible, setIsSidebarVisible] = useState<boolean>(false);
+  const [currentView, setCurrentView] = useState<string>("projects"); // Huidige weergave
 
   const handleProjectSelect = (projectId: number) => {
     setSelectedProjectId(projectId);
   };
 
   const toggleSidebar = () => {
-    setIsSidebarVisible(!isSidebarVisible); // Toggle sidebar zichtbaarheid
+    setIsSidebarVisible(!isSidebarVisible);
   };
 
   const handleViewChange = (view: string) => {
-    setCurrentView(view); // Wijzig de huidige weergave
+    setCurrentView(view);
   };
 
   return (
     <div className="app">
-      <Topbar
-        onProjectsClick={toggleSidebar} // Sidebar toggle functie
-        onViewChange={handleViewChange} // View change functie
-      />
-      {isSidebarVisible && <Sidebar onProjectSelect={handleProjectSelect} />}
+      <Topbar onViewChange={handleViewChange} onProjectsClick={toggleSidebar} />
+      {isSidebarVisible && (
+        <Sidebar
+          onProjectSelect={handleProjectSelect}
+          onViewChange={handleViewChange} // Doorgeven aan de Sidebar
+        />
+      )}
       <div className={`main-content ${isSidebarVisible ? "" : "full-width"}`}>
         {currentView === "projects" && (
           <ProjectTable selectedProjectId={selectedProjectId} />

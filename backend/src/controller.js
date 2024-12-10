@@ -297,7 +297,8 @@ const deleteUser = (req, res) => {
 
 const updateUser = (req, res) => {
   const { id } = req.params;
-  const { username, displayname, role } = req.body;
+  const { username, displayname, role, projects } = req.body;
+  console.log(req.body);
 
   let fields = [];
   let values = [];
@@ -313,6 +314,10 @@ const updateUser = (req, res) => {
   if (role) {
     fields.push("role = ?");
     values.push(role);
+  }
+  if (projects) {
+    fields.push("project_ids = ?");
+    values.push(projects);
   }
 
   if (fields.length === 0) {

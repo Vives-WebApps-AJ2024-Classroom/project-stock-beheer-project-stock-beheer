@@ -22,7 +22,14 @@ const Topbar: React.FC<TopbarProps> = ({ onViewChange, onProjectsClick }) => {
         />
       </div>
       <div className="topbar-buttons">
-        <button onClick={onProjectsClick}>Projects</button>{" "}
+        <button
+          onClick={() => {
+            onProjectsClick();
+            onViewChange("projects");
+          }}
+        >
+          Projects
+        </button>
         {user && user.role === "admin" && (
           <div>
             <button onClick={() => onViewChange("users")}>Users</button>
