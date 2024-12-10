@@ -3,6 +3,7 @@ import "../Layout/Topbar.css";
 import "./Profile";
 import Profile from "./Profile";
 import "../Layout/Login.css";
+import { useUser } from "../context/UserContext";
 
 interface TopbarProps {
   onViewChange: (view: string) => void; // Functie om de huidige weergave te veranderen
@@ -10,6 +11,7 @@ interface TopbarProps {
 }
 
 const Topbar: React.FC<TopbarProps> = ({ onViewChange, onProjectsClick }) => {
+  const { user } = useUser();
   return (
     <div className="topbar">
       <div className="logo">
@@ -21,7 +23,11 @@ const Topbar: React.FC<TopbarProps> = ({ onViewChange, onProjectsClick }) => {
       </div>
       <div className="topbar-buttons">
         <button onClick={onProjectsClick}>Projects</button>{" "}
-        <button onClick={() => onViewChange("users")}>Users</button>
+        {user && user.role === "admin" && (
+          <div>
+            <button onClick={() => onViewChange("users")}>Users</button>
+          </div>
+        )}
       </div>
       <div className="profile-button profile">
         <Profile />

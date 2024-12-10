@@ -270,7 +270,12 @@ const getAllUsers = (req, res) => {
     if (err) {
       return res.status(500).json({ error: "Failed to retrieve users" });
     }
-    return res.status(200).json(results);
+    return res.status(200).json({
+      id: results[0].ID,
+      name: results[0].displayname,
+      role: results[0].role,
+      projects: results[0].project_ids,
+    });
   });
 };
 
