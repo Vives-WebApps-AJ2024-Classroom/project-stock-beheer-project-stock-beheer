@@ -21,17 +21,17 @@ app.use(
 app.use(bodyParser.json());
 
 app.get("/projects", controller.getAllProjects);
-app.get("/producten", controller.getAllProducts);
+app.get("/products", controller.getAllProducts);
 app.get("/users", controller.getAllUsers);
 app.get("/users/:id", controller.getUserById);
 app.post("/projects", controller.createProject);
-app.post("/producten", controller.createProduct);
+app.post("/products", controller.createProduct);
 app.post("/users", controller.createUser);
 app.put("/projects/:id", controller.updateProject);
-app.put("/producten/:id", controller.updateProduct);
+app.put("/products/:id", controller.updateProduct);
 app.put("/users/:id", controller.updateUser);
 app.delete("/projects/:id", controller.deleteProject);
-app.delete("/producten/:id", controller.deleteProduct);
+app.delete("/products/:id", controller.deleteProduct);
 app.delete("/users/:id", controller.deleteUser);
 app.get("/auth/github", async (req, res) => {
   const code = req.query.code;

@@ -12,7 +12,7 @@ const getAllProjects = (req, res) => {
 };
 
 const getAllProducts = (req, res) => {
-  const query = "SELECT * FROM producten";
+  const query = "SELECT * FROM products";
 
   db.query(query, (err, results) => {
     if (err) {
@@ -66,12 +66,11 @@ const createProduct = (req, res) => {
   }
 
   const query = `
-        INSERT INTO producten (
+        INSERT INTO products (
             Leveringsadres, Datum_aanvraag, Aantal, Korte_omschrijving, Winkel, Artikelnummer, URL,
             Totale_kostprijs_excl_BTW, Aangevraagd_door, Aantal_dagen_levertijd, Goedgekeurd_door_coach,
             Bestelling_ingegeven_RQ_nummer, Bestelling_door_financ_dienst_geplaatst,
-            Bestelling_verzonden_verwachtte_aankomst, Bestelling_ontvangen_datum, Opmerkingen,
-            Totaalprijs_project, project_id
+            Bestelling_verzonden_verwachtte_aankomst, Bestelling_ontvangen_datum, Opmerkingen, project_id
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
   db.query(
@@ -124,7 +123,7 @@ const deleteProject = (req, res) => {
 const deleteProduct = (req, res) => {
   const { id } = req.params;
 
-  const query = "DELETE FROM producten WHERE ID = ?";
+  const query = "DELETE FROM products WHERE ID = ?";
 
   db.query(query, [id], (err, result) => {
     if (err) {
@@ -177,12 +176,11 @@ const updateProduct = (req, res) => {
     Bestelling_verzonden_verwachtte_aankomst,
     Bestelling_ontvangen_datum,
     Opmerkingen,
-    Totaalprijs_project,
     project_id,
   } = req.body;
 
   const query = `
-        UPDATE producten
+        UPDATE products
         SET Leveringsadres = ?, Datum_aanvraag = ?, Aantal = ?, Korte_omschrijving = ?, Winkel = ?, Artikelnummer = ?, URL = ?, 
                 Totale_kostprijs_excl_BTW = ?, Aangevraagd_door = ?, Aantal_dagen_levertijd = ?, Goedgekeurd_door_coach = ?,
                 Bestelling_ingegeven_RQ_nummer = ?, Bestelling_door_financ_dienst_geplaatst = ?, 
@@ -252,7 +250,6 @@ const createUser = (req, res) => {
 
       db.query(query, [username, displayname, role], (err, result) => {
         if (err) {
-          console.log(err);
           return res.status(500).json({ error: "Failed to create user" });
         }
         res
@@ -270,12 +267,7 @@ const getAllUsers = (req, res) => {
     if (err) {
       return res.status(500).json({ error: "Failed to retrieve users" });
     }
-    return res.status(200).json({
-      id: results[0].ID,
-      name: results[0].displayname,
-      role: results[0].role,
-      projects: results[0].project_ids,
-    });
+    return res.status(200).json(results);
   });
 };
 
@@ -298,7 +290,6 @@ const deleteUser = (req, res) => {
 const updateUser = (req, res) => {
   const { id } = req.params;
   const { username, displayname, role, projects } = req.body;
-  console.log(req.body);
 
   let fields = [];
   let values = [];

@@ -6,11 +6,11 @@ const Profile: React.FC = () => {
   const { user } = useUser();
 
   return (
-    <div className="profile">
+    <div className="profile-button profile">
       {user ? (
         <div>
-          Welkom, {user.name ? user.name : user.login} {user.id} {user.role}{" "}
-          {user.projects}!
+          Welkom, {user.name ? user.name : user.login}!
+          <img src={user.avatar_url} alt="Avatar" />
         </div>
       ) : (
         //<MicrosoftLoginButton />

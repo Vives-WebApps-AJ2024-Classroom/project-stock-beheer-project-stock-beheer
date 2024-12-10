@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import DataTable from "react-data-table-component";
 import ProjectSelectionPopup from "./ProjectSelectionPopup";
+import { name } from "@azure/msal-browser/dist/packageMetadata";
 
 interface User {
   id: number;
@@ -30,15 +31,18 @@ const UserTable: React.FC = () => {
     axios
       .get(`${backendUrl}/users`)
       .then((response) => {
-        console.log("Fetched users:", response.data);
-        const user = response.data;
-        const parsedUser = {
+        const parsedUsers = response.data.map((user: any) => ({
           ...user,
-          projects: user.projects
-            .split(",")
-            .map((projectId: string) => Number(projectId.trim())),
-        };
-        setUsers([parsedUser]);
+          id: user.ID,
+          name: user.displayname,
+          projects: user.project_ids
+            ? user.project_ids
+                .split(",")
+                .map((projectId: string) => Number(projectId.trim()))
+            : [],
+        }));
+        console.log("Fetched users:", parsedUsers);
+        setUsers(parsedUsers);
       })
       .catch((error) => {
         console.error("Error fetching users:", error);
@@ -72,7 +76,17 @@ const UserTable: React.FC = () => {
     },
     {
       name: "Role",
-      selector: (row: User) => row.role,
+      cell: (row: User) => (
+        <select
+          value={row.role}
+          onChange={(e) => handleRoleChange(row.id, e.target.value)}
+          defaultValue={row.role}
+        >
+          <option value="admin">admin</option>
+          <option value="teacher">teacher</option>
+          <option value="student">student</option>
+        </select>
+      ),
       sortable: true,
     },
     {
@@ -82,7 +96,7 @@ const UserTable: React.FC = () => {
           onClick={() => handleProjectClick(row)}
           style={{ cursor: "pointer", color: "blue" }}
         >
-          {row.projects.join(", ")}
+          {row.projects.length > 0 ? row.projects.join(", ") : "geen"}
         </div>
       ),
       sortable: false,
@@ -99,6 +113,23 @@ const UserTable: React.FC = () => {
   // Functie om de geselecteerde projecten bij te werken in de lokale state
   const handleCheckboxChange = (selectedProjectIds: number[]) => {
     setSelectedProjects(selectedProjectIds);
+  };
+
+  const handleRoleChange = (userId: number, newRole: string) => {
+    axios
+      .put(`${backendUrl}/users/${userId}`, {
+        role: newRole,
+      })
+      .then(() => {
+        setUsers((prevUsers) =>
+          prevUsers.map((user) =>
+            user.id === userId ? { ...user, role: newRole } : user
+          )
+        );
+      })
+      .catch((error) => {
+        console.error("Failed to update user role:", error);
+      });
   };
 
   // Functie om de geselecteerde projecten op te slaan in de server
@@ -132,7 +163,7 @@ const UserTable: React.FC = () => {
 
   return (
     <div>
-      <DataTable title="User List" columns={columns} data={users} />
+      <DataTable title="User List" columns={columns} data={users} pagination />
       {isPopupOpen && selectedUser && (
         <ProjectSelectionPopup
           projects={projects}

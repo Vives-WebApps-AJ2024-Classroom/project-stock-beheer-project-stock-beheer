@@ -11,6 +11,8 @@ const GitHubLoginButton = () => {
   const client_id =
     process.env.REACT_APP_GITHUB_CLIENT_ID || "Ov23li5gezrPiarupgQe";
   const adminLogin = process.env.REACT_APP_ADMIN_LOGIN || "imawizzard";
+  const redirectUrl =
+    process.env.REACT_APP_GITHUB_REDIRECT_URL || "http://localhost:3000";
 
   useEffect(() => {
     const code = new URLSearchParams(window.location.search).get("code");
@@ -76,8 +78,7 @@ const GitHubLoginButton = () => {
   }, [backendUrl, adminLogin, setUser]);
 
   const handleLogin = () => {
-    const redirectUri = "http://localhost:3000";
-    window.location.href = `https://github.com/login/oauth/authorize?client_id=${client_id}&redirect_uri=${redirectUri}`;
+    window.location.href = `https://github.com/login/oauth/authorize?client_id=${client_id}&redirect_uri=${redirectUrl}`;
   };
 
   return (

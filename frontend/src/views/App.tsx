@@ -4,11 +4,13 @@ import Topbar from "../components/Topbar";
 import Sidebar from "../components/Sidebar";
 import ProjectTable from "../components/ProjectTable";
 import UserTable from "../components/UserTable";
+import { useUser } from "../context/UserContext";
 
 const App: React.FC = () => {
   const [selectedProjectId, setSelectedProjectId] = useState<number>(0);
   const [isSidebarVisible, setIsSidebarVisible] = useState<boolean>(false);
   const [currentView, setCurrentView] = useState<string>("projects"); // Huidige weergave
+  const { user } = useUser();
 
   const handleProjectSelect = (projectId: number) => {
     setSelectedProjectId(projectId);
@@ -35,7 +37,9 @@ const App: React.FC = () => {
         {currentView === "projects" && (
           <ProjectTable selectedProjectId={selectedProjectId} />
         )}
-        {currentView === "users" && <UserTable />}
+        {currentView === "users" && user && user.role === "admin" && (
+          <UserTable />
+        )}
       </div>
     </div>
   );
