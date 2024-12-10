@@ -31,7 +31,8 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     const updateUser = async () => {
       if (!account) return;
 
-      const backendUrl = process.env.REACT_APP_BACKEND_URL;
+      const backendUrl =
+        process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
       console.log("getting users from backend", `${backendUrl}/users`);
       const users = await axios.get(`${backendUrl}/users`);
       console.log(account.name);

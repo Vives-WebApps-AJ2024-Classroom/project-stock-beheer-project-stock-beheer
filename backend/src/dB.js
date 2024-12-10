@@ -6,11 +6,11 @@ let connection;
 
 try {
   connection = mysql.createConnection({
-    password: process.env.MYSQL_PASSWORD,
-    user: process.env.MYSQL_USER,
-    host: "database",
-    port: "3306",
-    database: process.env.MYSQL_DATABASE,
+    password: process.env.MYSQL_PASSWORD || "root",
+    user: process.env.MYSQL_USER || "root",
+    host: process.env.MYSQL_HOST || "localhost",
+    port: process.env.MYSQL_PORT || "3306",
+    database: process.env.MYSQL_DATABASE || "Stock_Beheer",
     insecureAuth: true,
   });
 

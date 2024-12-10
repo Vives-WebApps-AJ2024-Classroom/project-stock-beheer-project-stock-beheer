@@ -1,16 +1,17 @@
 import React from "react";
-import { useAuth } from "../context/AuthContext"; // Importeer de useAuth hook7
-import MicrosoftLoginButton from "./MicrosoftLoginButton";
-import LoginButton from "./LoginButton";
 import GitHubLoginButton from "./GithubLoginButton";
+import { useUser } from "../context/UserContext";
 
 const Profile: React.FC = () => {
-  const { isAuthenticated, account } = useAuth(); // Haal isAuthenticated en account uit de context
+  const { user } = useUser();
 
   return (
     <div className="profile">
-      {isAuthenticated && account ? (
-        <div>Welkom, {account.name}!</div> // Weergave van de naam van het account
+      {user ? (
+        <div>
+          Welkom, {user.name ? user.name : user.login} {user.id} {user.role}{" "}
+          {user.projects}!
+        </div>
       ) : (
         //<MicrosoftLoginButton />
         <GitHubLoginButton />

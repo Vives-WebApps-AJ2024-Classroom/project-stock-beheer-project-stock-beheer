@@ -232,15 +232,34 @@ const createUser = (req, res) => {
       .status(400)
       .json({ error: "Username, displayname and role required" });
   }
-  const query =
-    "INSERT INTO users (username, displayname, role) VALUES (?, ?, ?)";
 
-  db.query(query, [username, displayname, role], (err, result) => {
+  const checkUserQuery = "SELECT * FROM users WHERE username = ?";
+  db.query(checkUserQuery, [username], (err, results) => {
     if (err) {
-      console.log(err);
-      return res.status(500).json({ error: "Failed to create user" });
+      return res.status(500).json({ error: "Failed to check user existence" });
     }
-    res.status(201).json({ id: result.insertId, username });
+    if (results.length > 0) {
+      return res.status(201).json({
+        id: results[0].ID,
+        role: results[0].role,
+        username: results[0].username,
+        displayname: results[0].displayname,
+        projects: results[0].project_ids,
+      });
+    } else {
+      const query =
+        "INSERT INTO users (username, displayname, role) VALUES (?, ?, ?)";
+
+      db.query(query, [username, displayname, role], (err, result) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({ error: "Failed to create user" });
+        }
+        res
+          .status(201)
+          .json({ id: result.insertId, role: role, username: username });
+      });
+    }
   });
 };
 
@@ -251,7 +270,7 @@ const getAllUsers = (req, res) => {
     if (err) {
       return res.status(500).json({ error: "Failed to retrieve users" });
     }
-    res.status(200).json(results);
+    return res.status(200).json(results);
   });
 };
 
@@ -321,7 +340,12 @@ const getUserById = (req, res) => {
     if (results.length === 0) {
       return res.status(404).json({ error: "User not found" });
     }
-    res.status(200).json(results[0]);
+    res.status(200).json({
+      id: results[0].id,
+      username: results[0].username,
+      displayname: results[0].displayname,
+      role: results[0].role,
+    });
   });
 };
 

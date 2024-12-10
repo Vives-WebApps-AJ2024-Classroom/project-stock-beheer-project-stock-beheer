@@ -1,33 +1,25 @@
 import React, { useEffect, useState } from "react";
 import "../Layout/Login.css";
 import axios from "axios";
+import { useUser } from "../context/UserContext";
 
 const GitHubLoginButton = () => {
-  const [accessToken, setAccessToken] = useState(null);
-  const [userId, setUserId] = useState<number | null>(null);
-  interface GitHubUser {
-    name?: string;
-    login: string;
-    avatar_url: string;
-  }
-
-  const [user, setUser] = useState<GitHubUser | null>(null);
-  const backendUrl = process.env.REACT_APP_BACKEND_URL;
-  const client_id = process.env.REACT_APP_GITHUB_CLIENT_ID;
-  const adminLogin = process.env.REACT_APP_ADMIN_LOGIN;
+  const { user, setUser } = useUser();
+  const [loading, setLoading] = useState(true); // Voeg een laadstatus toe
+  const backendUrl =
+    process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
+  const client_id =
+    process.env.REACT_APP_GITHUB_CLIENT_ID || "Ov23li5gezrPiarupgQe";
+  const adminLogin = process.env.REACT_APP_ADMIN_LOGIN || "imawizzard";
 
   useEffect(() => {
     const code = new URLSearchParams(window.location.search).get("code");
 
     if (code) {
-      // Verwerk de GitHub OAuth-code
       fetch(`${backendUrl}/auth/github?code=${code}`)
         .then((response) => response.json())
         .then((data) => {
           if (data.accessToken) {
-            setAccessToken(data.accessToken);
-
-            // Haal gebruikersinformatie op
             fetch("https://api.github.com/user", {
               headers: {
                 Authorization: `Bearer ${data.accessToken}`,
@@ -35,71 +27,62 @@ const GitHubLoginButton = () => {
             })
               .then((res) => res.json())
               .then(async (userData) => {
-                setUser(userData);
-                const users = await axios.get(`${backendUrl}/users`);
-                if (users.data.length !== 0) {
-                  console.log("users", users.data);
-                  console.log("userData", userData);
-                  const userExists = users.data.some(
-                    (u: any) => u.username === userData.login
-                  );
-                  if (userExists) {
-                    const existingUser = users.data.find(
-                      (u: any) => u.username === userData.login
-                    );
-                    setUserId(existingUser.ID);
+                try {
+                  if (userData.login) {
+                    const response = await axios.post(`${backendUrl}/users`, {
+                      username: userData.login,
+                      displayname: userData.name,
+                      role: "student",
+                    });
+
+                    const userWithId = {
+                      ...userData,
+                      login: response.data.username,
+                      name: response.data.displayname,
+                      role: response.data.role,
+                      id: response.data.id,
+                      projects: response.data.projects,
+                    };
+
+                    setUser(userWithId); // Stel gebruiker in
+
                     if (userData.login === adminLogin) {
                       await axios.put(
-                        `${backendUrl}/users/${existingUser.ID}`,
+                        `${backendUrl}/users/${response.data.id}`,
                         {
                           role: "admin",
                         }
                       );
                     }
-
-                    return;
                   }
+                } catch (error) {
+                  console.error(
+                    "Error tijdens ophalen of creëren van gebruiker:",
+                    error
+                  );
                 }
-                const newUser = await axios.post(`${backendUrl}/users`, {
-                  username: userData.login,
-                  displayname: userData.name,
-                  role: "student",
-                });
-                setUserId(newUser.data.ID);
               })
               .catch((error) =>
-                console.error("Error tijdens ophalen van gebruiker:", error)
+                console.error(
+                  "Error tijdens ophalen van GitHub-gebruiker:",
+                  error
+                )
               );
-
-            // Verwijder de 'code' uit de URL
             window.history.replaceState({}, document.title, "/");
           }
         })
         .catch((error) => console.error("Error tijdens login:", error));
     }
-  }, [backendUrl]);
+  }, [backendUrl, adminLogin, setUser]);
 
   const handleLogin = () => {
-    const redirectUri = "http://localhost";
+    const redirectUri = "http://localhost:3000";
     window.location.href = `https://github.com/login/oauth/authorize?client_id=${client_id}&redirect_uri=${redirectUri}`;
   };
 
   return (
     <div>
-      {!accessToken ? (
-        <button onClick={handleLogin}>Login</button>
-      ) : (
-        <div className="flex">
-          {user ? (
-            <>
-              <p>Welkom, {user.name || user.login}!</p>
-              <img src={user.avatar_url} alt="Avatar" width={40} />
-            </>
-          ) : (
-            <p>Gebruikersinformatie wordt geladen...</p>
-          )}
-        </div>
-      )}
+      <button onClick={handleLogin}>Login</button>
     </div>
   );
 };

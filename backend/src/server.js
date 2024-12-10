@@ -7,8 +7,10 @@ const url = process.env.BACKEND_URL || "http://localhost";
 const axios = require("axios");
 
 const controller = require("./controller");
-const clientId = process.env.GITHUB_CLIENT_ID;
-const clientSecret = process.env.GITHUB_CLIENT_SECRET;
+const clientId = process.env.GITHUB_CLIENT_ID || "Ov23li5gezrPiarupgQe";
+const clientSecret =
+  process.env.GITHUB_CLIENT_SECRET ||
+  "dfeeaa7e407eea89214c20b5eded066f33d6c779";
 
 app.use(
   cors({
