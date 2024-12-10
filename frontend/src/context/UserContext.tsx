@@ -6,7 +6,7 @@ interface User {
   avatar_url: string;
   role: string;
   id: number;
-  projects: any[];
+  projects: number[];
 }
 
 interface UserContextType {
