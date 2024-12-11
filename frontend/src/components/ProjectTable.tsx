@@ -194,7 +194,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
         <div title={row.Goedgekeurd.toString()}>
           {row.Goedgekeurd ? "Ja" : "Nee"}
         </div>
-      ),
+      )
     },
     {
       name: "Goedgekeurd door coach",
