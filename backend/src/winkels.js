@@ -1,4 +1,3 @@
-// winkels.js
 const db = require("./dB");
 
 const getAllWinkels = (req, res) => {

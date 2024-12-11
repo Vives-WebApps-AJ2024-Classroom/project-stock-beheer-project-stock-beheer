@@ -6,8 +6,10 @@ const port = process.env.BACKEND_PORT || 5000;
 const url = process.env.BACKEND_URL || "http://localhost";
 const axios = require("axios");
 
-const controller = require("./controller");
+const projectsController = require("./projects");
 const winkelsController = require("./winkels");
+const userController = require("./User");
+const productsController = require("./products");
 const clientId = process.env.GITHUB_CLIENT_ID || "Ov23li5gezrPiarupgQe";
 const clientSecret =
   process.env.GITHUB_CLIENT_SECRET ||
@@ -22,24 +24,24 @@ app.use(
 app.use(bodyParser.json());
 
 // Project-related routes
-app.get("/projects", controller.getAllProjects);
-app.get("/projects/:id/products", controller.getProductsByProjectId);
-app.post("/projects", controller.createProject);
-app.put("/projects/:id", controller.updateProject);
-app.delete("/projects/:id", controller.deleteProject);
+app.get("/projects", projectsController.getAllProjects);
+app.get("/projects/:id/products", projectsController.getProductsByProjectId);
+app.post("/projects", projectsController.createProject);
+app.put("/projects/:id", projectsController.updateProject);
+app.delete("/projects/:id", projectsController.deleteProject);
 
 // Product-related routes
-app.get("/products", controller.getAllProducts);
-app.post("/products", controller.createProduct);
-app.put("/products/:id", controller.updateProduct);
-app.delete("/products/:id", controller.deleteProduct);
+app.get("/products", productsController.getAllProducts);
+app.post("/products", productsController.createProduct);
+app.put("/products/:id", productsController.updateProduct);
+app.delete("/products/:id", productsController.deleteProduct);
 
 // User-related routes
-app.get("/users", controller.getAllUsers);
-app.get("/users/:id", controller.getUserById);
-app.post("/users", controller.createUser);
-app.put("/users/:id", controller.updateUser);
-app.delete("/users/:id", controller.deleteUser);
+app.get("/users", userController.getAllUsers);
+app.get("/users/:id", userController.getUserById);
+app.post("/users", userController.createUser);
+app.put("/users/:id", userController.updateUser);
+app.delete("/users/:id", userController.deleteUser);
 
 // Winkels-related routes
 app.get("/winkels", winkelsController.getAllWinkels);
