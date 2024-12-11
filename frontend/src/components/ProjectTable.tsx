@@ -129,6 +129,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
     status,
   }: UpdateStatusParams): Promise<void> => {
     try {
+      console.log("order", row);
       await axios.put(`${backendUrl}/products/${row.ID}`, {
         ...row,
         Status: status,
@@ -194,7 +195,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       sortable: true,
       cell: (row: Row) => (
         <div title={row.Leveringsadres}>{row.Leveringsadres}</div>
-      )
+      ),
     },
     {
       name: "Datum aanvraag",
@@ -206,15 +207,16 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
             day: "2-digit",
             month: "2-digit",
             year: "2-digit",
+            timeZone: "Europe/Brussels",
           })}
         </div>
-      )
+      ),
     },
     {
       name: "Aantal",
       selector: (row: Row) => row.Aantal,
       sortable: true,
-      cell: (row: Row) => <div title={row.Aantal.toString()}>{row.Aantal}</div>
+      cell: (row: Row) => <div title={row.Aantal.toString()}>{row.Aantal}</div>,
     },
     {
       name: "Korte omschrijving",
@@ -222,13 +224,13 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       sortable: true,
       cell: (row: Row) => (
         <div title={row.Korte_omschrijving}>{row.Korte_omschrijving}</div>
-      )
+      ),
     },
     {
       name: "Winkel",
       selector: (row: Row) => row.Winkel,
       sortable: true,
-      cell: (row: Row) => <div title={row.Winkel}>{row.Winkel}</div>
+      cell: (row: Row) => <div title={row.Winkel}>{row.Winkel}</div>,
     },
     {
       name: "Artikelnummer",
@@ -236,7 +238,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       sortable: true,
       cell: (row: Row) => (
         <div title={row.Artikelnummer}>{row.Artikelnummer}</div>
-      )
+      ),
     },
     {
       name: "URL",
@@ -248,7 +250,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
             Link
           </a>
         </div>
-      )
+      ),
     },
     {
       name: "Totale kostprijs excl. BTW",
@@ -258,7 +260,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
         <div title={row.Totale_kostprijs_excl_BTW.toString()}>
           {row.Totale_kostprijs_excl_BTW}
         </div>
-      )
+      ),
     },
     {
       name: "Aangevraagd door",
@@ -266,7 +268,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       sortable: true,
       cell: (row: Row) => (
         <div title={row.Aangevraagd_door}>{row.Aangevraagd_door}</div>
-      )
+      ),
     },
     {
       name: "Aantal dagen levertijd",
@@ -276,7 +278,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
         <div title={row.Aantal_dagen_levertijd.toString()}>
           {row.Aantal_dagen_levertijd}
         </div>
-      )
+      ),
     },
 
     {
@@ -287,7 +289,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
         <div title={row.Gekeurd_door_coach}>
           {row.Gekeurd_door_coach || "Niet beschikbaar"}
         </div>
-      )
+      ),
     },
     {
       name: "Bestelling ingegeven RQ nummer",
@@ -297,7 +299,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
         <div title={row.Bestelling_ingegeven_RQ_nummer}>
           {row.Bestelling_ingegeven_RQ_nummer || "Niet beschikbaar"}
         </div>
-      )
+      ),
     },
     {
       name: "Bestelling door financieel dienst geplaatst",
@@ -312,10 +314,11 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
                 day: "2-digit",
                 month: "2-digit",
                 year: "2-digit",
+                timeZone: "Europe/Brussels",
               })
             : "Niet beschikbaar"}
         </div>
-      )
+      ),
     },
     {
       name: "Bestelling verzonden (verwachte aankomst)",
@@ -330,10 +333,11 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
                 day: "2-digit",
                 month: "2-digit",
                 year: "2-digit",
+                timeZone: "Europe/Brussels",
               })
             : "Niet beschikbaar"}
         </div>
-      )
+      ),
     },
     {
       name: "Bestelling ontvangen datum",
@@ -346,17 +350,18 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
                 day: "2-digit",
                 month: "2-digit",
                 year: "2-digit",
+                timeZone: "Europe/Brussels",
               })
             : "Niet beschikbaar"}
         </div>
-      )
+      ),
     },
     {
       name: "Opmerkingen",
       selector: (row: Row) => row.Opmerkingen,
       sortable: true,
-      cell: (row: Row) => <div title={row.Opmerkingen}>{row.Opmerkingen}</div>
-    }
+      cell: (row: Row) => <div title={row.Opmerkingen}>{row.Opmerkingen}</div>,
+    },
   ];
 
   const handleOrderAdd = () => {
@@ -373,16 +378,15 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
         ...data,
         project_id: selectedProjectId,
         Leveringsadres: "Vives",
-        Datum_aanvraag: new Date().toISOString().slice(0, 19).replace("T", " "),
+        Datum_aanvraag: new Date().toISOString(),
         Aangevraagd_door: user?.name || user?.login || "Unknown",
         Status: "Afwachting", // Boolean veld correct ingesteld
         Gekeurd_door_coach: null, // Boolean veld correct ingesteld
         Bestelling_ingegeven_RQ_nummer: null, // Null voor optionele velden
         Bestelling_door_financ_dienst_geplaatst: false, // Boolean veld correct ingesteld
         Bestelling_verzonden_verwachtte_aankomst: null,
-        Bestelling_ontvangen_datum: null
+        Bestelling_ontvangen_datum: null,
       };
-
       await axios.post(`${backendUrl}/products`, newOrder);
       await fetchData(); // Zorgt dat nieuwe data direct geladen wordt
       setIsPopupOpen(false); // Sluit popup na succesvol opslaan
