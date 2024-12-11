@@ -14,7 +14,7 @@ interface TopbarProps {
 const Topbar: React.FC<TopbarProps> = ({
   onViewChange,
   onProjectsClick,
-  onLogoClick
+  onLogoClick,
 }) => {
   const { user } = useUser();
 
@@ -29,13 +29,17 @@ const Topbar: React.FC<TopbarProps> = ({
         />
       </div>
       <div className="topbar-buttons">
-        <button
-          onClick={() => {
-            onProjectsClick();
-          }}
-        >
-          Projects
-        </button>
+        {user && (
+          <>
+            <button
+              onClick={() => {
+                onProjectsClick();
+              }}
+            >
+              Projects
+            </button>
+          </>
+        )}
         {user && user.role === "admin" && (
           <>
             <button onClick={() => onViewChange("winkels")}>Winkels</button>
