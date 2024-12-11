@@ -28,4 +28,46 @@
 
 .rdt_TableRow {
   height: 70px;
+  white-space: normal;
+  word-wrap: break-word;
+  line-height: 1.5;
+  padding: 10px; /* Optioneel, voor meer ruimte */
+}
+
+.status-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transform: translateX(-15px);
+  width: 100%;
+}
+
+.status i {
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  height: 10px;
+  margin: 1px;
+  width: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.fa-check {
+  background-color: #008e00;
+}
+
+.fa-clock {
+  background-color: gray;
+}
+
+.fa-times {
+  background-color: var(--vives-rood);
+}
+
+.status-buttons .active {
+  border: 3px solid var(--vives-zwart);
 }

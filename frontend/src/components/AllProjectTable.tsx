@@ -3,6 +3,7 @@ import DataTable from "react-data-table-component";
 import "../Layout/Table.css";
 
 interface Row {
+  ID: number;
   Leveringsadres: string;
   Datum_aanvraag: string;
   Aantal: number;
@@ -21,7 +22,6 @@ interface Row {
   Bestelling_ontvangen_datum: string;
   Opmerkingen: string;
   project_id: number;
-  project_naam: string; // Voor projectnamen
 }
 
 function AllProjectsTable() {
@@ -70,9 +70,11 @@ function AllProjectsTable() {
       sortable: true,
       cell: (row: Row) => (
         <div>
-          {/* Toon de huidige status als tekst */}
-          <div title={row.Status.toString()}>
-            {row.Status || "Nog niet beoordeeld"}
+          <div title={row.Status.toString()} className="status">
+            {row.Status === "Afwachting" && <i className="fa-solid fa-clock" />}
+            {row.Status === "Gekeurd" && <i className="fas fa-check" />}
+            {row.Status === "Afgekeurd" && <i className="fas fa-times" />}
+            {!row.Status && <span>Nog niet beoordeeld</span>}
           </div>
         </div>
       ),
@@ -82,7 +84,7 @@ function AllProjectsTable() {
       selector: (row: Row) => row.Leveringsadres,
       sortable: true,
       cell: (row: Row) => (
-        <div className="data-table-cell" title={row.Leveringsadres}>{row.Leveringsadres}</div>
+        <div title={row.Leveringsadres}>{row.Leveringsadres}</div>
       ),
     },
     {
@@ -90,7 +92,7 @@ function AllProjectsTable() {
       selector: (row: Row) => row.Datum_aanvraag,
       sortable: true,
       cell: (row: Row) => (
-        <div className="data-table-cell" title={row.Datum_aanvraag}>
+        <div title={row.Datum_aanvraag}>
           {new Date(row.Datum_aanvraag).toLocaleString("nl-NL", {
             day: "2-digit",
             month: "2-digit",
@@ -103,28 +105,28 @@ function AllProjectsTable() {
       name: "Aantal",
       selector: (row: Row) => row.Aantal,
       sortable: true,
-      cell: (row: Row) => <div className="data-table-cell" title={row.Aantal.toString()}>{row.Aantal}</div>,
+      cell: (row: Row) => <div title={row.Aantal.toString()}>{row.Aantal}</div>,
     },
     {
       name: "Korte omschrijving",
       selector: (row: Row) => row.Korte_omschrijving,
       sortable: true,
       cell: (row: Row) => (
-        <div className="data-table-cell" title={row.Korte_omschrijving}>{row.Korte_omschrijving}</div>
+        <div title={row.Korte_omschrijving}>{row.Korte_omschrijving}</div>
       ),
     },
     {
       name: "Winkel",
       selector: (row: Row) => row.Winkel,
       sortable: true,
-      cell: (row: Row) => <div className="data-table-cell" title={row.Winkel}>{row.Winkel}</div>,
+      cell: (row: Row) => <div title={row.Winkel}>{row.Winkel}</div>,
     },
     {
       name: "Artikelnummer",
       selector: (row: Row) => row.Artikelnummer,
       sortable: true,
       cell: (row: Row) => (
-        <div className="data-table-cell" title={row.Artikelnummer}>{row.Artikelnummer}</div>
+        <div title={row.Artikelnummer}>{row.Artikelnummer}</div>
       ),
     },
     {
@@ -132,7 +134,7 @@ function AllProjectsTable() {
       selector: (row: Row) => row.URL,
       sortable: true,
       cell: (row: Row) => (
-        <div className="data-table-cell" title={row.URL}>
+        <div title={row.URL}>
           <a href={row.URL} target="_blank" rel="noopener noreferrer">
             Link
           </a>
@@ -144,7 +146,7 @@ function AllProjectsTable() {
       selector: (row: Row) => row.Totale_kostprijs_excl_BTW,
       sortable: true,
       cell: (row: Row) => (
-        <div className="data-table-cell" title={row.Totale_kostprijs_excl_BTW.toString()}>
+        <div title={row.Totale_kostprijs_excl_BTW.toString()}>
           {row.Totale_kostprijs_excl_BTW}
         </div>
       ),
@@ -154,7 +156,7 @@ function AllProjectsTable() {
       selector: (row: Row) => row.Aangevraagd_door,
       sortable: true,
       cell: (row: Row) => (
-        <div className="data-table-cell" title={row.Aangevraagd_door}>{row.Aangevraagd_door}</div>
+        <div title={row.Aangevraagd_door}>{row.Aangevraagd_door}</div>
       ),
     },
     {
@@ -162,7 +164,7 @@ function AllProjectsTable() {
       selector: (row: Row) => row.Aantal_dagen_levertijd,
       sortable: true,
       cell: (row: Row) => (
-        <div className="data-table-cell" title={row.Aantal_dagen_levertijd.toString()}>
+        <div title={row.Aantal_dagen_levertijd.toString()}>
           {row.Aantal_dagen_levertijd}
         </div>
       ),
@@ -244,7 +246,7 @@ function AllProjectsTable() {
       name: "Opmerkingen",
       selector: (row: Row) => row.Opmerkingen,
       sortable: true,
-      cell: (row: Row) => <div className="data-table-cell" title={row.Opmerkingen}>{row.Opmerkingen}</div>,
+      cell: (row: Row) => <div title={row.Opmerkingen}>{row.Opmerkingen}</div>,
     },
   ];
 

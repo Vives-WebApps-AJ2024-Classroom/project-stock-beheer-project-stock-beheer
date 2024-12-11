@@ -62,18 +62,18 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
         ...product,
         Datum_aanvraag: product.Datum_aanvraag
           ? product.Datum_aanvraag.split("T")[0]
-          : "",
+          : null,
         Bestelling_door_financ_dienst_geplaatst:
           product.Bestelling_door_financ_dienst_geplaatst
             ? product.Bestelling_door_financ_dienst_geplaatst.split("T")[0]
-            : "",
+            : null,
         Bestelling_verzonden_verwachtte_aankomst:
           product.Bestelling_verzonden_verwachtte_aankomst
             ? product.Bestelling_verzonden_verwachtte_aankomst.split("T")[0]
-            : "",
+            : null,
         Bestelling_ontvangen_datum: product.Bestelling_ontvangen_datum
           ? product.Bestelling_ontvangen_datum.split("T")[0]
-          : "",
+          : null,
       }));
       let totalCost = 0;
       formattedData.forEach((item: Row) => {
@@ -119,6 +119,30 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
     }
   }, [selectedProjectId, backendUrl]);
 
+  interface UpdateStatusParams {
+    row: Row;
+    status: string;
+  }
+
+  const updateStatus = async ({
+    row,
+    status,
+  }: UpdateStatusParams): Promise<void> => {
+    try {
+      await axios.put(`${backendUrl}/products/${row.ID}`, {
+        ...row,
+        Status: status,
+        Gekeurd_door_coach: user?.name || user?.login || "Unknown",
+      });
+      fetchData();
+    } catch (error) {
+      console.error(`Error updating status to ${status}:`, error);
+      alert(
+        `Er is een fout opgetreden bij het wijzigen van de status naar ${status}.`
+      );
+    }
+  };
+
   const columns = [
     {
       name: "Status",
@@ -126,46 +150,40 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       sortable: true,
       cell: (row: Row) => (
         <div>
-          {/* Toon de huidige status als tekst */}
-          <div title={row.Status.toString()}>
-            {row.Status || "Nog niet beoordeeld"}
-          </div>
-
+          {user?.role === "student" && (
+            <div title={row.Status.toString()} className="status">
+              {row.Status === "Afwachting" && (
+                <i className="fa-solid fa-clock" />
+              )}
+              {row.Status === "Gekeurd" && <i className="fas fa-check" />}
+              {row.Status === "Afgekeurd" && <i className="fas fa-times" />}
+              {!row.Status && <span>Nog niet beoordeeld</span>}
+            </div>
+          )}
           {(user?.role === "teacher" || user?.role === "admin") && (
-            <select
-              style={{ marginTop: "10px" }}
-              onChange={async (e) => {
-                const newStatus = e.target.value;
-                if (newStatus) {
-                  try {
-                    await axios.put(`${backendUrl}/products/${row.ID}`, {
-                      ...row,
-                      Status: newStatus,
-                      Gekeurd_door_coach: user.name || user.login || "Unknown",
-                    });
-                    fetchData(); // Verfris de gegevens
-                  } catch (error) {
-                    console.error(
-                      `Error updating order status to ${newStatus}:`,
-                      error
-                    );
-                    alert(
-                      `Er is een fout opgetreden bij het ${
-                        newStatus === "Gekeurd" ? "goedkeuren" : "afkeuren"
-                      } van de bestelling. Probeer opnieuw.`
-                    );
-                  }
-                }
-              }}
-              className="form-select"
-              defaultValue=""
-            >
-              <option value="" disabled>
-                Selecteer actie
-              </option>
-              <option value="Gekeurd">Goedkeuren</option>
-              <option value="Afgekeurd">Afkeuren</option>
-            </select>
+            <div className="status-buttons status">
+              <i
+                className={`fa-solid fa-clock ${
+                  row.Status === "Afwachting" ? "active" : ""
+                }`}
+                style={{ cursor: "pointer" }}
+                onClick={() => updateStatus({ row, status: "Afwachting" })}
+              />
+              <i
+                className={`fas fa-check ${
+                  row.Status === "Gekeurd" ? "active" : ""
+                }`}
+                style={{ cursor: "pointer" }}
+                onClick={() => updateStatus({ row, status: "Gekeurd" })}
+              />
+              <i
+                className={`fas fa-times ${
+                  row.Status === "Afgekeurd" ? "active" : ""
+                }`}
+                style={{ cursor: "pointer" }}
+                onClick={() => updateStatus({ row, status: "Afgekeurd" })}
+              />
+            </div>
           )}
         </div>
       ),
