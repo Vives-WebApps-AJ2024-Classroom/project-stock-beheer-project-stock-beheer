@@ -22,9 +22,18 @@ const GitHubLoginButton = () => {
           Authorization: `Bearer ${accessToken}`,
         },
       })
-        .then((res) => res.json())
+        .catch((error) => {
+          localStorage.removeItem("githubAccessToken");
+        })
+        .then((res) => {
+          if (!res || !res.ok) {
+            throw new Error("Failed to fetch user data");
+          }
+          return res.json();
+        })
         .then(async (userData) => {
           try {
+            console.log("GitHub user data:", userData);
             if (userData.login) {
               const response = await axios.post(`${backendUrl}/users`, {
                 username: userData.login,
@@ -62,7 +71,6 @@ const GitHubLoginButton = () => {
     } else {
       // Als er geen token is, ga verder met de normale flow
       const code = new URLSearchParams(window.location.search).get("code");
-
       if (code) {
         fetch(`${backendUrl}/auth/github?code=${code}`)
           .then((response) => response.json())

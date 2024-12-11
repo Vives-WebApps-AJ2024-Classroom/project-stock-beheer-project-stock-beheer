@@ -27,6 +27,7 @@ function AllProjectsTable() {
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [totaleKost, setTotaleKost] = useState<number>(0);
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const backendUrl =
     process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
 
@@ -54,12 +55,23 @@ function AllProjectsTable() {
     fetchData();
   }, [backendUrl]);
 
+  // Filteren van de rows op basis van de zoekterm
+  const filteredRows = rows.filter((row) => {
+    return (
+      row.project_naam.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      row.Leveringsadres.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      row.Korte_omschrijving.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      row.Winkel.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      row.Artikelnummer.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
+
   const columns = [
     {
-        name: "Project",
-        selector: (row: Row) => row.project_naam,
-        sortable: true,
-        cell: (row: Row) => <div title={row.project_naam}>{row.project_naam}</div>
+      name: "Project",
+      selector: (row: Row) => row.project_naam,
+      sortable: true,
+      cell: (row: Row) => <div title={row.project_naam}>{row.project_naam}</div>,
     },
     {
       name: "Leveringsadres",
@@ -245,9 +257,25 @@ function AllProjectsTable() {
             <h5>Totale kostprijs excl. BTW:</h5>
             <h2>€{totaleKost}</h2>
           </div>
+
+          {/* Zoekveld voor filteren */}
+          <input
+            type="text"
+            placeholder="Zoek op project, leveringsadres, omschrijving..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={{
+              marginBottom: "20px",
+              padding: "8px",
+              width: "100%",
+              maxWidth: "500px",
+            }}
+          />
+
+          {/* Tabelweergave */}
           <DataTable
             columns={columns}
-            data={rows}
+            data={filteredRows} // Toon alleen gefilterde rijen
             pagination
             fixedHeader
             title="Alle bestellingen"

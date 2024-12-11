@@ -1,14 +1,24 @@
 const db = require("./dB");
 
 const getAllProducts = (req, res) => {
-  const query = "SELECT * FROM products";
+  const query = `
+    SELECT 
+      products.*, 
+      projects.project_naam
+    FROM 
+      products
+    INNER JOIN 
+      projects ON products.project_id = projects.id
+  `;
+  
   db.query(query, (err, results) => {
     if (err) {
       return res.status(500).json({ error: "Failed to retrieve products" });
     }
-    res.status(200).json(results);
+    res.status(200).json(results); // Voeg de project_naam toe aan de response
   });
 };
+
 
 const createProduct = (req, res) => {
   const {
@@ -89,7 +99,7 @@ const createProduct = (req, res) => {
 };
 
 const updateProduct = (req, res) => {
-  const { id } = req.params;
+  const { ID } = req.params;
   const {
     Leveringsadres,
     Datum_aanvraag,
@@ -110,6 +120,8 @@ const updateProduct = (req, res) => {
     Opmerkingen,
     project_id,
   } = req.body;
+
+  console.log("Request body:", req.body);
 
   const query = `
         UPDATE products
@@ -141,11 +153,11 @@ const updateProduct = (req, res) => {
       Bestelling_ontvangen_datum,
       Opmerkingen,
       project_id,
-      id,
+      ID,
     ],
     (err, result) => {
       if (err) {
-        return res.status(500).json({ error: "Failed to update product" });
+        return res.status(500).json({ error: "Failed to update product", err });
       }
       if (result.affectedRows === 0) {
         return res.status(404).json({ error: "Product not found" });

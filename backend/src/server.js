@@ -17,7 +17,7 @@ const clientSecret =
 
 app.use(
   cors({
-    origin: "*"
+    origin: "*",
   })
 );
 
@@ -57,10 +57,10 @@ app.get("/auth/github", async (req, res) => {
     {
       client_id: clientId,
       client_secret: clientSecret,
-      code
+      code,
     },
     {
-      headers: { Accept: "application/json" }
+      headers: { Accept: "application/json" },
     }
   );
 
