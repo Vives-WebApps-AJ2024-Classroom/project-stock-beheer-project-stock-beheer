@@ -6,8 +6,7 @@
   font-family: "Arial", sans-serif;
   background-color: #f7f7f7;
   border-radius: 8px;
-  width: 100%; /* Zorgt ervoor dat de container niet de volledige breedte van het scherm gebruikt */
-  max-width: 1300px; /* Beperk de breedte zodat de tabel niet te groot wordt */
+  width: 90%; /* Zorgt ervoor dat de container niet de volledige breedte van het scherm gebruikt */ /* Beperk de breedte zodat de tabel niet te groot wordt */
 }
 
 .TableTitle {
