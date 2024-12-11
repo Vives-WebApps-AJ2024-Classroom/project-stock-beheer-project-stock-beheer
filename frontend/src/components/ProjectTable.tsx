@@ -16,6 +16,7 @@ interface Row {
   Totale_kostprijs_excl_BTW: number;
   Aangevraagd_door: string;
   Aantal_dagen_levertijd: number;
+  Goedgekeurd: boolean;
   Goedgekeurd_door_coach: string;
   Bestelling_ingegeven_RQ_nummer: string;
   Bestelling_door_financ_dienst_geplaatst: string;
@@ -186,6 +187,16 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       ),
     },
     {
+      name: "Goedgekeurd",
+      selector: (row: Row) => row.Goedgekeurd,
+      sortable: true,
+      cell: (row: Row) => (
+        <div title={row.Goedgekeurd.toString()}>
+          {row.Goedgekeurd ? "Ja" : "Nee"}
+        </div>
+      ),
+    },
+    {
       name: "Goedgekeurd door coach",
       selector: (row: Row) => row.Goedgekeurd_door_coach,
       sortable: true,
@@ -282,7 +293,8 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
         Leveringsadres: "Vives",
         Datum_aanvraag: new Date().toISOString().slice(0, 19).replace("T", " "),
         Aangevraagd_door: user?.name || user?.login || "Unknown",
-        Goedgekeurd_door_coach: false, // Boolean veld correct ingesteld
+        Goedgekeurd: false, // Boolean veld correct ingesteld
+        Goedgekeurd_door_coach: null, // Boolean veld correct ingesteld
         Bestelling_ingegeven_RQ_nummer: null, // Null voor optionele velden
         Bestelling_door_financ_dienst_geplaatst: false, // Boolean veld correct ingesteld
         Bestelling_verzonden_verwachtte_aankomst: null,
