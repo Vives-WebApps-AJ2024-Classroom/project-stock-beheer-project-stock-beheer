@@ -6,6 +6,7 @@ import { useUser } from "../context/UserContext";
 import axios from "axios";
 
 interface Row {
+  ID: number;
   Leveringsadres: string;
   Datum_aanvraag: string;
   Aantal: number;
@@ -35,6 +36,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
     id: number;
     project_naam: string;
   }
+
   const [totaleKost, setTotaleKost] = useState<number>(0);
   const [project, setProject] = useState<Project | null>(null);
   const backendUrl =
@@ -100,7 +102,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       sortable: true,
       cell: (row: Row) => (
         <div title={row.Leveringsadres}>{row.Leveringsadres}</div>
-      )
+      ),
     },
     {
       name: "Datum aanvraag",
@@ -113,16 +115,16 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
             month: "2-digit",
             year: "2-digit",
             hour: "2-digit",
-            minute: "2-digit"
+            minute: "2-digit",
           })}
         </div>
-      )
+      ),
     },
     {
       name: "Aantal",
       selector: (row: Row) => row.Aantal,
       sortable: true,
-      cell: (row: Row) => <div title={row.Aantal.toString()}>{row.Aantal}</div>
+      cell: (row: Row) => <div title={row.Aantal.toString()}>{row.Aantal}</div>,
     },
     {
       name: "Korte omschrijving",
@@ -130,13 +132,13 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       sortable: true,
       cell: (row: Row) => (
         <div title={row.Korte_omschrijving}>{row.Korte_omschrijving}</div>
-      )
+      ),
     },
     {
       name: "Winkel",
       selector: (row: Row) => row.Winkel,
       sortable: true,
-      cell: (row: Row) => <div title={row.Winkel}>{row.Winkel}</div>
+      cell: (row: Row) => <div title={row.Winkel}>{row.Winkel}</div>,
     },
     {
       name: "Artikelnummer",
@@ -144,7 +146,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       sortable: true,
       cell: (row: Row) => (
         <div title={row.Artikelnummer}>{row.Artikelnummer}</div>
-      )
+      ),
     },
     {
       name: "URL",
@@ -156,7 +158,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
             Link
           </a>
         </div>
-      )
+      ),
     },
     {
       name: "Totale kostprijs excl. BTW",
@@ -166,7 +168,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
         <div title={row.Totale_kostprijs_excl_BTW.toString()}>
           {row.Totale_kostprijs_excl_BTW}
         </div>
-      )
+      ),
     },
     {
       name: "Aangevraagd door",
@@ -174,7 +176,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       sortable: true,
       cell: (row: Row) => (
         <div title={row.Aangevraagd_door}>{row.Aangevraagd_door}</div>
-      )
+      ),
     },
     {
       name: "Aantal dagen levertijd",
@@ -184,18 +186,48 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
         <div title={row.Aantal_dagen_levertijd.toString()}>
           {row.Aantal_dagen_levertijd}
         </div>
-      )
+      ),
     },
     {
       name: "Goedgekeurd",
       selector: (row: Row) => row.Goedgekeurd,
       sortable: true,
       cell: (row: Row) => (
-        <div title={row.Goedgekeurd.toString()}>
-          {row.Goedgekeurd ? "Ja" : "Nee"}
+        <div>
+          {/* Toon de goedkeurd-status voor iedereen */}
+          <div title={row.Goedgekeurd.toString()}>
+            {row.Goedgekeurd ? "Ja" : "Nee"}
+          </div>
+
+          {/* Als de gebruiker een teacher of admin is en de bestelling nog niet goedgekeurd is, toon de goedkeurknop */}
+          {(user?.role === "teacher" || user?.role === "admin") &&
+            !row.Goedgekeurd && (
+              <button
+                onClick={async () => {
+                  try {
+                    await axios.put(`${backendUrl}/products/${row.ID}`, {
+                      ...row,
+                      Goedgekeurd: true,
+                      Goedgekeurd_door_coach:
+                        user.name || user.login || "Unknown",
+                    });
+                    fetchData(); // Verfris de gegevens na goedkeuren
+                  } catch (error) {
+                    console.error("Error approving order:", error);
+                    alert(
+                      "Er is een fout opgetreden bij het goedkeuren van de bestelling. Probeer opnieuw."
+                    );
+                  }
+                }}
+                className="btn btn-success"
+              >
+                Goedkeuren
+              </button>
+            )}
         </div>
       ),
     },
+
     {
       name: "Goedgekeurd door coach",
       selector: (row: Row) => row.Goedgekeurd_door_coach,
@@ -204,7 +236,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
         <div title={row.Goedgekeurd_door_coach}>
           {row.Goedgekeurd_door_coach}
         </div>
-      )
+      ),
     },
     {
       name: "Bestelling ingegeven RQ nummer",
@@ -214,7 +246,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
         <div title={row.Bestelling_ingegeven_RQ_nummer}>
           {row.Bestelling_ingegeven_RQ_nummer}
         </div>
-      )
+      ),
     },
     {
       name: "Bestelling door financieel dienst geplaatst",
@@ -229,11 +261,11 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
               month: "2-digit",
               year: "2-digit",
               hour: "2-digit",
-              minute: "2-digit"
+              minute: "2-digit",
             }
           )}
         </div>
-      )
+      ),
     },
     {
       name: "Bestelling verzonden (verwachte aankomst)",
@@ -248,10 +280,10 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
             month: "2-digit",
             year: "2-digit",
             hour: "2-digit",
-            minute: "2-digit"
+            minute: "2-digit",
           })}
         </div>
-      )
+      ),
     },
     {
       name: "Bestelling ontvangen datum",
@@ -264,17 +296,17 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
             month: "2-digit",
             year: "2-digit",
             hour: "2-digit",
-            minute: "2-digit"
+            minute: "2-digit",
           })}
         </div>
-      )
+      ),
     },
     {
       name: "Opmerkingen",
       selector: (row: Row) => row.Opmerkingen,
       sortable: true,
-      cell: (row: Row) => <div title={row.Opmerkingen}>{row.Opmerkingen}</div>
-    }
+      cell: (row: Row) => <div title={row.Opmerkingen}>{row.Opmerkingen}</div>,
+    },
   ];
 
   const handleOrderAdd = () => {
@@ -298,7 +330,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
         Bestelling_ingegeven_RQ_nummer: null, // Null voor optionele velden
         Bestelling_door_financ_dienst_geplaatst: false, // Boolean veld correct ingesteld
         Bestelling_verzonden_verwachtte_aankomst: null,
-        Bestelling_ontvangen_datum: null
+        Bestelling_ontvangen_datum: null,
       };
 
       await axios.post(`${backendUrl}/products`, newOrder);

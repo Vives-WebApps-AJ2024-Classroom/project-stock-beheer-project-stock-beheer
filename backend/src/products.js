@@ -89,7 +89,7 @@ const createProduct = (req, res) => {
 };
 
 const updateProduct = (req, res) => {
-  const { id } = req.params;
+  const { ID } = req.params;
   const {
     Leveringsadres,
     Datum_aanvraag,
@@ -110,6 +110,8 @@ const updateProduct = (req, res) => {
     Opmerkingen,
     project_id,
   } = req.body;
+
+  console.log("Request body:", req.body);
 
   const query = `
         UPDATE products
@@ -141,11 +143,11 @@ const updateProduct = (req, res) => {
       Bestelling_ontvangen_datum,
       Opmerkingen,
       project_id,
-      id,
+      ID,
     ],
     (err, result) => {
       if (err) {
-        return res.status(500).json({ error: "Failed to update product" });
+        return res.status(500).json({ error: "Failed to update product", err });
       }
       if (result.affectedRows === 0) {
         return res.status(404).json({ error: "Product not found" });
