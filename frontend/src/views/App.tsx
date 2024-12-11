@@ -4,6 +4,7 @@ import Topbar from "../components/Topbar";
 import Sidebar from "../components/Sidebar";
 import ProjectTable from "../components/ProjectTable";
 import UserTable from "../components/UserTable";
+import WinkelTable from "../components/WinkelTabel";
 import { useUser } from "../context/UserContext";
 
 const App: React.FC = () => {
@@ -39,6 +40,9 @@ const App: React.FC = () => {
         )}
         {currentView === "users" && user && user.role === "admin" && (
           <UserTable />
+        )}
+        {currentView === "winkels" && user && user.role === "admin" && (
+          <WinkelTable />
         )}
       </div>
     </div>
