@@ -33,7 +33,7 @@ const WinkelTable: React.FC = () => {
     {
       name: "Naam",
       selector: (row: Winkel) => row.naam,
-      sortable: true
+      sortable: true,
     },
     {
       name: "Link",
@@ -42,8 +42,8 @@ const WinkelTable: React.FC = () => {
           {row.link}
         </a>
       ),
-      sortable: false
-    }
+      sortable: false,
+    },
   ];
 
   // Functie voor het toevoegen van een nieuwe winkel
@@ -67,7 +67,6 @@ const WinkelTable: React.FC = () => {
 
   return (
     <div>
-      <h2>Winkels</h2>
       <div className="container my-5">
         <div style={{ marginBottom: "20px" }}>
           <h3>Voeg een nieuwe winkel toe</h3>
