@@ -109,7 +109,9 @@ const AddOrder: React.FC<AddOrderProps> = ({ onClose, onSave }) => {
                   className="form-input"
                   required
                 >
-                  <option value="">Selecteer een winkel</option>
+                  <option value="" disabled hidden>
+                    Selecteer winkel
+                  </option>
                   {winkels.map((winkel) => (
                     <option key={winkel.ID} value={winkel.naam}>
                       {winkel.naam}
