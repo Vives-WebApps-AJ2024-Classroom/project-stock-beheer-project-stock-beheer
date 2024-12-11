@@ -104,6 +104,8 @@
   border-radius: 5px;
   outline: none;
   transition: border-color 0.3s ease;
+  width: 260px; /* Zorgt ervoor dat de velden de volledige breedte van hun container innemen */
+  box-sizing: border-box; /* Zorgt ervoor dat padding en border niet de breedte beïnvloeden */
 }
 
 .form-input:focus {

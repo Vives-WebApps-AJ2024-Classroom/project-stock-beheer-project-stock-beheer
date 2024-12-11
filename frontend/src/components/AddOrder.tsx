@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
 
 interface AddOrderProps {
   onClose: () => void;
@@ -27,6 +27,28 @@ const AddOrder: React.FC<AddOrderProps> = ({ onClose, onSave }) => {
     Aantal_dagen_levertijd: "0",
     Opmerkingen: "",
   });
+  const backendUrl =
+    process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
+
+  const [winkels, setWinkels] = useState<
+    { ID: number; naam: string; link: string }[]
+  >([]);
+
+  // Haal de lijst van winkels op bij het laden van de component
+  useEffect(() => {
+    const fetchWinkels = async () => {
+      try {
+        const response = await fetch(`${backendUrl}/winkels`);
+        const data = await response.json();
+        console.log("Fetched winkels:", data);
+        setWinkels(data); // Stel de winkel lijst in
+      } catch (error) {
+        console.error("Error fetching winkels:", error);
+      }
+    };
+
+    fetchWinkels();
+  }, [backendUrl]);
 
   const validateForm = (): boolean => {
     if (!orderFormData.Korte_omschrijving.trim()) {
@@ -51,7 +73,9 @@ const AddOrder: React.FC<AddOrderProps> = ({ onClose, onSave }) => {
     return true;
   };
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setOrderFormData((prev) => ({
       ...prev,
@@ -75,21 +99,42 @@ const AddOrder: React.FC<AddOrderProps> = ({ onClose, onSave }) => {
           {Object.keys(orderFormData).map((key) => (
             <div key={key} className="form-group">
               <label htmlFor={key}>{key.replace(/_/g, " ")}:</label>
-              <input
-                type={
-                  key === "URL"
-                    ? "url"
-                    : key.includes("Aantal") || key.includes("Totale_kostprijs")
-                    ? "number"
-                    : "text"
-                }
-                id={key}
-                name={key}
-                value={(orderFormData as any)[key]}
-                onChange={handleChange}
-                className="form-input"
-                required={key !== "URL" && key !== "Opmerkingen"}
-              />
+              {key === "Winkel" ? (
+                // Dropdown voor Winkel
+                <select
+                  id={key}
+                  name={key}
+                  value={orderFormData[key as keyof OrderFormData]}
+                  onChange={handleChange}
+                  className="form-input"
+                  required
+                >
+                  <option value="">Selecteer een winkel</option>
+                  {winkels.map((winkel) => (
+                    <option key={winkel.ID} value={winkel.naam}>
+                      {winkel.naam}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                // Andere invoervelden
+                <input
+                  type={
+                    key === "URL"
+                      ? "url"
+                      : key.includes("Aantal") ||
+                        key.includes("Totale_kostprijs")
+                      ? "number"
+                      : "text"
+                  }
+                  id={key}
+                  name={key}
+                  value={(orderFormData as any)[key]}
+                  onChange={handleChange}
+                  className="form-input"
+                  required={key !== "URL" && key !== "Opmerkingen"}
+                />
+              )}
             </div>
           ))}
           <div className="popup-actions">
