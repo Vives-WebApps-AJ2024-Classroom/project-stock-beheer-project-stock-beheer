@@ -24,8 +24,8 @@ const GitHubLoginButton = () => {
           if (data.accessToken) {
             fetch("https://api.github.com/user", {
               headers: {
-                Authorization: `Bearer ${data.accessToken}`,
-              },
+                Authorization: `Bearer ${data.accessToken}`
+              }
             })
               .then((res) => res.json())
               .then(async (userData) => {
@@ -43,7 +43,7 @@ const GitHubLoginButton = () => {
                       name: response.data.displayname,
                       role: response.data.role,
                       id: response.data.id,
-                      projects: response.data.projects,
+                      projects: response.data.projects
                     };
 
                     setUser(userWithId); // Stel gebruiker in
@@ -52,7 +52,7 @@ const GitHubLoginButton = () => {
                       await axios.put(
                         `${backendUrl}/users/${response.data.id}`,
                         {
-                          role: "admin",
+                          role: "admin"
                         }
                       );
                     }
