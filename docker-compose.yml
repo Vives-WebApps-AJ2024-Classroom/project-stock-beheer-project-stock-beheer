@@ -14,6 +14,7 @@ services:
       args:
         BACKEND_URL: "${BACKEND_URL}:${BACKEND_PORT}"
         GITHUB_CLIENT_ID: "${GITHUB_CLIENT_ID}"
+        GITHUB_REDIRECT_URL: "${GITHUB_REDIRECT_URL}"
         ADMIN_LOGIN: "${ADMIN_LOGIN}"
     restart: always
     env_file:

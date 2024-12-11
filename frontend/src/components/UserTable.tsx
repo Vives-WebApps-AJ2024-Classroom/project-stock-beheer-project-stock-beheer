@@ -135,10 +135,12 @@ const UserTable: React.FC = () => {
   // Functie om de geselecteerde projecten op te slaan in de server
   const handleSaveProjects = () => {
     if (selectedUser) {
-      const projectString = selectedProjects.join(",");
+      const projectString =
+        selectedProjects.length > 0 ? selectedProjects.join(",") : "0";
+      console.log("Saving projects:", projectString);
       axios
         .put(`${backendUrl}/users/${selectedUser.id}`, {
-          projects: projectString,
+          projects: projectString || "",
         })
         .then(() => {
           setUsers((prevUsers) =>
