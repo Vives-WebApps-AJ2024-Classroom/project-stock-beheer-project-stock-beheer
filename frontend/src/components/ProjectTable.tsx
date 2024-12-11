@@ -308,6 +308,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       cell: (row: Row) => <div title={row.Opmerkingen}>{row.Opmerkingen}</div>,
     },
   ];
+  
 
   const handleOrderAdd = () => {
     setIsPopupOpen(true);
