@@ -17,8 +17,8 @@ interface Row {
   Totale_kostprijs_excl_BTW: number;
   Aangevraagd_door: string;
   Aantal_dagen_levertijd: number;
-  Goedgekeurd: boolean;
-  Goedgekeurd_door_coach: string;
+  Status: string;
+  Gekeurd_door_coach: string;
   Bestelling_ingegeven_RQ_nummer: string;
   Bestelling_door_financ_dienst_geplaatst: string;
   Bestelling_verzonden_verwachtte_aankomst: string;
@@ -51,12 +51,36 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
         throw new Error("Failed to fetch data from API");
       }
       const data = await response.json();
+      interface Product extends Row {
+        Datum_aanvraag: string;
+        Bestelling_door_financ_dienst_geplaatst: string;
+        Bestelling_verzonden_verwachtte_aankomst: string;
+        Bestelling_ontvangen_datum: string;
+      }
+
+      const formattedData: Product[] = data.map((product: Row) => ({
+        ...product,
+        Datum_aanvraag: product.Datum_aanvraag
+          ? product.Datum_aanvraag.split("T")[0]
+          : "",
+        Bestelling_door_financ_dienst_geplaatst:
+          product.Bestelling_door_financ_dienst_geplaatst
+            ? product.Bestelling_door_financ_dienst_geplaatst.split("T")[0]
+            : "",
+        Bestelling_verzonden_verwachtte_aankomst:
+          product.Bestelling_verzonden_verwachtte_aankomst
+            ? product.Bestelling_verzonden_verwachtte_aankomst.split("T")[0]
+            : "",
+        Bestelling_ontvangen_datum: product.Bestelling_ontvangen_datum
+          ? product.Bestelling_ontvangen_datum.split("T")[0]
+          : "",
+      }));
       let totalCost = 0;
-      data.forEach((item: Row) => {
+      formattedData.forEach((item: Row) => {
         totalCost += Number(item.Totale_kostprijs_excl_BTW);
       });
       setTotaleKost(totalCost);
-      const filteredData = data.filter(
+      const filteredData = formattedData.filter(
         (item: Row) => item.project_id === selectedProjectId
       );
       setRows(filteredData);
@@ -97,6 +121,56 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
 
   const columns = [
     {
+      name: "Status",
+      selector: (row: Row) => row.Status,
+      sortable: true,
+      cell: (row: Row) => (
+        <div>
+          {/* Toon de huidige status als tekst */}
+          <div title={row.Status.toString()}>
+            {row.Status || "Nog niet beoordeeld"}
+          </div>
+
+          {(user?.role === "teacher" || user?.role === "admin") && (
+            <select
+              style={{ marginTop: "10px" }}
+              onChange={async (e) => {
+                const newStatus = e.target.value;
+                if (newStatus) {
+                  try {
+                    await axios.put(`${backendUrl}/products/${row.ID}`, {
+                      ...row,
+                      Status: newStatus,
+                      Gekeurd_door_coach: user.name || user.login || "Unknown",
+                    });
+                    fetchData(); // Verfris de gegevens
+                  } catch (error) {
+                    console.error(
+                      `Error updating order status to ${newStatus}:`,
+                      error
+                    );
+                    alert(
+                      `Er is een fout opgetreden bij het ${
+                        newStatus === "Gekeurd" ? "goedkeuren" : "afkeuren"
+                      } van de bestelling. Probeer opnieuw.`
+                    );
+                  }
+                }
+              }}
+              className="form-select"
+              defaultValue=""
+            >
+              <option value="" disabled>
+                Selecteer actie
+              </option>
+              <option value="Gekeurd">Goedkeuren</option>
+              <option value="Afgekeurd">Afkeuren</option>
+            </select>
+          )}
+        </div>
+      ),
+    },
+    {
       name: "Leveringsadres",
       selector: (row: Row) => row.Leveringsadres,
       sortable: true,
@@ -114,8 +188,6 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
             day: "2-digit",
             month: "2-digit",
             year: "2-digit",
-            hour: "2-digit",
-            minute: "2-digit",
           })}
         </div>
       ),
@@ -188,53 +260,14 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
         </div>
       ),
     },
-    {
-      name: "Goedgekeurd",
-      selector: (row: Row) => row.Goedgekeurd,
-      sortable: true,
-      cell: (row: Row) => (
-        <div>
-          {/* Toon de goedkeurd-status voor iedereen */}
-          <div title={row.Goedgekeurd.toString()}>
-            {row.Goedgekeurd ? "Ja" : "Nee"}
-          </div>
-
-          {/* Als de gebruiker een teacher of admin is en de bestelling nog niet goedgekeurd is, toon de goedkeurknop */}
-          {(user?.role === "teacher" || user?.role === "admin") &&
-            !row.Goedgekeurd && (
-              <button
-                onClick={async () => {
-                  try {
-                    await axios.put(`${backendUrl}/products/${row.ID}`, {
-                      ...row,
-                      Goedgekeurd: true,
-                      Goedgekeurd_door_coach:
-                        user.name || user.login || "Unknown",
-                    });
-                    fetchData(); // Verfris de gegevens na goedkeuren
-                  } catch (error) {
-                    console.error("Error approving order:", error);
-                    alert(
-                      "Er is een fout opgetreden bij het goedkeuren van de bestelling. Probeer opnieuw."
-                    );
-                  }
-                }}
-                className="btn btn-success"
-              >
-                Goedkeuren
-              </button>
-            )}
-        </div>
-      )
-    },
 
     {
-      name: "Goedgekeurd door coach",
-      selector: (row: Row) => row.Goedgekeurd_door_coach,
+      name: "Gekeurd door coach",
+      selector: (row: Row) => row.Gekeurd_door_coach,
       sortable: true,
       cell: (row: Row) => (
-        <div title={row.Goedgekeurd_door_coach}>
-          {row.Goedgekeurd_door_coach}
+        <div title={row.Gekeurd_door_coach}>
+          {row.Gekeurd_door_coach || "Niet beschikbaar"}
         </div>
       ),
     },
@@ -244,7 +277,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       sortable: true,
       cell: (row: Row) => (
         <div title={row.Bestelling_ingegeven_RQ_nummer}>
-          {row.Bestelling_ingegeven_RQ_nummer}
+          {row.Bestelling_ingegeven_RQ_nummer || "Niet beschikbaar"}
         </div>
       ),
     },
@@ -254,16 +287,15 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       sortable: true,
       cell: (row: Row) => (
         <div title={row.Bestelling_door_financ_dienst_geplaatst}>
-          {new Date(row.Bestelling_door_financ_dienst_geplaatst).toLocaleString(
-            "nl-NL",
-            {
-              day: "2-digit",
-              month: "2-digit",
-              year: "2-digit",
-              hour: "2-digit",
-              minute: "2-digit",
-            }
-          )}
+          {row.Bestelling_door_financ_dienst_geplaatst
+            ? new Date(
+                row.Bestelling_door_financ_dienst_geplaatst
+              ).toLocaleString("nl-NL", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "2-digit",
+              })
+            : "Niet beschikbaar"}
         </div>
       ),
     },
@@ -273,15 +305,15 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       sortable: true,
       cell: (row: Row) => (
         <div title={row.Bestelling_verzonden_verwachtte_aankomst}>
-          {new Date(
-            row.Bestelling_verzonden_verwachtte_aankomst
-          ).toLocaleString("nl-NL", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "2-digit",
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
+          {row.Bestelling_verzonden_verwachtte_aankomst
+            ? new Date(
+                row.Bestelling_verzonden_verwachtte_aankomst
+              ).toLocaleString("nl-NL", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "2-digit",
+              })
+            : "Niet beschikbaar"}
         </div>
       ),
     },
@@ -291,13 +323,13 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       sortable: true,
       cell: (row: Row) => (
         <div title={row.Bestelling_ontvangen_datum}>
-          {new Date(row.Bestelling_ontvangen_datum).toLocaleString("nl-NL", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "2-digit",
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
+          {row.Bestelling_ontvangen_datum
+            ? new Date(row.Bestelling_ontvangen_datum).toLocaleString("nl-NL", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "2-digit",
+              })
+            : "Niet beschikbaar"}
         </div>
       ),
     },
@@ -308,7 +340,6 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       cell: (row: Row) => <div title={row.Opmerkingen}>{row.Opmerkingen}</div>,
     },
   ];
-  
 
   const handleOrderAdd = () => {
     setIsPopupOpen(true);
@@ -326,8 +357,8 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
         Leveringsadres: "Vives",
         Datum_aanvraag: new Date().toISOString().slice(0, 19).replace("T", " "),
         Aangevraagd_door: user?.name || user?.login || "Unknown",
-        Goedgekeurd: false, // Boolean veld correct ingesteld
-        Goedgekeurd_door_coach: null, // Boolean veld correct ingesteld
+        Status: "Afwachting", // Boolean veld correct ingesteld
+        Gekeurd_door_coach: null, // Boolean veld correct ingesteld
         Bestelling_ingegeven_RQ_nummer: null, // Null voor optionele velden
         Bestelling_door_financ_dienst_geplaatst: false, // Boolean veld correct ingesteld
         Bestelling_verzonden_verwachtte_aankomst: null,

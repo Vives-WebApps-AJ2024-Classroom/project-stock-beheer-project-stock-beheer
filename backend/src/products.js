@@ -10,7 +10,7 @@ const getAllProducts = (req, res) => {
     INNER JOIN 
       projects ON products.project_id = projects.id
   `;
-  
+
   db.query(query, (err, results) => {
     if (err) {
       return res.status(500).json({ error: "Failed to retrieve products" });
@@ -18,7 +18,6 @@ const getAllProducts = (req, res) => {
     res.status(200).json(results); // Voeg de project_naam toe aan de response
   });
 };
-
 
 const createProduct = (req, res) => {
   const {
@@ -32,8 +31,8 @@ const createProduct = (req, res) => {
     Totale_kostprijs_excl_BTW,
     Aangevraagd_door,
     Aantal_dagen_levertijd,
-    Goedgekeurd = false,
-    Goedgekeurd_door_coach = null,
+    Status = "Afwachting",
+    Gekeurd_door_coach = null,
     Bestelling_ingegeven_RQ_nummer = null,
     Bestelling_door_financ_dienst_geplaatst = false,
     Bestelling_verzonden_verwachtte_aankomst = null,
@@ -59,7 +58,7 @@ const createProduct = (req, res) => {
   const query = `
         INSERT INTO products (
             Leveringsadres, Datum_aanvraag, Aantal, Korte_omschrijving, Winkel, Artikelnummer, URL,
-            Totale_kostprijs_excl_BTW, Aangevraagd_door, Aantal_dagen_levertijd, Goedgekeurd, Goedgekeurd_door_coach,
+            Totale_kostprijs_excl_BTW, Aangevraagd_door, Aantal_dagen_levertijd, Status, Gekeurd_door_coach,
             Bestelling_ingegeven_RQ_nummer, Bestelling_door_financ_dienst_geplaatst,
             Bestelling_verzonden_verwachtte_aankomst, Bestelling_ontvangen_datum, Opmerkingen, project_id
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
@@ -77,8 +76,8 @@ const createProduct = (req, res) => {
       parseFloat(Totale_kostprijs_excl_BTW) || 0.0, // Zorg dat dit een float is
       Aangevraagd_door,
       parseInt(Aantal_dagen_levertijd, 10) || 0, // Zorg dat dit een integer is
-      Goedgekeurd,
-      Goedgekeurd_door_coach,
+      Status,
+      Gekeurd_door_coach,
       Bestelling_ingegeven_RQ_nummer,
       Bestelling_door_financ_dienst_geplaatst,
       Bestelling_verzonden_verwachtte_aankomst,
@@ -99,7 +98,7 @@ const createProduct = (req, res) => {
 };
 
 const updateProduct = (req, res) => {
-  const { ID } = req.params;
+  const ID = parseInt(req.params.id, 10);
   const {
     Leveringsadres,
     Datum_aanvraag,
@@ -111,8 +110,8 @@ const updateProduct = (req, res) => {
     Totale_kostprijs_excl_BTW,
     Aangevraagd_door,
     Aantal_dagen_levertijd,
-    Goedgekeurd,
-    Goedgekeurd_door_coach,
+    Status,
+    Gekeurd_door_coach,
     Bestelling_ingegeven_RQ_nummer,
     Bestelling_door_financ_dienst_geplaatst,
     Bestelling_verzonden_verwachtte_aankomst,
@@ -121,15 +120,12 @@ const updateProduct = (req, res) => {
     project_id,
   } = req.body;
 
-  console.log("Request body:", req.body);
-
   const query = `
         UPDATE products
         SET Leveringsadres = ?, Datum_aanvraag = ?, Aantal = ?, Korte_omschrijving = ?, Winkel = ?, Artikelnummer = ?, URL = ?, 
-                Totale_kostprijs_excl_BTW = ?, Aangevraagd_door = ?, Aantal_dagen_levertijd = ?, Goedgekeurd = ?, Goedgekeurd_door_coach = ?,
+                Totale_kostprijs_excl_BTW = ?, Aangevraagd_door = ?, Aantal_dagen_levertijd = ?, Status = ?, Gekeurd_door_coach = ?,
                 Bestelling_ingegeven_RQ_nummer = ?, Bestelling_door_financ_dienst_geplaatst = ?, 
-                Bestelling_verzonden_verwachtte_aankomst = ?, Bestelling_ontvangen_datum = ?, Opmerkingen = ?, 
-                Totaalprijs_project = ?, project_id = ?
+                Bestelling_verzonden_verwachtte_aankomst = ?, Bestelling_ontvangen_datum = ?, Opmerkingen = ?, project_id = ?
         WHERE ID = ?`;
 
   db.query(
@@ -145,8 +141,8 @@ const updateProduct = (req, res) => {
       Totale_kostprijs_excl_BTW,
       Aangevraagd_door,
       Aantal_dagen_levertijd,
-      Goedgekeurd,
-      Goedgekeurd_door_coach,
+      Status,
+      Gekeurd_door_coach,
       Bestelling_ingegeven_RQ_nummer,
       Bestelling_door_financ_dienst_geplaatst,
       Bestelling_verzonden_verwachtte_aankomst,

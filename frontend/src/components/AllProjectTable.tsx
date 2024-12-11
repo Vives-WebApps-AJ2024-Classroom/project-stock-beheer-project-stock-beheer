@@ -13,7 +13,8 @@ interface Row {
   Totale_kostprijs_excl_BTW: number;
   Aangevraagd_door: string;
   Aantal_dagen_levertijd: number;
-  Goedgekeurd_door_coach: string;
+  Status: string;
+  Gekeurd_door_coach: string;
   Bestelling_ingegeven_RQ_nummer: string;
   Bestelling_door_financ_dienst_geplaatst: string;
   Bestelling_verzonden_verwachtte_aankomst: string;
@@ -57,22 +58,24 @@ function AllProjectsTable() {
 
   // Filteren van de rows op basis van de zoekterm
   const filteredRows = rows.filter((row) => {
-    return (
-      row.project_naam.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      row.Leveringsadres.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      row.Korte_omschrijving.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      row.Winkel.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      row.Artikelnummer.toLowerCase().includes(searchTerm.toLowerCase())||
-      row.Aangevraagd_door.toLowerCase().includes(searchTerm.toLowerCase())
+    return Object.values(row).some((value) =>
+      value?.toString().toLowerCase().includes(searchTerm.toLowerCase())
     );
   });
 
   const columns = [
     {
-      name: "Project",
-      selector: (row: Row) => row.project_naam,
+      name: "Status",
+      selector: (row: Row) => row.Status,
       sortable: true,
-      cell: (row: Row) => <div title={row.project_naam}>{row.project_naam}</div>,
+      cell: (row: Row) => (
+        <div>
+          {/* Toon de huidige status als tekst */}
+          <div title={row.Status.toString()}>
+            {row.Status || "Nog niet beoordeeld"}
+          </div>
+        </div>
+      ),
     },
     {
       name: "Leveringsadres",
@@ -92,8 +95,6 @@ function AllProjectsTable() {
             day: "2-digit",
             month: "2-digit",
             year: "2-digit",
-            hour: "2-digit",
-            minute: "2-digit",
           })}
         </div>
       ),
@@ -166,13 +167,14 @@ function AllProjectsTable() {
         </div>
       ),
     },
+
     {
-      name: "Goedgekeurd door coach",
-      selector: (row: Row) => row.Goedgekeurd_door_coach,
+      name: "Gekeurd door coach",
+      selector: (row: Row) => row.Gekeurd_door_coach,
       sortable: true,
       cell: (row: Row) => (
-        <div title={row.Goedgekeurd_door_coach}>
-          {row.Goedgekeurd_door_coach}
+        <div title={row.Gekeurd_door_coach}>
+          {row.Gekeurd_door_coach || "Niet beschikbaar"}
         </div>
       ),
     },
@@ -182,7 +184,7 @@ function AllProjectsTable() {
       sortable: true,
       cell: (row: Row) => (
         <div title={row.Bestelling_ingegeven_RQ_nummer}>
-          {row.Bestelling_ingegeven_RQ_nummer}
+          {row.Bestelling_ingegeven_RQ_nummer || "Niet beschikbaar"}
         </div>
       ),
     },
@@ -192,16 +194,15 @@ function AllProjectsTable() {
       sortable: true,
       cell: (row: Row) => (
         <div title={row.Bestelling_door_financ_dienst_geplaatst}>
-          {new Date(row.Bestelling_door_financ_dienst_geplaatst).toLocaleString(
-            "nl-NL",
-            {
-              day: "2-digit",
-              month: "2-digit",
-              year: "2-digit",
-              hour: "2-digit",
-              minute: "2-digit",
-            }
-          )}
+          {row.Bestelling_door_financ_dienst_geplaatst
+            ? new Date(
+                row.Bestelling_door_financ_dienst_geplaatst
+              ).toLocaleString("nl-NL", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "2-digit",
+              })
+            : "Niet beschikbaar"}
         </div>
       ),
     },
@@ -211,15 +212,15 @@ function AllProjectsTable() {
       sortable: true,
       cell: (row: Row) => (
         <div title={row.Bestelling_verzonden_verwachtte_aankomst}>
-          {new Date(
-            row.Bestelling_verzonden_verwachtte_aankomst
-          ).toLocaleString("nl-NL", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "2-digit",
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
+          {row.Bestelling_verzonden_verwachtte_aankomst
+            ? new Date(
+                row.Bestelling_verzonden_verwachtte_aankomst
+              ).toLocaleString("nl-NL", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "2-digit",
+              })
+            : "Niet beschikbaar"}
         </div>
       ),
     },
@@ -229,13 +230,13 @@ function AllProjectsTable() {
       sortable: true,
       cell: (row: Row) => (
         <div title={row.Bestelling_ontvangen_datum}>
-          {new Date(row.Bestelling_ontvangen_datum).toLocaleString("nl-NL", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "2-digit",
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
+          {row.Bestelling_ontvangen_datum
+            ? new Date(row.Bestelling_ontvangen_datum).toLocaleString("nl-NL", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "2-digit",
+              })
+            : "Niet beschikbaar"}
         </div>
       ),
     },
