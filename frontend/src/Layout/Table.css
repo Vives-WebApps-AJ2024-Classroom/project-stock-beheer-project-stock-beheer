@@ -1,15 +1,19 @@
-/* Algemene stijlen voor de container (optioneel) */
+/* Algemene stijlen voor de container (optimaal voor centreren) */
 .container {
-  margin: 0 auto;
-  padding: 30px;
+  overflow: hidden; /* Verbergt alles wat buiten de container valt */
+  margin: 0 auto; /* Maakt de container gecentreerd ten opzichte van de viewport */
+  padding: 20px; /* Voegt ruimte toe rondom de inhoud */
   font-family: "Arial", sans-serif;
   background-color: #f7f7f7;
   border-radius: 8px;
+  width: 90%; /* Zorgt ervoor dat de container niet de volledige breedte van het scherm gebruikt */
+  max-width: 1400px; /* Beperk de breedte zodat de tabel niet te groot wordt */
 }
 
 .TableTitle {
   display: flex;
   justify-content: space-between;
+  width: 100%; /* Zorg ervoor dat de titel de hele breedte van de container gebruikt */
 }
 
 .TableTitle button {

@@ -11,7 +11,7 @@ try {
     host: process.env.MYSQL_HOST || "localhost",
     port: "3306",
     database: process.env.MYSQL_DATABASE || "Stock_Beheer",
-    insecureAuth: true,
+    insecureAuth: true
   });
 
   connection.connect((err) => {
@@ -101,6 +101,22 @@ const createTables = () => {
       return;
     }
     console.log("Table 'users' created or already exists.");
+  });
+
+  const createWinkelsTableQuery = `
+    CREATE TABLE IF NOT EXISTS winkels (
+      ID INT AUTO_INCREMENT PRIMARY KEY,
+      naam VARCHAR(255) NOT NULL,
+      link VARCHAR(2083) NOT NULL
+    );
+  `;
+
+  connection.query(createWinkelsTableQuery, (err) => {
+    if (err) {
+      console.error("Error creating table 'winkels':", err);
+      return;
+    }
+    console.log("Table 'winkels' created or already exists.");
   });
 };
 

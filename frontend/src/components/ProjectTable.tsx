@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import DataTable from "react-data-table-component";
 import "../Layout/Table.css";
 import { AddOrder, OrderFormData } from "./AddOrder";
+import { useUser } from "../context/UserContext";
+import axios from "axios";
 
 interface Row {
   Leveringsadres: string;
@@ -27,6 +29,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const { user } = useUser();
   interface Project {
     id: number;
     project_naam: string;
@@ -36,36 +39,36 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
   const backendUrl =
     process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          `${backendUrl}/projects/${selectedProjectId}/products`
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch data from API");
-        }
-        const data = await response.json();
-        let totalCost = 0;
-        data.forEach((item: Row) => {
-          totalCost += Number(item.Totale_kostprijs_excl_BTW);
-        });
-        setTotaleKost(totalCost);
-        const filteredData = data.filter(
-          (item: Row) => item.project_id === selectedProjectId
-        );
-        setRows(filteredData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
+  const fetchData = useCallback(async () => {
+    try {
+      const response = await fetch(
+        `${backendUrl}/projects/${selectedProjectId}/products`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch data from API");
       }
-    };
+      const data = await response.json();
+      let totalCost = 0;
+      data.forEach((item: Row) => {
+        totalCost += Number(item.Totale_kostprijs_excl_BTW);
+      });
+      setTotaleKost(totalCost);
+      const filteredData = data.filter(
+        (item: Row) => item.project_id === selectedProjectId
+      );
+      setRows(filteredData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [backendUrl, selectedProjectId]);
 
+  useEffect(() => {
     if (selectedProjectId !== 0) {
       fetchData();
     }
-  }, [selectedProjectId, backendUrl]);
+  }, [selectedProjectId, fetchData]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -78,7 +81,6 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
         const projectData = data.find(
           (item: any) => item.id === selectedProjectId
         );
-        console.log("Fetched project:", projectData);
         setProject(projectData || null);
         setProject(data.find((item: any) => item.id === selectedProjectId));
       } catch (error) {
@@ -272,8 +274,30 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
     setIsPopupOpen(false);
   };
 
-  const handleSaveOrder = (data: OrderFormData) => {
-    console.log("Order data opgeslagen:", data);
+  const handleSaveOrder = async (data: OrderFormData) => {
+    try {
+      const newOrder = {
+        ...data,
+        project_id: selectedProjectId,
+        Leveringsadres: "Vives",
+        Datum_aanvraag: new Date().toISOString().slice(0, 19).replace("T", " "),
+        Aangevraagd_door: user?.name || user?.login || "Unknown",
+        Goedgekeurd_door_coach: false, // Boolean veld correct ingesteld
+        Bestelling_ingegeven_RQ_nummer: null, // Null voor optionele velden
+        Bestelling_door_financ_dienst_geplaatst: false, // Boolean veld correct ingesteld
+        Bestelling_verzonden_verwachtte_aankomst: null,
+        Bestelling_ontvangen_datum: null,
+      };
+
+      await axios.post(`${backendUrl}/products`, newOrder);
+      await fetchData(); // Zorgt dat nieuwe data direct geladen wordt
+      setIsPopupOpen(false); // Sluit popup na succesvol opslaan
+    } catch (error) {
+      console.error("Error saving order:", error);
+      alert(
+        "Er is een fout opgetreden bij het opslaan van de bestelling. Probeer opnieuw."
+      );
+    }
   };
 
   return (

@@ -8,10 +8,16 @@ import { useUser } from "../context/UserContext";
 interface TopbarProps {
   onViewChange: (view: string) => void; // Functie om de huidige weergave te veranderen
   onProjectsClick: () => void; // Functie om de sidebar te toggelen
+  onLogoClick: () => void; // Functie voor het klikken op het logo
 }
 
-const Topbar: React.FC<TopbarProps> = ({ onViewChange, onProjectsClick }) => {
+const Topbar: React.FC<TopbarProps> = ({
+  onViewChange,
+  onProjectsClick,
+  onLogoClick,
+}) => {
   const { user } = useUser();
+
   return (
     <div className="topbar">
       <div className="logo">
@@ -19,19 +25,26 @@ const Topbar: React.FC<TopbarProps> = ({ onViewChange, onProjectsClick }) => {
           src="https://www.vives.be/sites/default/files/uploads/huisstijl/Logo%20VIVES%20Hogeschool%20-%20Smile.png"
           alt="Logo"
           style={{ width: "100px", height: "auto" }}
+          onClick={onLogoClick} // Voeg click-handler toe voor logo
         />
       </div>
       <div className="topbar-buttons">
-        <button
-          onClick={() => {
-            onProjectsClick();
-            onViewChange("projects");
-          }}
-        >
-          Projects
-        </button>
+        {user && (
+          <>
+            <button
+              onClick={() => {
+                onProjectsClick();
+              }}
+            >
+              Projects
+            </button>
+          </>
+        )}
         {user && user.role === "admin" && (
-          <button onClick={() => onViewChange("users")}>Users</button>
+          <>
+            <button onClick={() => onViewChange("winkels")}>Winkels</button>
+            <button onClick={() => onViewChange("users")}>Users</button>
+          </>
         )}
         {user && user.role === "admin" && (
         <button onClick={() => onViewChange("query")}>Query</button>

@@ -164,7 +164,7 @@ const UserTable: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="container my-5">
       <DataTable title="User List" columns={columns} data={users} pagination />
       {isPopupOpen && selectedUser && (
         <ProjectSelectionPopup

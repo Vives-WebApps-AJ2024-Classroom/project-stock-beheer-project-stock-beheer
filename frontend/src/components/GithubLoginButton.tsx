@@ -15,65 +15,113 @@ const GitHubLoginButton = () => {
     process.env.REACT_APP_GITHUB_REDIRECT_URL || "http://localhost:3000";
 
   useEffect(() => {
-    const code = new URLSearchParams(window.location.search).get("code");
+    const accessToken = localStorage.getItem("githubAccessToken");
+    if (accessToken) {
+      fetch("https://api.github.com/user", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+        .then((res) => res.json())
+        .then(async (userData) => {
+          try {
+            if (userData.login) {
+              const response = await axios.post(`${backendUrl}/users`, {
+                username: userData.login,
+                displayname: userData.name || userData.login,
+                role: "student",
+              });
 
-    if (code) {
-      fetch(`${backendUrl}/auth/github?code=${code}`)
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.accessToken) {
-            fetch("https://api.github.com/user", {
-              headers: {
-                Authorization: `Bearer ${data.accessToken}`
+              const userWithId = {
+                ...userData,
+                login: response.data.username,
+                name: response.data.displayname,
+                role: response.data.role,
+                id: response.data.id,
+                projects: response.data.projects,
+              };
+
+              setUser(userWithId); // Stel gebruiker in
+
+              if (userData.login === adminLogin) {
+                await axios.put(`${backendUrl}/users/${response.data.id}`, {
+                  role: "admin",
+                });
               }
-            })
-              .then((res) => res.json())
-              .then(async (userData) => {
-                try {
-                  if (userData.login) {
-                    const response = await axios.post(`${backendUrl}/users`, {
-                      username: userData.login,
-                      displayname: userData.name || userData.login,
-                      role: "student",
-                    });
-
-                    const userWithId = {
-                      ...userData,
-                      login: response.data.username,
-                      name: response.data.displayname,
-                      role: response.data.role,
-                      id: response.data.id,
-                      projects: response.data.projects
-                    };
-
-                    setUser(userWithId); // Stel gebruiker in
-
-                    if (userData.login === adminLogin) {
-                      await axios.put(
-                        `${backendUrl}/users/${response.data.id}`,
-                        {
-                          role: "admin"
-                        }
-                      );
-                    }
-                  }
-                } catch (error) {
-                  console.error(
-                    "Error tijdens ophalen of creëren van gebruiker:",
-                    error
-                  );
-                }
-              })
-              .catch((error) =>
-                console.error(
-                  "Error tijdens ophalen van GitHub-gebruiker:",
-                  error
-                )
-              );
-            window.history.replaceState({}, document.title, "/");
+            }
+          } catch (error) {
+            console.error(
+              "Error tijdens ophalen of creëren van gebruiker:",
+              error
+            );
           }
         })
-        .catch((error) => console.error("Error tijdens login:", error));
+        .catch((error) =>
+          console.error("Error tijdens ophalen van GitHub-gebruiker:", error)
+        );
+    } else {
+      // Als er geen token is, ga verder met de normale flow
+      const code = new URLSearchParams(window.location.search).get("code");
+
+      if (code) {
+        fetch(`${backendUrl}/auth/github?code=${code}`)
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.accessToken) {
+              localStorage.setItem("githubAccessToken", data.accessToken); // Sla het token op
+              fetch("https://api.github.com/user", {
+                headers: {
+                  Authorization: `Bearer ${data.accessToken}`,
+                },
+              })
+                .then((res) => res.json())
+                .then(async (userData) => {
+                  try {
+                    if (userData.login) {
+                      const response = await axios.post(`${backendUrl}/users`, {
+                        username: userData.login,
+                        displayname: userData.name || userData.login,
+                        role: "student",
+                      });
+
+                      const userWithId = {
+                        ...userData,
+                        login: response.data.username,
+                        name: response.data.displayname,
+                        role: response.data.role,
+                        id: response.data.id,
+                        projects: response.data.projects,
+                      };
+
+                      setUser(userWithId); // Stel gebruiker in
+
+                      if (userData.login === adminLogin) {
+                        await axios.put(
+                          `${backendUrl}/users/${response.data.id}`,
+                          {
+                            role: "admin",
+                          }
+                        );
+                      }
+                    }
+                  } catch (error) {
+                    console.error(
+                      "Error tijdens ophalen of creëren van gebruiker:",
+                      error
+                    );
+                  }
+                })
+                .catch((error) =>
+                  console.error(
+                    "Error tijdens ophalen van GitHub-gebruiker:",
+                    error
+                  )
+                );
+              window.history.replaceState({}, document.title, "/");
+            }
+          })
+          .catch((error) => console.error("Error tijdens login:", error));
+      }
     }
   }, [backendUrl, adminLogin, setUser]);
 
@@ -83,7 +131,9 @@ const GitHubLoginButton = () => {
 
   return (
     <div>
-      <button onClick={handleLogin}>Login</button>
+      <button className="login" onClick={handleLogin}>
+        Login
+      </button>
     </div>
   );
 };
