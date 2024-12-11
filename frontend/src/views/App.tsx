@@ -6,11 +6,12 @@ import ProjectTable from "../components/ProjectTable";
 import UserTable from "../components/UserTable";
 import WinkelTable from "../components/WinkelTabel";
 import { useUser } from "../context/UserContext";
+import BestellingHandleiding from "../components/Handleiding"; // Importeer de handleiding component
 
 const App: React.FC = () => {
   const [selectedProjectId, setSelectedProjectId] = useState<number>(0);
   const [isSidebarVisible, setIsSidebarVisible] = useState<boolean>(false);
-  const [currentView, setCurrentView] = useState<string>("projects"); // Huidige weergave
+  const [currentView, setCurrentView] = useState<string>("handleiding"); // Begin met de handleiding
   const { user } = useUser();
 
   const handleProjectSelect = (projectId: number) => {
@@ -25,9 +26,17 @@ const App: React.FC = () => {
     setCurrentView(view);
   };
 
+  const handleLogoClick = () => {
+    setCurrentView("handleiding"); // Zet de view naar handleiding wanneer het logo wordt aangeklikt
+  };
+
   return (
     <div className="app">
-      <Topbar onViewChange={handleViewChange} onProjectsClick={toggleSidebar} />
+      <Topbar
+        onViewChange={handleViewChange}
+        onProjectsClick={toggleSidebar}
+        onLogoClick={handleLogoClick} // Voeg deze prop toe
+      />
       {isSidebarVisible && (
         <Sidebar
           onProjectSelect={handleProjectSelect}
@@ -35,6 +44,8 @@ const App: React.FC = () => {
         />
       )}
       <div className={`main-content ${isSidebarVisible ? "" : "full-width"}`}>
+        {currentView === "handleiding" && <BestellingHandleiding />}
+        {/* Toon de handleiding bij het starten of wanneer het logo is aangeklikt */}
         {currentView === "projects" && (
           <ProjectTable selectedProjectId={selectedProjectId} />
         )}
