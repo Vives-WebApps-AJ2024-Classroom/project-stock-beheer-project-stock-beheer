@@ -3,7 +3,7 @@
   margin-left: 300px; /* Sidebar width + spacing */
   margin-top: 60px; /* Topbar height */
   padding: 20px;
-  overflow-y: scroll;
+  overflow-y: auto;
   width: calc(
     100% - 300px
   ); /* Normaal: Breedte van de main-content wordt berekend op basis van de sidebar */
