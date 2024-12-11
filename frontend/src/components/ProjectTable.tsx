@@ -16,6 +16,7 @@ interface Row {
   Totale_kostprijs_excl_BTW: number;
   Aangevraagd_door: string;
   Aantal_dagen_levertijd: number;
+  Goedgekeurd: boolean;
   Goedgekeurd_door_coach: string;
   Bestelling_ingegeven_RQ_nummer: string;
   Bestelling_door_financ_dienst_geplaatst: string;
@@ -99,7 +100,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       sortable: true,
       cell: (row: Row) => (
         <div title={row.Leveringsadres}>{row.Leveringsadres}</div>
-      ),
+      )
     },
     {
       name: "Datum aanvraag",
@@ -112,16 +113,16 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
             month: "2-digit",
             year: "2-digit",
             hour: "2-digit",
-            minute: "2-digit",
+            minute: "2-digit"
           })}
         </div>
-      ),
+      )
     },
     {
       name: "Aantal",
       selector: (row: Row) => row.Aantal,
       sortable: true,
-      cell: (row: Row) => <div title={row.Aantal.toString()}>{row.Aantal}</div>,
+      cell: (row: Row) => <div title={row.Aantal.toString()}>{row.Aantal}</div>
     },
     {
       name: "Korte omschrijving",
@@ -129,13 +130,13 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       sortable: true,
       cell: (row: Row) => (
         <div title={row.Korte_omschrijving}>{row.Korte_omschrijving}</div>
-      ),
+      )
     },
     {
       name: "Winkel",
       selector: (row: Row) => row.Winkel,
       sortable: true,
-      cell: (row: Row) => <div title={row.Winkel}>{row.Winkel}</div>,
+      cell: (row: Row) => <div title={row.Winkel}>{row.Winkel}</div>
     },
     {
       name: "Artikelnummer",
@@ -143,7 +144,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       sortable: true,
       cell: (row: Row) => (
         <div title={row.Artikelnummer}>{row.Artikelnummer}</div>
-      ),
+      )
     },
     {
       name: "URL",
@@ -155,7 +156,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
             Link
           </a>
         </div>
-      ),
+      )
     },
     {
       name: "Totale kostprijs excl. BTW",
@@ -165,7 +166,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
         <div title={row.Totale_kostprijs_excl_BTW.toString()}>
           {row.Totale_kostprijs_excl_BTW}
         </div>
-      ),
+      )
     },
     {
       name: "Aangevraagd door",
@@ -173,7 +174,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       sortable: true,
       cell: (row: Row) => (
         <div title={row.Aangevraagd_door}>{row.Aangevraagd_door}</div>
-      ),
+      )
     },
     {
       name: "Aantal dagen levertijd",
@@ -182,6 +183,16 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       cell: (row: Row) => (
         <div title={row.Aantal_dagen_levertijd.toString()}>
           {row.Aantal_dagen_levertijd}
+        </div>
+      )
+    },
+    {
+      name: "Goedgekeurd",
+      selector: (row: Row) => row.Goedgekeurd,
+      sortable: true,
+      cell: (row: Row) => (
+        <div title={row.Goedgekeurd.toString()}>
+          {row.Goedgekeurd ? "Ja" : "Nee"}
         </div>
       ),
     },
@@ -193,7 +204,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
         <div title={row.Goedgekeurd_door_coach}>
           {row.Goedgekeurd_door_coach}
         </div>
-      ),
+      )
     },
     {
       name: "Bestelling ingegeven RQ nummer",
@@ -203,7 +214,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
         <div title={row.Bestelling_ingegeven_RQ_nummer}>
           {row.Bestelling_ingegeven_RQ_nummer}
         </div>
-      ),
+      )
     },
     {
       name: "Bestelling door financieel dienst geplaatst",
@@ -218,11 +229,11 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
               month: "2-digit",
               year: "2-digit",
               hour: "2-digit",
-              minute: "2-digit",
+              minute: "2-digit"
             }
           )}
         </div>
-      ),
+      )
     },
     {
       name: "Bestelling verzonden (verwachte aankomst)",
@@ -237,10 +248,10 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
             month: "2-digit",
             year: "2-digit",
             hour: "2-digit",
-            minute: "2-digit",
+            minute: "2-digit"
           })}
         </div>
-      ),
+      )
     },
     {
       name: "Bestelling ontvangen datum",
@@ -253,17 +264,17 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
             month: "2-digit",
             year: "2-digit",
             hour: "2-digit",
-            minute: "2-digit",
+            minute: "2-digit"
           })}
         </div>
-      ),
+      )
     },
     {
       name: "Opmerkingen",
       selector: (row: Row) => row.Opmerkingen,
       sortable: true,
-      cell: (row: Row) => <div title={row.Opmerkingen}>{row.Opmerkingen}</div>,
-    },
+      cell: (row: Row) => <div title={row.Opmerkingen}>{row.Opmerkingen}</div>
+    }
   ];
   
 
@@ -283,11 +294,12 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
         Leveringsadres: "Vives",
         Datum_aanvraag: new Date().toISOString().slice(0, 19).replace("T", " "),
         Aangevraagd_door: user?.name || user?.login || "Unknown",
-        Goedgekeurd_door_coach: false, // Boolean veld correct ingesteld
+        Goedgekeurd: false, // Boolean veld correct ingesteld
+        Goedgekeurd_door_coach: null, // Boolean veld correct ingesteld
         Bestelling_ingegeven_RQ_nummer: null, // Null voor optionele velden
         Bestelling_door_financ_dienst_geplaatst: false, // Boolean veld correct ingesteld
         Bestelling_verzonden_verwachtte_aankomst: null,
-        Bestelling_ontvangen_datum: null,
+        Bestelling_ontvangen_datum: null
       };
 
       await axios.post(`${backendUrl}/products`, newOrder);

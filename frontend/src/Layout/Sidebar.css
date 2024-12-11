@@ -1,6 +1,6 @@
 /* Sidebar container */
 .sidebar {
-  width: 220px;
+  width: 300px;
   background-color: var(--vives-zwart);
   color: white;
   padding: 20px;
@@ -75,6 +75,18 @@
 
 .project-button:hover {
   background-color: darkred; /* Donkerder rood als hover effect voor de knoppen */
+}
+
+.edit-project-button {
+  background: none;
+}
+
+.delete-project-button {
+  background: none;
+}
+
+.edit-project-input {
+  width: 80px !important;
 }
 
 /* Foutmelding in de sidebar */

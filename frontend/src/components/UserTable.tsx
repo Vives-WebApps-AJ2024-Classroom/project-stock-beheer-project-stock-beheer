@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import DataTable from "react-data-table-component";
 import ProjectSelectionPopup from "./ProjectSelectionPopup";
-import { name } from "@azure/msal-browser/dist/packageMetadata";
 
 interface User {
   id: number;
@@ -54,7 +53,6 @@ const UserTable: React.FC = () => {
     axios
       .get(`${backendUrl}/projects`)
       .then((response) => {
-        console.log("Fetched projects:", response.data);
         setProjects(response.data);
       })
       .catch((error) => {
@@ -91,13 +89,41 @@ const UserTable: React.FC = () => {
     },
     {
       name: "Projects",
+      cell: (row: User) => {
+        // Filter projecten op basis van de bestaande project-ID's en toon de projectnamen
+        const validProjects = row.projects
+          .map((projectId) =>
+            projects.find((project) => project.id === projectId)
+          )
+          .filter((project) => project !== undefined);
+
+        return (
+          <div
+            onClick={() => handleProjectClick(row)}
+            style={{ cursor: "pointer", color: "blue" }}
+          >
+            {validProjects.length > 0
+              ? validProjects.map((project) => project?.project_naam).join(", ")
+              : "geen"}
+          </div>
+        );
+      },
+      sortable: false,
+    },
+    {
+      name: "Actions",
       cell: (row: User) => (
-        <div
-          onClick={() => handleProjectClick(row)}
-          style={{ cursor: "pointer", color: "blue" }}
+        <button
+          onClick={() => handleDeleteUser(row.id)}
+          style={{
+            background: "transparent",
+            border: "none",
+            color: "red",
+            cursor: "pointer",
+          }}
         >
-          {row.projects.length > 0 ? row.projects.join(", ") : "geen"}
-        </div>
+          <i className="fas fa-trash"></i> {/* Font Awesome vuilbak icoon */}
+        </button>
       ),
       sortable: false,
     },
@@ -132,12 +158,29 @@ const UserTable: React.FC = () => {
       });
   };
 
+  // Functie om een gebruiker te verwijderen
+  const handleDeleteUser = (userId: number) => {
+    if (
+      window.confirm("Weet je zeker dat je deze gebruiker wilt verwijderen?")
+    ) {
+      axios
+        .delete(`${backendUrl}/users/${userId}`)
+        .then(() => {
+          setUsers((prevUsers) =>
+            prevUsers.filter((user) => user.id !== userId)
+          );
+        })
+        .catch((error) => {
+          console.error("Failed to delete user:", error);
+        });
+    }
+  };
+
   // Functie om de geselecteerde projecten op te slaan in de server
   const handleSaveProjects = () => {
     if (selectedUser) {
       const projectString =
         selectedProjects.length > 0 ? selectedProjects.join(",") : "0";
-      console.log("Saving projects:", projectString);
       axios
         .put(`${backendUrl}/users/${selectedUser.id}`, {
           projects: projectString || "",

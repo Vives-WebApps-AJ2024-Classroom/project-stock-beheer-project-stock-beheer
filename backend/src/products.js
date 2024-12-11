@@ -32,13 +32,14 @@ const createProduct = (req, res) => {
     Totale_kostprijs_excl_BTW,
     Aangevraagd_door,
     Aantal_dagen_levertijd,
-    Goedgekeurd_door_coach = false,
+    Goedgekeurd = false,
+    Goedgekeurd_door_coach = null,
     Bestelling_ingegeven_RQ_nummer = null,
     Bestelling_door_financ_dienst_geplaatst = false,
     Bestelling_verzonden_verwachtte_aankomst = null,
     Bestelling_ontvangen_datum = null,
     Opmerkingen = null,
-    project_id
+    project_id,
   } = req.body;
 
   // Log body voor debuggen
@@ -58,10 +59,10 @@ const createProduct = (req, res) => {
   const query = `
         INSERT INTO products (
             Leveringsadres, Datum_aanvraag, Aantal, Korte_omschrijving, Winkel, Artikelnummer, URL,
-            Totale_kostprijs_excl_BTW, Aangevraagd_door, Aantal_dagen_levertijd, Goedgekeurd_door_coach,
+            Totale_kostprijs_excl_BTW, Aangevraagd_door, Aantal_dagen_levertijd, Goedgekeurd, Goedgekeurd_door_coach,
             Bestelling_ingegeven_RQ_nummer, Bestelling_door_financ_dienst_geplaatst,
             Bestelling_verzonden_verwachtte_aankomst, Bestelling_ontvangen_datum, Opmerkingen, project_id
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
   db.query(
     query,
@@ -76,13 +77,14 @@ const createProduct = (req, res) => {
       parseFloat(Totale_kostprijs_excl_BTW) || 0.0, // Zorg dat dit een float is
       Aangevraagd_door,
       parseInt(Aantal_dagen_levertijd, 10) || 0, // Zorg dat dit een integer is
+      Goedgekeurd,
       Goedgekeurd_door_coach,
       Bestelling_ingegeven_RQ_nummer,
       Bestelling_door_financ_dienst_geplaatst,
       Bestelling_verzonden_verwachtte_aankomst,
       Bestelling_ontvangen_datum,
       Opmerkingen,
-      parseInt(project_id, 10) // Zorg dat dit een integer is
+      parseInt(project_id, 10), // Zorg dat dit een integer is
     ],
     (err, result) => {
       if (err) {
@@ -95,7 +97,6 @@ const createProduct = (req, res) => {
     }
   );
 };
-
 
 const updateProduct = (req, res) => {
   const { id } = req.params;
@@ -110,19 +111,20 @@ const updateProduct = (req, res) => {
     Totale_kostprijs_excl_BTW,
     Aangevraagd_door,
     Aantal_dagen_levertijd,
+    Goedgekeurd,
     Goedgekeurd_door_coach,
     Bestelling_ingegeven_RQ_nummer,
     Bestelling_door_financ_dienst_geplaatst,
     Bestelling_verzonden_verwachtte_aankomst,
     Bestelling_ontvangen_datum,
     Opmerkingen,
-    project_id
+    project_id,
   } = req.body;
 
   const query = `
         UPDATE products
         SET Leveringsadres = ?, Datum_aanvraag = ?, Aantal = ?, Korte_omschrijving = ?, Winkel = ?, Artikelnummer = ?, URL = ?, 
-                Totale_kostprijs_excl_BTW = ?, Aangevraagd_door = ?, Aantal_dagen_levertijd = ?, Goedgekeurd_door_coach = ?,
+                Totale_kostprijs_excl_BTW = ?, Aangevraagd_door = ?, Aantal_dagen_levertijd = ?, Goedgekeurd = ?, Goedgekeurd_door_coach = ?,
                 Bestelling_ingegeven_RQ_nummer = ?, Bestelling_door_financ_dienst_geplaatst = ?, 
                 Bestelling_verzonden_verwachtte_aankomst = ?, Bestelling_ontvangen_datum = ?, Opmerkingen = ?, 
                 Totaalprijs_project = ?, project_id = ?
@@ -141,15 +143,15 @@ const updateProduct = (req, res) => {
       Totale_kostprijs_excl_BTW,
       Aangevraagd_door,
       Aantal_dagen_levertijd,
+      Goedgekeurd,
       Goedgekeurd_door_coach,
       Bestelling_ingegeven_RQ_nummer,
       Bestelling_door_financ_dienst_geplaatst,
       Bestelling_verzonden_verwachtte_aankomst,
       Bestelling_ontvangen_datum,
       Opmerkingen,
-      Totaalprijs_project,
       project_id,
-      id
+      id,
     ],
     (err, result) => {
       if (err) {
@@ -183,5 +185,5 @@ module.exports = {
   getAllProducts,
   createProduct,
   deleteProduct,
-  updateProduct
+  updateProduct,
 };

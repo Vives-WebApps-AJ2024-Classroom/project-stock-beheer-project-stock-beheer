@@ -11,7 +11,6 @@ const getAllProjects = (req, res) => {
   });
 };
 
-
 const createProject = (req, res) => {
   const { project_naam } = req.body;
 
@@ -19,7 +18,7 @@ const createProject = (req, res) => {
     return res.status(400).json({ error: "Project name is required" });
   }
 
-  const query = "INSERT INTO project (project_naam) VALUES (?)";
+  const query = "INSERT INTO projects (project_naam) VALUES (?)";
 
   db.query(query, [project_naam], (err, result) => {
     if (err) {
@@ -29,11 +28,10 @@ const createProject = (req, res) => {
   });
 };
 
-
 const deleteProject = (req, res) => {
   const { id } = req.params;
 
-  const query = "DELETE FROM project WHERE id = ?";
+  const query = "DELETE FROM projects WHERE id = ?";
 
   db.query(query, [id], (err, result) => {
     if (err) {
@@ -58,7 +56,6 @@ const getProductsByProjectId = (req, res) => {
   });
 };
 
-
 const updateProject = (req, res) => {
   const { id } = req.params;
   const { project_naam } = req.body;
@@ -80,11 +77,10 @@ const updateProject = (req, res) => {
   });
 };
 
-
 module.exports = {
   getAllProjects,
   getProductsByProjectId,
   createProject,
   deleteProject,
-  updateProject
+  updateProject,
 };

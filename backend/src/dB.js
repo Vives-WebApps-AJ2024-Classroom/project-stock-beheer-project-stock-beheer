@@ -11,7 +11,7 @@ try {
     host: process.env.MYSQL_HOST || "localhost",
     port: "3306",
     database: process.env.MYSQL_DATABASE || "Stock_Beheer",
-    insecureAuth: true
+    insecureAuth: true,
   });
 
   connection.connect((err) => {
@@ -66,7 +66,8 @@ const createTables = () => {
       Totale_kostprijs_excl_BTW DECIMAL(10, 2) NOT NULL,
       Aangevraagd_door VARCHAR(255) NOT NULL,
       Aantal_dagen_levertijd INT NOT NULL,
-      Goedgekeurd_door_coach BOOLEAN DEFAULT FALSE,
+      Goedgekeurd BOOLEAN DEFAULT FALSE,
+      Goedgekeurd_door_coach VARCHAR(255),
       Bestelling_ingegeven_RQ_nummer VARCHAR(255),
       Bestelling_door_financ_dienst_geplaatst BOOLEAN DEFAULT FALSE,
       Bestelling_verzonden_verwachtte_aankomst DATE,
