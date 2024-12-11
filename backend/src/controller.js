@@ -41,7 +41,7 @@ const createProject = (req, res) => {
     return res.status(400).json({ error: "Project name is required" });
   }
 
-  const query = "INSERT INTO project (project_naam) VALUES (?)";
+  const query = "INSERT INTO projects (project_naam) VALUES (?)";
 
   db.query(query, [project_naam], (err, result) => {
     if (err) {
@@ -71,9 +71,6 @@ const createProduct = (req, res) => {
     Opmerkingen = null,
     project_id,
   } = req.body;
-
-  // Log body voor debuggen
-  console.log("Request body:", req.body);
 
   // Controleer verplichte velden
   if (
@@ -130,7 +127,7 @@ const createProduct = (req, res) => {
 const deleteProject = (req, res) => {
   const { id } = req.params;
 
-  const query = "DELETE FROM project WHERE id = ?";
+  const query = "DELETE FROM projects WHERE id = ?";
 
   db.query(query, [id], (err, result) => {
     if (err) {

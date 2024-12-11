@@ -1,9 +1,11 @@
 /* Main content styles */
 .main-content {
-  margin-left: 220px; /* Sidebar width + spacing */
+  margin-left: 300px; /* Sidebar width + spacing */
   margin-top: 60px; /* Topbar height */
   padding: 20px;
-  width: calc(100% - 220px); /* Normaal: Breedte van de main-content wordt berekend op basis van de sidebar */
+  width: calc(
+    100% - 300px
+  ); /* Normaal: Breedte van de main-content wordt berekend op basis van de sidebar */
   transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out; /* Voegt een overgang toe voor de verschuiving en breedte-aanpassing */
 }
 
