@@ -2,7 +2,7 @@ import React, { useState, ChangeEvent, FormEvent } from "react";
 
 interface AddOrderProps {
   onClose: () => void;
-  onSave: (data: OrderFormData) => void; // onSave accepteert formData
+  onSave: (data: OrderFormData) => void;
 }
 
 interface OrderFormData {
@@ -20,26 +20,51 @@ const AddOrder: React.FC<AddOrderProps> = ({ onClose, onSave }) => {
   const [orderFormData, setOrderFormData] = useState<OrderFormData>({
     Korte_omschrijving: "",
     Artikelnummer: "",
-    Aantal: "",
+    Aantal: "0",
     Winkel: "",
     URL: "",
-    Totale_kostprijs_excl_BTW: "",
-    Aantal_dagen_levertijd: "",
+    Totale_kostprijs_excl_BTW: "0.00",
+    Aantal_dagen_levertijd: "0",
     Opmerkingen: "",
   });
 
+  const validateForm = (): boolean => {
+    if (!orderFormData.Korte_omschrijving.trim()) {
+      alert("Korte omschrijving is verplicht.");
+      return false;
+    }
+    if (!orderFormData.Aantal || isNaN(Number(orderFormData.Aantal))) {
+      alert("Aantal moet een geldig getal zijn.");
+      return false;
+    }
+    if (
+      !orderFormData.Totale_kostprijs_excl_BTW ||
+      isNaN(Number(orderFormData.Totale_kostprijs_excl_BTW))
+    ) {
+      alert("Totale kostprijs excl. BTW moet een geldig getal zijn.");
+      return false;
+    }
+    if (!orderFormData.Winkel.trim()) {
+      alert("Winkel is verplicht.");
+      return false;
+    }
+    return true;
+  };
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setOrderFormData({
-      ...orderFormData,
+    setOrderFormData((prev) => ({
+      ...prev,
       [name]: value,
-    });
+    }));
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onSave(orderFormData); // Geef formData door aan onSave
-    onClose(); // Sluit de popup
+    if (validateForm()) {
+      onSave(orderFormData);
+      onClose();
+    }
   };
 
   return (
@@ -51,19 +76,26 @@ const AddOrder: React.FC<AddOrderProps> = ({ onClose, onSave }) => {
             <div key={key} className="form-group">
               <label htmlFor={key}>{key.replace(/_/g, " ")}:</label>
               <input
-                type="text"
+                type={
+                  key === "URL"
+                    ? "url"
+                    : key.includes("Aantal") || key.includes("Totale_kostprijs")
+                    ? "number"
+                    : "text"
+                }
                 id={key}
                 name={key}
                 value={(orderFormData as any)[key]}
                 onChange={handleChange}
                 className="form-input"
+                required={key !== "URL" && key !== "Opmerkingen"}
               />
             </div>
           ))}
           <div className="popup-actions">
-            <button type="submit">Submit</button>
+            <button type="submit">Opslaan</button>
             <button type="button" onClick={onClose}>
-              Cancel
+              Annuleren
             </button>
           </div>
         </form>

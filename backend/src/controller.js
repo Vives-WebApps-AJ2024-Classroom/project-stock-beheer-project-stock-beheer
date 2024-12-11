@@ -59,22 +59,31 @@ const createProduct = (req, res) => {
     Korte_omschrijving,
     Winkel,
     Artikelnummer,
-    URL,
+    URL = null,
     Totale_kostprijs_excl_BTW,
     Aangevraagd_door,
     Aantal_dagen_levertijd,
-    Goedgekeurd_door_coach,
-    Bestelling_ingegeven_RQ_nummer,
-    Bestelling_door_financ_dienst_geplaatst,
-    Bestelling_verzonden_verwachtte_aankomst,
-    Bestelling_ontvangen_datum,
-    Opmerkingen,
-    Totaalprijs_project,
+    Goedgekeurd_door_coach = false,
+    Bestelling_ingegeven_RQ_nummer = null,
+    Bestelling_door_financ_dienst_geplaatst = false,
+    Bestelling_verzonden_verwachtte_aankomst = null,
+    Bestelling_ontvangen_datum = null,
+    Opmerkingen = null,
     project_id,
   } = req.body;
 
-  if (!project_id) {
-    return res.status(400).json({ error: "Project ID is required" });
+  // Log body voor debuggen
+  console.log("Request body:", req.body);
+
+  // Controleer verplichte velden
+  if (
+    !project_id ||
+    !Leveringsadres ||
+    !Korte_omschrijving ||
+    !Aantal ||
+    !Totale_kostprijs_excl_BTW
+  ) {
+    return res.status(400).json({ error: "Required fields are missing" });
   }
 
   const query = `
@@ -90,26 +99,28 @@ const createProduct = (req, res) => {
     [
       Leveringsadres,
       Datum_aanvraag,
-      Aantal,
+      parseInt(Aantal, 10) || 0, // Zorg dat Aantal een integer is
       Korte_omschrijving,
       Winkel,
       Artikelnummer,
       URL,
-      Totale_kostprijs_excl_BTW,
+      parseFloat(Totale_kostprijs_excl_BTW) || 0.0, // Zorg dat dit een float is
       Aangevraagd_door,
-      Aantal_dagen_levertijd,
+      parseInt(Aantal_dagen_levertijd, 10) || 0, // Zorg dat dit een integer is
       Goedgekeurd_door_coach,
       Bestelling_ingegeven_RQ_nummer,
       Bestelling_door_financ_dienst_geplaatst,
       Bestelling_verzonden_verwachtte_aankomst,
       Bestelling_ontvangen_datum,
       Opmerkingen,
-      Totaalprijs_project,
-      project_id,
+      parseInt(project_id, 10), // Zorg dat dit een integer is
     ],
     (err, result) => {
       if (err) {
-        return res.status(500).json({ error: "Failed to create product" });
+        console.error("SQL Error:", err); // Log de specifieke fout
+        return res
+          .status(500)
+          .json({ error: "Failed to create product", details: err.message });
       }
       res.status(201).json({ id: result.insertId, project_id });
     }
