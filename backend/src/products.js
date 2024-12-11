@@ -1,14 +1,24 @@
 const db = require("./dB");
 
 const getAllProducts = (req, res) => {
-  const query = "SELECT * FROM products";
+  const query = `
+    SELECT 
+      products.*, 
+      projects.project_naam
+    FROM 
+      products
+    INNER JOIN 
+      projects ON products.project_id = projects.id
+  `;
+  
   db.query(query, (err, results) => {
     if (err) {
       return res.status(500).json({ error: "Failed to retrieve products" });
     }
-    res.status(200).json(results);
+    res.status(200).json(results); // Voeg de project_naam toe aan de response
   });
 };
+
 
 const createProduct = (req, res) => {
   const {
