@@ -225,7 +225,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
               </button>
             )}
         </div>
-      ),
+      )
     },
 
     {
