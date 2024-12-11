@@ -59,15 +59,17 @@ const GitHubLoginButton = () => {
               }
             }
           } catch (error) {
+            localStorage.removeItem("githubAccessToken");
             console.error(
               "Error tijdens ophalen of creëren van gebruiker:",
               error
             );
           }
         })
-        .catch((error) =>
-          console.error("Error tijdens ophalen van GitHub-gebruiker:", error)
-        );
+        .catch((error) => {
+          localStorage.removeItem("githubAccessToken");
+          console.error("Error tijdens ophalen van GitHub-gebruiker:", error);
+        });
     } else {
       // Als er geen token is, ga verder met de normale flow
       const code = new URLSearchParams(window.location.search).get("code");
