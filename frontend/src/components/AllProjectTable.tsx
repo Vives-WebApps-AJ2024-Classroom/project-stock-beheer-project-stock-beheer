@@ -62,7 +62,8 @@ function AllProjectsTable() {
       row.Leveringsadres.toLowerCase().includes(searchTerm.toLowerCase()) ||
       row.Korte_omschrijving.toLowerCase().includes(searchTerm.toLowerCase()) ||
       row.Winkel.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      row.Artikelnummer.toLowerCase().includes(searchTerm.toLowerCase())
+      row.Artikelnummer.toLowerCase().includes(searchTerm.toLowerCase())||
+      row.Aangevraagd_door.toLowerCase().includes(searchTerm.toLowerCase())
     );
   });
 
