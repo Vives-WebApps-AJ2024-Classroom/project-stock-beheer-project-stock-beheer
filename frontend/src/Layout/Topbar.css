@@ -6,6 +6,7 @@
   display: flex;
   width: 100%; /* Zorgt ervoor dat de topbar de volledige breedte van het scherm heeft */
   position: fixed;
+  align-items: center;
   top: 0;
   left: 0;
   z-index: 1000; /* Zorg ervoor dat de topbar altijd boven de andere elementen komt */
@@ -49,6 +50,15 @@
   color: var(--vives-zwart);
   position: fixed;
   right: 20px;
+}
+
+.profile img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 10px;
+  margin-left: 10px;
+  transform: translateY(25%);
 }
 
 .logo {

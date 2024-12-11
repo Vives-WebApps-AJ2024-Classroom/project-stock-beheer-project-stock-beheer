@@ -9,7 +9,7 @@ try {
     password: process.env.MYSQL_PASSWORD || "root",
     user: process.env.MYSQL_USER || "root",
     host: process.env.MYSQL_HOST || "localhost",
-    port: process.env.MYSQL_PORT || "3306",
+    port: "3306",
     database: process.env.MYSQL_DATABASE || "Stock_Beheer",
     insecureAuth: true,
   });
@@ -53,8 +53,8 @@ const createTables = () => {
     console.log("Table 'projects' created or already exists.");
   });
 
-  const createProductenTableQuery = `
-    CREATE TABLE IF NOT EXISTS producten (
+  const createProductsTableQuery = `
+    CREATE TABLE IF NOT EXISTS products (
       ID INT AUTO_INCREMENT PRIMARY KEY,
       Leveringsadres VARCHAR(255) NOT NULL,
       Datum_aanvraag DATE NOT NULL,
@@ -72,18 +72,17 @@ const createTables = () => {
       Bestelling_verzonden_verwachtte_aankomst DATE,
       Bestelling_ontvangen_datum DATE,
       Opmerkingen TEXT,
-      Totaalprijs_project DECIMAL(10, 2),
       project_id INT,
       FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE SET NULL
     );
   `;
 
-  connection.query(createProductenTableQuery, (err) => {
+  connection.query(createProductsTableQuery, (err) => {
     if (err) {
-      console.error("Error creating table 'producten':", err);
+      console.error("Error creating table 'products':", err);
       return;
     }
-    console.log("Table 'producten' created or already exists.");
+    console.log("Table 'products' created or already exists.");
   });
 
   const createUsersTableQuery = `

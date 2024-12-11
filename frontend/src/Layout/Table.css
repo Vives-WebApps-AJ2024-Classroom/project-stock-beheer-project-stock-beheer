@@ -6,3 +6,19 @@
   background-color: #f7f7f7;
   border-radius: 8px;
 }
+
+.TableTitle {
+  display: flex;
+  justify-content: space-between;
+}
+
+.TableTitle button {
+  background-color: var(--vives-rood);
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  height: 40px;
+  margin-top: 20px;
+}

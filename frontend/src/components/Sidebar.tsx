@@ -7,9 +7,12 @@ interface Project {
   project_naam: string;
 }
 
-const Sidebar: React.FC<{ onProjectSelect: (projectId: number) => void }> = ({
-  onProjectSelect,
-}) => {
+interface SidebarProps {
+  onProjectSelect: (projectId: number) => void;
+  onViewChange: (view: string) => void; // Nieuwe prop om de view te veranderen
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ onProjectSelect, onViewChange }) => {
   const [projects, setProjects] = useState<Project[]>([]);
   const backendUrl =
     process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
@@ -44,7 +47,13 @@ const Sidebar: React.FC<{ onProjectSelect: (projectId: number) => void }> = ({
       <h3>Projects</h3>
       <ul>
         {projects.map((project) => (
-          <li key={project.id} onClick={() => onProjectSelect(project.id)}>
+          <li
+            key={project.id}
+            onClick={() => {
+              onProjectSelect(project.id);
+              onViewChange("projects"); // Zorg dat de view wordt gewijzigd
+            }}
+          >
             {project.project_naam}
           </li>
         ))}
