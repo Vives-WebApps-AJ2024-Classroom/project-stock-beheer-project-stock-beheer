@@ -11,6 +11,7 @@
   left: 0;
   z-index: 1000; /* Zorg ervoor dat de topbar altijd boven de andere elementen komt */
   box-sizing: border-box; /* Zorg ervoor dat de padding geen extra ruimte toevoegt aan de breedte */
+  height: 100px;
 }
 
 /* Knoppen in de topbar moeten goed uitgelijnd zijn */
