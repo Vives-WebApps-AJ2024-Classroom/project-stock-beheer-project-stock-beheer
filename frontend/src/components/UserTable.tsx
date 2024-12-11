@@ -110,6 +110,23 @@ const UserTable: React.FC = () => {
       },
       sortable: false,
     },
+    {
+      name: "Actions",
+      cell: (row: User) => (
+        <button
+          onClick={() => handleDeleteUser(row.id)}
+          style={{
+            background: "transparent",
+            border: "none",
+            color: "red",
+            cursor: "pointer",
+          }}
+        >
+          <i className="fas fa-trash"></i> {/* Font Awesome vuilbak icoon */}
+        </button>
+      ),
+      sortable: false,
+    },
   ];
 
   // Functie voor het openen van de popup
@@ -139,6 +156,24 @@ const UserTable: React.FC = () => {
       .catch((error) => {
         console.error("Failed to update user role:", error);
       });
+  };
+
+  // Functie om een gebruiker te verwijderen
+  const handleDeleteUser = (userId: number) => {
+    if (
+      window.confirm("Weet je zeker dat je deze gebruiker wilt verwijderen?")
+    ) {
+      axios
+        .delete(`${backendUrl}/users/${userId}`)
+        .then(() => {
+          setUsers((prevUsers) =>
+            prevUsers.filter((user) => user.id !== userId)
+          );
+        })
+        .catch((error) => {
+          console.error("Failed to delete user:", error);
+        });
+    }
   };
 
   // Functie om de geselecteerde projecten op te slaan in de server
