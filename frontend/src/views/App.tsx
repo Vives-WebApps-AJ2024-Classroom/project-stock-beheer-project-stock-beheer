@@ -4,6 +4,7 @@ import Topbar from "../components/Topbar";
 import Sidebar from "../components/Sidebar";
 import ProjectTable from "../components/ProjectTable";
 import UserTable from "../components/UserTable";
+import QueryTable from "../components/AllProjectTable";
 import { useUser } from "../context/UserContext";
 
 const App: React.FC = () => {
@@ -26,7 +27,9 @@ const App: React.FC = () => {
 
   return (
     <div className="app">
-      <Topbar onViewChange={handleViewChange} onProjectsClick={toggleSidebar} />
+      <Topbar
+        onViewChange={handleViewChange} 
+        onProjectsClick={toggleSidebar} />
       {isSidebarVisible && (
         <Sidebar
           onProjectSelect={handleProjectSelect}
@@ -39,6 +42,9 @@ const App: React.FC = () => {
         )}
         {currentView === "users" && user && user.role === "admin" && (
           <UserTable />
+        )}
+        {currentView === "query" && user && user.role === "admin" && (
+          <QueryTable />
         )}
       </div>
     </div>
