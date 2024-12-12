@@ -1,13 +1,16 @@
 import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
+import { useUser } from "../context/UserContext";
 
 interface ViewOrderProps {
   onClose: () => void;
-  onSave: (data: OrderFormData) => void;
-  editing: boolean;
+  onSave: (data: OrderFormData, isNew: string) => void;
+  _state: string;
   admin: boolean;
+  row?: OrderFormData;
 }
 
 interface OrderFormData {
+  ID: number;
   Leveringsadres: string;
   Datum_aanvraag: string;
   Korte_omschrijving: string;
@@ -30,28 +33,38 @@ interface OrderFormData {
 const ViewOrder: React.FC<ViewOrderProps> = ({
   onClose,
   onSave,
-  editing,
+  _state,
   admin,
+  row,
 }) => {
+  const { user } = useUser();
   const [orderFormData, setOrderFormData] = useState<OrderFormData>({
-    Leveringsadres: "Xaverianenstraat hoofdgebouw",
-    Datum_aanvraag: "",
-    Korte_omschrijving: "",
-    Aantal: 1,
-    Winkel: "",
-    Artikelnummer: "",
-    URL: "",
-    Totale_kostprijs_excl_BTW: 0.0,
-    Aangevraagd_door: "",
-    Aantal_dagen_levertijd: 0,
-    Status: "",
-    Gekeurd_door_coach: "",
-    Bestelling_ingegeven_RQ_nummer: "",
-    Bestelling_door_financ_dienst_geplaatst: "",
-    Bestelling_verzonden_verwachtte_aankomst: "",
-    Bestelling_ontvangen_datum: "",
-    Opmerkingen: "",
+    ID: row?.ID || 0,
+    Leveringsadres: row?.Leveringsadres || "Xaverianenstraat hoofdgebouw",
+    Datum_aanvraag:
+      row?.Datum_aanvraag ||
+      new Date().toISOString().split("T")[0].split("-").reverse().join("-"),
+    Korte_omschrijving: row?.Korte_omschrijving || "",
+    Aantal: row?.Aantal || 1,
+    Winkel: row?.Winkel || "",
+    Artikelnummer: row?.Artikelnummer || "",
+    URL: row?.URL || "",
+    Totale_kostprijs_excl_BTW: row?.Totale_kostprijs_excl_BTW || 0.0,
+    Aangevraagd_door:
+      row?.Aangevraagd_door || user?.name || user?.login || "Unknown",
+    Aantal_dagen_levertijd: row?.Aantal_dagen_levertijd || 0,
+    Status: row?.Status || "Afwachting",
+    Gekeurd_door_coach: row?.Gekeurd_door_coach || " ",
+    Bestelling_ingegeven_RQ_nummer: row?.Bestelling_ingegeven_RQ_nummer || " ",
+    Bestelling_door_financ_dienst_geplaatst:
+      !!row?.Bestelling_door_financ_dienst_geplaatst ? "Ja" : "Nee",
+    Bestelling_verzonden_verwachtte_aankomst:
+      row?.Bestelling_verzonden_verwachtte_aankomst || " ",
+    Bestelling_ontvangen_datum: row?.Bestelling_ontvangen_datum || " ",
+    Opmerkingen: row?.Opmerkingen || "",
   });
+  const [state, setState] = useState(_state);
+
   const backendUrl =
     process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
 
@@ -123,7 +136,7 @@ const ViewOrder: React.FC<ViewOrderProps> = ({
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (validateForm()) {
-      onSave(orderFormData);
+      onSave(orderFormData, state);
       onClose();
     }
   };
@@ -131,10 +144,25 @@ const ViewOrder: React.FC<ViewOrderProps> = ({
   return (
     <div className="popup-overlay">
       <div className="popup">
-        <h3>Nieuwe bestelling plaatsen</h3>
+        {state === "new" ? (
+          <h3>Nieuwe bestelling plaatsen</h3>
+        ) : (
+          <div className="flex">
+            <h2>Bestelling: {orderFormData.Korte_omschrijving}</h2>
+            <button
+              className="edit-order-button"
+              onClick={() => setState("edit")}
+            >
+              <i className="fas fa-pencil-alt"></i>
+            </button>
+          </div>
+        )}
         <form onSubmit={handleSubmit} className="styled-form">
           {Object.keys(orderFormData).map((key) => {
-            if (
+            if (key === "ID") {
+              return null;
+            }
+            const isHiddenForNonAdmin =
               !admin &&
               [
                 "Leveringsadres",
@@ -146,14 +174,31 @@ const ViewOrder: React.FC<ViewOrderProps> = ({
                 "Bestelling_door_financ_dienst_geplaatst",
                 "Bestelling_verzonden_verwachtte_aankomst",
                 "Bestelling_ontvangen_datum",
-              ].includes(key)
-            ) {
-              return null; // Verberg deze velden als admin false is
+              ].includes(key);
+
+            if ((state === "edit" || state === "new") && isHiddenForNonAdmin) {
+              return null;
             }
+
             return (
               <div key={key} className="form-group">
                 <label htmlFor={key}>{key.replace(/_/g, " ")}:</label>
-                {key === "Winkel" ? (
+                {key === "Bestelling_door_financ_dienst_geplaatst" ? (
+                  <input
+                    type="checkbox"
+                    id={key}
+                    name={key}
+                    checked={orderFormData[key as keyof OrderFormData] === "Ja"}
+                    onChange={(e) =>
+                      setOrderFormData((prev) => ({
+                        ...prev,
+                        [key]: e.target.checked ? "Ja" : "Nee",
+                      }))
+                    }
+                    className="form-input"
+                    disabled={state.includes("view")}
+                  />
+                ) : key === "Winkel" ? (
                   <select
                     id={key}
                     name={key}
@@ -161,7 +206,7 @@ const ViewOrder: React.FC<ViewOrderProps> = ({
                     onChange={handleChange}
                     className="form-input"
                     required
-                    disabled={!editing}
+                    disabled={state.includes("view")}
                   >
                     <option value="" disabled hidden>
                       Selecteer winkel
@@ -188,14 +233,14 @@ const ViewOrder: React.FC<ViewOrderProps> = ({
                     onChange={handleChange}
                     className="form-input"
                     required={key !== "URL" && key !== "Opmerkingen"}
-                    disabled={!editing}
+                    disabled={state.includes("view")}
                   />
                 )}
               </div>
             );
           })}
           <div className="popup-actions">
-            {editing === true ? (
+            {state !== "view" ? (
               <>
                 <button type="submit">Opslaan</button>
                 <button type="button" onClick={onClose}>

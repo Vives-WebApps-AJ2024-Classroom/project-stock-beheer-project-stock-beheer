@@ -52,7 +52,6 @@
 .popup div {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
 }
 
 .popup div label {
@@ -111,4 +110,9 @@
 .form-input:focus {
   border-color: var(--vives-rood);
   box-shadow: 0 0 5px rgba(255, 0, 0, 0.3);
+}
+
+div .edit-order-button {
+  background-color: var(--groen);
+  width: 40px;
 }

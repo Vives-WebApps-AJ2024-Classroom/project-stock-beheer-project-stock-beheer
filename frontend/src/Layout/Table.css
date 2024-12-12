@@ -57,7 +57,7 @@
 }
 
 .fa-check {
-  background-color: #008e00;
+  background-color: var(--groen);
 }
 
 .fa-clock {
@@ -66,6 +66,14 @@
 
 .fa-times {
   background-color: var(--vives-rood);
+}
+
+.fa-truck-fast {
+  background-color: var(--blauw);
+}
+
+.fa-box {
+  background-color: var(--oranje);
 }
 
 .status-buttons .active {

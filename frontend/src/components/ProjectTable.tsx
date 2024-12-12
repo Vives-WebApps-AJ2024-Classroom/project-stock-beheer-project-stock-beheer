@@ -56,6 +56,8 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
     Opmerkingen: "true",
   });
   const [columnMenuOpen, setColumnMenuOpen] = useState(false);
+  const [state, setState] = useState("view");
+  const [selectedRow, setSelectedRow] = useState<Row | undefined>(undefined);
 
   const { user } = useUser();
   interface Project {
@@ -157,41 +159,51 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       sortable: true,
       omit: columnFilters.Status === "false",
       cell: (row: Row) => (
-        <div>
-          {user?.role === "student" && (
-            <div title={row.Status.toString()} className="status">
-              {row.Status === "Afwachting" && (
-                <i className="fa-solid fa-clock" />
+        <div className="status">
+          {row.Bestelling_ontvangen_datum.trim() !== "" ? (
+            <i className="fa-solid fa-box" />
+          ) : row.Bestelling_verzonden_verwachtte_aankomst.trim() !== "" ? (
+            <i className="fa-solid fa-truck-fast" />
+          ) : (
+            <>
+              {(user?.role === "teacher" || user?.role === "admin") &&
+              row.Bestelling_ingegeven_RQ_nummer.trim() === "" ? (
+                <div className="status-buttons status">
+                  <i
+                    className={`fa-solid fa-clock ${
+                      row.Status === "Afwachting" ? "active" : ""
+                    }`}
+                    style={{ cursor: "pointer" }}
+                    onClick={() => updateStatus({ row, status: "Afwachting" })}
+                  />
+                  <i
+                    className={`fas fa-check ${
+                      row.Status === "Goedgekeurd" ? "active" : ""
+                    }`}
+                    style={{ cursor: "pointer" }}
+                    onClick={() => updateStatus({ row, status: "Goedgekeurd" })}
+                  />
+                  <i
+                    className={`fas fa-times ${
+                      row.Status === "Afgekeurd" ? "active" : ""
+                    }`}
+                    style={{ cursor: "pointer" }}
+                    onClick={() => updateStatus({ row, status: "Afgekeurd" })}
+                  />
+                </div>
+              ) : (
+                <div title={row.Status.toString()}>
+                  {row.Status === "Afwachting" && (
+                    <i className="fa-solid fa-clock" />
+                  )}
+                  {row.Status === "Goedgekeurd" && (
+                    <i className="fas fa-check" />
+                  )}
+                  {row.Status === "Afgekeurd" && <i className="fas fa-times" />}
+                  {!row.Status && <span>Nog niet beoordeeld</span>}
+                </div>
               )}
-              {row.Status === "Goedgekeurd" && <i className="fas fa-check" />}
-              {row.Status === "Afgekeurd" && <i className="fas fa-times" />}
-              {!row.Status && <span>Nog niet beoordeeld</span>}
-            </div>
-          )}
-          {(user?.role === "teacher" || user?.role === "admin") && (
-            <div className="status-buttons status">
-              <i
-                className={`fa-solid fa-clock ${
-                  row.Status === "Afwachting" ? "active" : ""
-                }`}
-                style={{ cursor: "pointer" }}
-                onClick={() => updateStatus({ row, status: "Afwachting" })}
-              />
-              <i
-                className={`fas fa-check ${
-                  row.Status === "Goedgekeurd" ? "active" : ""
-                }`}
-                style={{ cursor: "pointer" }}
-                onClick={() => updateStatus({ row, status: "Goedgekeurd" })}
-              />
-              <i
-                className={`fas fa-times ${
-                  row.Status === "Afgekeurd" ? "active" : ""
-                }`}
-                style={{ cursor: "pointer" }}
-                onClick={() => updateStatus({ row, status: "Afgekeurd" })}
-              />
-            </div>
+            </>
           )}
         </div>
       ),
@@ -355,7 +367,9 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
     },
   ];
 
-  const handleOrderAdd = () => {
+  const handleOrderView = (state: string, row: Row) => {
+    setState(state);
+    setSelectedRow(row);
     setIsPopupOpen(true);
   };
 
@@ -363,27 +377,19 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
     setIsPopupOpen(false);
   };
 
-  const handleSaveOrder = async (data: OrderFormData) => {
+  const handleSaveOrder = async (data: OrderFormData, state: string) => {
     try {
-      const newOrder = {
+      const order = {
         ...data,
-        project_id: selectedProjectId,
-        Leveringsadres: "Vives",
-        Datum_aanvraag: new Date()
-          .toISOString()
-          .split("T")[0]
-          .split("-")
-          .reverse()
-          .join("-"),
-        Aangevraagd_door: user?.name || user?.login || "Unknown",
-        Status: "Afwachting", // Boolean veld correct ingesteld
-        Gekeurd_door_coach: null, // Boolean veld correct ingesteld
-        Bestelling_ingegeven_RQ_nummer: null, // Null voor optionele velden
-        Bestelling_door_financ_dienst_geplaatst: false, // Boolean veld correct ingesteld
-        Bestelling_verzonden_verwachtte_aankomst: null,
-        Bestelling_ontvangen_datum: null,
+        project_id: data.ID || selectedProjectId,
+        Bestelling_door_financ_dienst_geplaatst:
+          data.Bestelling_door_financ_dienst_geplaatst === "Ja" ? true : false,
       };
-      await axios.post(`${backendUrl}/products`, newOrder);
+      if (state === "new") {
+        await axios.post(`${backendUrl}/products`, order);
+      } else {
+        await axios.put(`${backendUrl}/products/${data.ID}`, order);
+      }
       await fetchData(); // Zorgt dat nieuwe data direct geladen wordt
       setIsPopupOpen(false); // Sluit popup na succesvol opslaan
     } catch (error) {
@@ -417,7 +423,10 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
             {selectedProjectId !== -1 ? (
               <div className="flex">
                 <h1>Project: {project ? project.project_naam : "N/A"}</h1>
-                <button onClick={handleOrderAdd} className="btn btn-primary">
+                <button
+                  onClick={() => handleOrderView("new", {} as Row)}
+                  className="btn btn-primary"
+                >
                   Bestelling toevoegen
                 </button>
               </div>
@@ -479,13 +488,15 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
               pagination
               subHeader
               fixedHeader
+              onRowClicked={(row) => handleOrderView("view", row)}
             />
             {isPopupOpen && (
               <ViewOrder
                 onClose={handleCloseOrder}
                 onSave={handleSaveOrder}
-                editing={true}
+                _state={state}
                 admin={user?.role === "admin"}
+                row={selectedRow}
               />
             )}
           </div>
