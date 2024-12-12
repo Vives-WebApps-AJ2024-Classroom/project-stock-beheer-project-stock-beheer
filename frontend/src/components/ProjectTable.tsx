@@ -51,36 +51,13 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
         throw new Error("Failed to fetch data from API");
       }
       const data = await response.json();
-      interface Product extends Row {
-        Datum_aanvraag: string;
-        Bestelling_door_financ_dienst_geplaatst: string;
-        Bestelling_verzonden_verwachtte_aankomst: string;
-        Bestelling_ontvangen_datum: string;
-      }
 
-      const formattedData: Product[] = data.map((product: Row) => ({
-        ...product,
-        Datum_aanvraag: product.Datum_aanvraag
-          ? product.Datum_aanvraag.split("T")[0]
-          : null,
-        Bestelling_door_financ_dienst_geplaatst:
-          product.Bestelling_door_financ_dienst_geplaatst
-            ? product.Bestelling_door_financ_dienst_geplaatst.split("T")[0]
-            : null,
-        Bestelling_verzonden_verwachtte_aankomst:
-          product.Bestelling_verzonden_verwachtte_aankomst
-            ? product.Bestelling_verzonden_verwachtte_aankomst.split("T")[0]
-            : null,
-        Bestelling_ontvangen_datum: product.Bestelling_ontvangen_datum
-          ? product.Bestelling_ontvangen_datum.split("T")[0]
-          : null,
-      }));
       let totalCost = 0;
-      formattedData.forEach((item: Row) => {
+      data.forEach((item: Row) => {
         totalCost += Number(item.Totale_kostprijs_excl_BTW);
       });
       setTotaleKost(totalCost);
-      const filteredData = formattedData.filter(
+      const filteredData = data.filter(
         (item: Row) => item.project_id === selectedProjectId
       );
       setRows(filteredData);
@@ -129,7 +106,6 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
     status,
   }: UpdateStatusParams): Promise<void> => {
     try {
-      console.log("order", row);
       await axios.put(`${backendUrl}/products/${row.ID}`, {
         ...row,
         Status: status,
@@ -202,14 +178,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       selector: (row: Row) => row.Datum_aanvraag,
       sortable: true,
       cell: (row: Row) => (
-        <div title={row.Datum_aanvraag}>
-          {new Date(row.Datum_aanvraag).toLocaleString("nl-NL", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "2-digit",
-            timeZone: "Europe/Brussels",
-          })}
-        </div>
+        <div title={row.Datum_aanvraag}>{row.Datum_aanvraag}</div>
       ),
     },
     {
@@ -307,16 +276,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       sortable: true,
       cell: (row: Row) => (
         <div title={row.Bestelling_door_financ_dienst_geplaatst}>
-          {row.Bestelling_door_financ_dienst_geplaatst
-            ? new Date(
-                row.Bestelling_door_financ_dienst_geplaatst
-              ).toLocaleString("nl-NL", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "2-digit",
-                timeZone: "Europe/Brussels",
-              })
-            : "Niet beschikbaar"}
+          {row.Bestelling_door_financ_dienst_geplaatst}
         </div>
       ),
     },
@@ -326,16 +286,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       sortable: true,
       cell: (row: Row) => (
         <div title={row.Bestelling_verzonden_verwachtte_aankomst}>
-          {row.Bestelling_verzonden_verwachtte_aankomst
-            ? new Date(
-                row.Bestelling_verzonden_verwachtte_aankomst
-              ).toLocaleString("nl-NL", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "2-digit",
-                timeZone: "Europe/Brussels",
-              })
-            : "Niet beschikbaar"}
+          {row.Bestelling_verzonden_verwachtte_aankomst}
         </div>
       ),
     },
@@ -345,14 +296,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       sortable: true,
       cell: (row: Row) => (
         <div title={row.Bestelling_ontvangen_datum}>
-          {row.Bestelling_ontvangen_datum
-            ? new Date(row.Bestelling_ontvangen_datum).toLocaleString("nl-NL", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "2-digit",
-                timeZone: "Europe/Brussels",
-              })
-            : "Niet beschikbaar"}
+          {row.Bestelling_ontvangen_datum}
         </div>
       ),
     },
@@ -378,7 +322,12 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
         ...data,
         project_id: selectedProjectId,
         Leveringsadres: "Vives",
-        Datum_aanvraag: new Date().toISOString(),
+        Datum_aanvraag: new Date()
+          .toISOString()
+          .split("T")[0]
+          .split("-")
+          .reverse()
+          .join("-"),
         Aangevraagd_door: user?.name || user?.login || "Unknown",
         Status: "Afwachting", // Boolean veld correct ingesteld
         Gekeurd_door_coach: null, // Boolean veld correct ingesteld
