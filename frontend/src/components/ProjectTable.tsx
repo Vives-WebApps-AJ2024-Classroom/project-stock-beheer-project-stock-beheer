@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import DataTable from "react-data-table-component";
 import "../Layout/Table.css";
-import { AddOrder, OrderFormData } from "./AddOrder";
+import { ViewOrder, OrderFormData } from "./ViewOrder";
 import { useUser } from "../context/UserContext";
 import axios from "axios";
 
@@ -27,11 +27,35 @@ interface Row {
   project_id: number;
 }
 
+interface ColumnFilters {
+  [key: string]: string;
+}
+
 function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [columnFilters, setColumnFilters] = useState<ColumnFilters>({
+    Leveringsadres: "false",
+    Datum_aanvraag: "true",
+    Aantal: "true",
+    Korte_omschrijving: "true",
+    Winkel: "true",
+    Artikelnummer: "false",
+    URL: "false",
+    Totale_kostprijs_excl_BTW: "true",
+    Aangevraagd_door: "true",
+    Aantal_dagen_levertijd: "false",
+    Status: "true",
+    Gekeurd_door_coach: "false",
+    Bestelling_ingegeven_RQ_nummer: "false",
+    Bestelling_door_financ_dienst_geplaatst: "false",
+    Bestelling_verzonden_verwachtte_aankomst: "false",
+    Bestelling_ontvangen_datum: "true",
+    Opmerkingen: "true",
+  });
+  const [columnMenuOpen, setColumnMenuOpen] = useState(false);
 
   const { user } = useUser();
   interface Project {
@@ -131,6 +155,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       name: "Status",
       selector: (row: Row) => row.Status,
       sortable: true,
+      omit: columnFilters.Status === "false",
       cell: (row: Row) => (
         <div>
           {user?.role === "student" && (
@@ -138,7 +163,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
               {row.Status === "Afwachting" && (
                 <i className="fa-solid fa-clock" />
               )}
-              {row.Status === "Gekeurd" && <i className="fas fa-check" />}
+              {row.Status === "Goedgekeurd" && <i className="fas fa-check" />}
               {row.Status === "Afgekeurd" && <i className="fas fa-times" />}
               {!row.Status && <span>Nog niet beoordeeld</span>}
             </div>
@@ -154,10 +179,10 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
               />
               <i
                 className={`fas fa-check ${
-                  row.Status === "Gekeurd" ? "active" : ""
+                  row.Status === "Goedgekeurd" ? "active" : ""
                 }`}
                 style={{ cursor: "pointer" }}
-                onClick={() => updateStatus({ row, status: "Gekeurd" })}
+                onClick={() => updateStatus({ row, status: "Goedgekeurd" })}
               />
               <i
                 className={`fas fa-times ${
@@ -175,6 +200,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       name: "Leveringsadres",
       selector: (row: Row) => row.Leveringsadres,
       sortable: true,
+      omit: columnFilters.Leveringsadres === "false",
       cell: (row: Row) => (
         <div title={row.Leveringsadres}>{row.Leveringsadres}</div>
       ),
@@ -183,6 +209,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       name: "Datum aanvraag",
       selector: (row: Row) => row.Datum_aanvraag,
       sortable: true,
+      omit: columnFilters.Datum_aanvraag === "false",
       cell: (row: Row) => (
         <div title={row.Datum_aanvraag}>{row.Datum_aanvraag}</div>
       ),
@@ -191,12 +218,14 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       name: "Aantal",
       selector: (row: Row) => row.Aantal,
       sortable: true,
+      omit: columnFilters.Aantal === "false",
       cell: (row: Row) => <div title={row.Aantal.toString()}>{row.Aantal}</div>,
     },
     {
       name: "Korte omschrijving",
       selector: (row: Row) => row.Korte_omschrijving,
       sortable: true,
+      omit: columnFilters.Korte_omschrijving === "false",
       cell: (row: Row) => (
         <div title={row.Korte_omschrijving}>{row.Korte_omschrijving}</div>
       ),
@@ -205,12 +234,14 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       name: "Winkel",
       selector: (row: Row) => row.Winkel,
       sortable: true,
+      omit: columnFilters.Winkel === "false",
       cell: (row: Row) => <div title={row.Winkel}>{row.Winkel}</div>,
     },
     {
       name: "Artikelnummer",
       selector: (row: Row) => row.Artikelnummer,
       sortable: true,
+      omit: columnFilters.Artikelnummer === "false",
       cell: (row: Row) => (
         <div title={row.Artikelnummer}>{row.Artikelnummer}</div>
       ),
@@ -219,6 +250,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       name: "URL",
       selector: (row: Row) => row.URL,
       sortable: true,
+      omit: columnFilters.URL === "false",
       cell: (row: Row) => (
         <div title={row.URL}>
           <a href={row.URL} target="_blank" rel="noopener noreferrer">
@@ -231,6 +263,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       name: "Totale kostprijs excl. BTW",
       selector: (row: Row) => row.Totale_kostprijs_excl_BTW,
       sortable: true,
+      omit: columnFilters.Totale_kostprijs_excl_BTW === "false",
       cell: (row: Row) => (
         <div title={row.Totale_kostprijs_excl_BTW.toString()}>
           {row.Totale_kostprijs_excl_BTW}
@@ -241,6 +274,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       name: "Aangevraagd door",
       selector: (row: Row) => row.Aangevraagd_door,
       sortable: true,
+      omit: columnFilters.Aangevraagd_door === "false",
       cell: (row: Row) => (
         <div title={row.Aangevraagd_door}>{row.Aangevraagd_door}</div>
       ),
@@ -249,6 +283,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       name: "Aantal dagen levertijd",
       selector: (row: Row) => row.Aantal_dagen_levertijd,
       sortable: true,
+      omit: columnFilters.Aantal_dagen_levertijd === "false",
       cell: (row: Row) => (
         <div title={row.Aantal_dagen_levertijd.toString()}>
           {row.Aantal_dagen_levertijd}
@@ -260,6 +295,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       name: "Gekeurd door coach",
       selector: (row: Row) => row.Gekeurd_door_coach,
       sortable: true,
+      omit: columnFilters.Gekeurd_door_coach === "false",
       cell: (row: Row) => (
         <div title={row.Gekeurd_door_coach}>
           {row.Gekeurd_door_coach || "Niet beschikbaar"}
@@ -270,6 +306,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       name: "Bestelling ingegeven RQ nummer",
       selector: (row: Row) => row.Bestelling_ingegeven_RQ_nummer,
       sortable: true,
+      omit: columnFilters.Bestelling_ingegeven_RQ_nummer === "false",
       cell: (row: Row) => (
         <div title={row.Bestelling_ingegeven_RQ_nummer}>
           {row.Bestelling_ingegeven_RQ_nummer || "Niet beschikbaar"}
@@ -280,6 +317,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       name: "Bestelling door financieel dienst geplaatst",
       selector: (row: Row) => row.Bestelling_door_financ_dienst_geplaatst,
       sortable: true,
+      omit: columnFilters.Bestelling_door_financ_dienst_geplaatst === "false",
       cell: (row: Row) => (
         <div title={row.Bestelling_door_financ_dienst_geplaatst}>
           {row.Bestelling_door_financ_dienst_geplaatst}
@@ -290,6 +328,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       name: "Bestelling verzonden (verwachte aankomst)",
       selector: (row: Row) => row.Bestelling_verzonden_verwachtte_aankomst,
       sortable: true,
+      omit: columnFilters.Bestelling_verzonden_verwachtte_aankomst === "false",
       cell: (row: Row) => (
         <div title={row.Bestelling_verzonden_verwachtte_aankomst}>
           {row.Bestelling_verzonden_verwachtte_aankomst}
@@ -300,6 +339,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       name: "Bestelling ontvangen datum",
       selector: (row: Row) => row.Bestelling_ontvangen_datum,
       sortable: true,
+      omit: columnFilters.Bestelling_ontvangen_datum === "false",
       cell: (row: Row) => (
         <div title={row.Bestelling_ontvangen_datum}>
           {row.Bestelling_ontvangen_datum}
@@ -310,6 +350,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       name: "Opmerkingen",
       selector: (row: Row) => row.Opmerkingen,
       sortable: true,
+      omit: columnFilters.Opmerkingen === "false",
       cell: (row: Row) => <div title={row.Opmerkingen}>{row.Opmerkingen}</div>,
     },
   ];
@@ -359,9 +400,16 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
     );
   });
 
+  const toggleColumnFilter = (key: string) => {
+    setColumnFilters({
+      ...columnFilters,
+      [key]: columnFilters[key] === "true" ? "false" : "true",
+    });
+  };
+
   return (
     <>
-      <div className="container my-5">
+      <div className="container my-5" onClick={() => setColumnMenuOpen(false)}>
         {loading ? (
           <p>Loading...</p>
         ) : (
@@ -380,18 +428,51 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
               <h5>Totale kostprijs excl. BTW:</h5>
               <h2>€{totaleKost}</h2>
             </div>
-            <input
-              type="text"
-              placeholder="Zoek op project, leveringsadres, omschrijving..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              style={{
-                marginBottom: "20px",
-                padding: "8px",
-                width: "100%",
-                maxWidth: "500px",
-              }}
-            />
+            <div className="flex">
+              <input
+                type="text"
+                placeholder="Zoek op project, leveringsadres, omschrijving..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                style={{
+                  marginBottom: "20px",
+                  padding: "8px",
+                  width: "100%",
+                  maxWidth: "500px",
+                }}
+              />
+              <div style={{ position: "relative" }}>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setColumnMenuOpen((prev) => !prev);
+                  }}
+                  className="btn btn-secondary"
+                >
+                  Kolommen
+                </button>
+                {columnMenuOpen && (
+                  <div
+                    className="column-menu"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {Object.keys(columnFilters).map((key) => (
+                      <div key={key} style={{ marginBottom: "5px" }}>
+                        <label>
+                          <input
+                            type="checkbox"
+                            checked={columnFilters[key] === "true"}
+                            onChange={() => toggleColumnFilter(key)}
+                          />
+                          {key}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
             <DataTable
               columns={columns}
               data={filteredRows}
@@ -400,7 +481,12 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
               fixedHeader
             />
             {isPopupOpen && (
-              <AddOrder onClose={handleCloseOrder} onSave={handleSaveOrder} />
+              <ViewOrder
+                onClose={handleCloseOrder}
+                onSave={handleSaveOrder}
+                editing={true}
+                admin={user?.role === "admin"}
+              />
             )}
           </div>
         )}

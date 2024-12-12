@@ -71,3 +71,22 @@
 .status-buttons .active {
   border: 3px solid var(--vives-zwart);
 }
+
+.column-menu {
+  position: absolute;
+  width: 750px;
+  column-count: 2;
+  top: 100%;
+  right: 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  z-index: 1000;
+}
+
+.column-menu input {
+  margin-right: 10px;
+  accent-color: var(--vives-rood);
+}
