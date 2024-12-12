@@ -31,6 +31,8 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+
   const { user } = useUser();
   interface Project {
     id: number;
@@ -43,10 +45,13 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
     process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
 
   const fetchData = useCallback(async () => {
+    const url =
+      selectedProjectId === -1
+        ? `${backendUrl}/products`
+        : `${backendUrl}/projects/${selectedProjectId}/products`;
+    console.log(url);
     try {
-      const response = await fetch(
-        `${backendUrl}/projects/${selectedProjectId}/products`
-      );
+      const response = await fetch(url);
       if (!response.ok) {
         throw new Error("Failed to fetch data from API");
       }
@@ -57,9 +62,10 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
         totalCost += Number(item.Totale_kostprijs_excl_BTW);
       });
       setTotaleKost(totalCost);
-      const filteredData = data.filter(
-        (item: Row) => item.project_id === selectedProjectId
-      );
+      const filteredData =
+        selectedProjectId !== -1
+          ? data.filter((item: Row) => item.project_id === selectedProjectId)
+          : data;
       setRows(filteredData);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -347,6 +353,12 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
     }
   };
 
+  const filteredRows = rows.filter((row) => {
+    return Object.values(row).some((value) =>
+      value?.toString().toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
+
   return (
     <>
       <div className="container my-5">
@@ -354,31 +366,38 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
           <p>Loading...</p>
         ) : (
           <div>
+            {selectedProjectId !== -1 ? (
+              <div className="flex">
+                <h1>Project: {project ? project.project_naam : "N/A"}</h1>
+                <button onClick={handleOrderAdd} className="btn btn-primary">
+                  Bestelling toevoegen
+                </button>
+              </div>
+            ) : (
+              <h1>Alle bestellingen</h1>
+            )}
+            <div>
+              <h5>Totale kostprijs excl. BTW:</h5>
+              <h2>€{totaleKost}</h2>
+            </div>
+            <input
+              type="text"
+              placeholder="Zoek op project, leveringsadres, omschrijving..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{
+                marginBottom: "20px",
+                padding: "8px",
+                width: "100%",
+                maxWidth: "500px",
+              }}
+            />
             <DataTable
               columns={columns}
-              data={rows}
+              data={filteredRows}
               pagination
               subHeader
               fixedHeader
-              title={
-                project && (
-                  <div className="TableTitle">
-                    <h4>Project: {project ? project.project_naam : "N/A"}</h4>
-                    <button
-                      onClick={handleOrderAdd}
-                      className="btn btn-primary"
-                    >
-                      Bestelling toevoegen
-                    </button>
-                  </div>
-                )
-              }
-              subHeaderComponent={
-                <div>
-                  <h5>Totale kostprijs excl. BTW:</h5>
-                  <h2>€{totaleKost}</h2>
-                </div>
-              }
             />
             {isPopupOpen && (
               <AddOrder onClose={handleCloseOrder} onSave={handleSaveOrder} />

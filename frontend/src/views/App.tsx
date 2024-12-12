@@ -4,7 +4,6 @@ import Topbar from "../components/Topbar";
 import Sidebar from "../components/Sidebar";
 import ProjectTable from "../components/ProjectTable";
 import UserTable from "../components/UserTable";
-import QueryTable from "../components/AllProjectTable";
 import WinkelTable from "../components/WinkelTabel";
 import { useUser } from "../context/UserContext";
 import BestellingHandleiding from "../components/Handleiding"; // Importeer de handleiding component
@@ -36,7 +35,8 @@ const App: React.FC = () => {
       <Topbar
         onViewChange={handleViewChange}
         onProjectsClick={toggleSidebar}
-        onLogoClick={handleLogoClick} // Voeg deze prop toe
+        onLogoClick={handleLogoClick}
+        onAllOrdersSelect={handleProjectSelect}
       />
       {isSidebarVisible && (
         <Sidebar
@@ -52,9 +52,6 @@ const App: React.FC = () => {
         )}
         {currentView === "users" && user && user.role === "admin" && (
           <UserTable />
-        )}
-        {currentView === "query" && user && user.role === "admin" && (
-          <QueryTable />
         )}
         {currentView === "winkels" && user && user.role === "admin" && (
           <WinkelTable />

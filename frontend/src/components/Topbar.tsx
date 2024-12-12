@@ -9,12 +9,14 @@ interface TopbarProps {
   onViewChange: (view: string) => void; // Functie om de huidige weergave te veranderen
   onProjectsClick: () => void; // Functie om de sidebar te toggelen
   onLogoClick: () => void; // Functie voor het klikken op het logo
+  onAllOrdersSelect: (projectId: number) => void;
 }
 
 const Topbar: React.FC<TopbarProps> = ({
   onViewChange,
   onProjectsClick,
   onLogoClick,
+  onAllOrdersSelect,
 }) => {
   const { user } = useUser();
 
@@ -47,7 +49,12 @@ const Topbar: React.FC<TopbarProps> = ({
           </>
         )}
         {user && user.role === "admin" && (
-          <button onClick={() => onViewChange("query")}>
+          <button
+            onClick={() => {
+              onAllOrdersSelect(-1);
+              onViewChange("projects");
+            }}
+          >
             Alle Bestellingen
           </button>
         )}
