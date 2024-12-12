@@ -94,7 +94,7 @@ const AddOrder: React.FC<AddOrderProps> = ({ onClose, onSave }) => {
   return (
     <div className="popup-overlay">
       <div className="popup">
-        <h3>Voeg Nieuwe Order Toe</h3>
+        <h3>Nieuwe bestelling plaatsen</h3>
         <form onSubmit={handleSubmit} className="styled-form">
           {Object.keys(orderFormData).map((key) => (
             <div key={key} className="form-group">

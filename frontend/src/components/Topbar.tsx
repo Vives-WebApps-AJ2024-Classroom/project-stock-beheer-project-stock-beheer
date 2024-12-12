@@ -36,18 +36,20 @@ const Topbar: React.FC<TopbarProps> = ({
                 onProjectsClick();
               }}
             >
-              Projects
+              Projecten
             </button>
           </>
         )}
         {user && user.role === "admin" && (
           <>
             <button onClick={() => onViewChange("winkels")}>Winkels</button>
-            <button onClick={() => onViewChange("users")}>Users</button>
+            <button onClick={() => onViewChange("users")}>Gebruikers</button>
           </>
         )}
         {user && user.role === "admin" && (
-        <button onClick={() => onViewChange("query")}>Query</button>
+          <button onClick={() => onViewChange("query")}>
+            Alle Bestellingen
+          </button>
         )}
         <Profile />
       </div>

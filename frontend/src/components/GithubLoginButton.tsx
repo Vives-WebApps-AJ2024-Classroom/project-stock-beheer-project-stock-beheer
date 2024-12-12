@@ -142,7 +142,7 @@ const GitHubLoginButton = () => {
   return (
     <div>
       <button className="login" onClick={handleLogin}>
-        Login
+        Inloggen
       </button>
     </div>
   );

@@ -19,7 +19,7 @@ const Profile: React.FC = () => {
         <div className="flex">
           <p>Welkom, {user.name ? user.name : user.login}!</p>
           <img src={user.avatar_url} alt="Avatar" />
-          <button onClick={handleLogout}>Logout</button>
+          <button onClick={handleLogout}>Uitloggen</button>
         </div>
       ) : (
         <GitHubLoginButton />
