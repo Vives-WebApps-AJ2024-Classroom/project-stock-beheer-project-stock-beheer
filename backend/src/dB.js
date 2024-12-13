@@ -57,7 +57,7 @@ const createTables = () => {
     CREATE TABLE IF NOT EXISTS products (
       ID INT AUTO_INCREMENT PRIMARY KEY,
       Leveringsadres VARCHAR(255) NOT NULL,
-      Datum_aanvraag DATE NOT NULL,
+      Datum_aanvraag VARCHAR(255) NOT NULL,
       Aantal INT NOT NULL,
       Korte_omschrijving TEXT NOT NULL,
       Winkel VARCHAR(255) NOT NULL,
@@ -70,8 +70,8 @@ const createTables = () => {
       Gekeurd_door_coach VARCHAR(255),
       Bestelling_ingegeven_RQ_nummer VARCHAR(255),
       Bestelling_door_financ_dienst_geplaatst BOOLEAN DEFAULT FALSE,
-      Bestelling_verzonden_verwachtte_aankomst DATE,
-      Bestelling_ontvangen_datum DATE,
+      Bestelling_verzonden_verwachtte_aankomst VARCHAR(255),
+      Bestelling_ontvangen_datum VARCHAR(255),
       Opmerkingen TEXT,
       project_id INT,
       FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE SET NULL

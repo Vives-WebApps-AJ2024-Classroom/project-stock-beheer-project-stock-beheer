@@ -68,12 +68,12 @@ const UserTable: React.FC = () => {
       sortable: true,
     },
     {
-      name: "Name",
+      name: "Naam",
       selector: (row: User) => row.name,
       sortable: true,
     },
     {
-      name: "Role",
+      name: "Rol",
       cell: (row: User) => (
         <select
           value={row.role}
@@ -88,7 +88,7 @@ const UserTable: React.FC = () => {
       sortable: true,
     },
     {
-      name: "Projects",
+      name: "Projecten",
       cell: (row: User) => {
         // Filter projecten op basis van de bestaande project-ID's en toon de projectnamen
         const validProjects = row.projects
@@ -111,7 +111,7 @@ const UserTable: React.FC = () => {
       sortable: false,
     },
     {
-      name: "Actions",
+      name: "Verwijderen",
       cell: (row: User) => (
         <button
           onClick={() => handleDeleteUser(row.id)}
@@ -208,7 +208,7 @@ const UserTable: React.FC = () => {
 
   return (
     <div className="container my-5">
-      <DataTable title="User List" columns={columns} data={users} pagination />
+      <DataTable title="Gebruikers" columns={columns} data={users} pagination />
       {isPopupOpen && selectedUser && (
         <ProjectSelectionPopup
           projects={projects}

@@ -91,7 +91,7 @@ const WinkelTable: React.FC = () => {
           <button onClick={handleAddWinkel}>Voeg toe</button>
         </div>
         <DataTable
-          title="Winkel List"
+          title="Winkels"
           columns={columns}
           data={winkels}
           pagination

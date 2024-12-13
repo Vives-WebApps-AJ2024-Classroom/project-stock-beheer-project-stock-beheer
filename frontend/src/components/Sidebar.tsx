@@ -108,7 +108,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onProjectSelect, onViewChange }) => {
   return (
     <div className="sidebar">
       <div className="flex">
-        <h3>Projects</h3>
+        <h3>Projecten</h3>
         {user && user.role === "admin" && (
           <>
             <button onClick={addProject}>+</button>

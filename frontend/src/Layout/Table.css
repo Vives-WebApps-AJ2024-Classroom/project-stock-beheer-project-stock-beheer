@@ -43,21 +43,24 @@
 }
 
 .status i {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+
+i {
   color: white;
   border: none;
-  padding: 10px;
   cursor: pointer;
   border-radius: 5px;
   height: 10px;
   margin: 1px;
   width: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .fa-check {
-  background-color: #008e00;
+  background-color: var(--groen);
 }
 
 .fa-clock {
@@ -68,6 +71,40 @@
   background-color: var(--vives-rood);
 }
 
+.fa-truck-fast {
+  background-color: var(--blauw);
+}
+
+.fa-box {
+  background-color: var(--oranje);
+}
+
 .status-buttons .active {
   border: 3px solid var(--vives-zwart);
+}
+
+.column-menu {
+  position: absolute;
+  width: 750px;
+  column-count: 2;
+  top: 100%;
+  right: 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  z-index: 1000;
+}
+
+.column-menu input {
+  margin-right: 10px;
+  accent-color: var(--vives-rood);
+}
+
+.fastFilters {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  margin-bottom: 10px;
 }
