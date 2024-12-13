@@ -35,16 +35,11 @@
 
 .topbar .profile-button button {
   background-color: var(--vives-rood);
-  color: var(--vives-zwart);
+  color: white;
   border: none;
   padding: 10px;
   cursor: pointer;
   border-radius: 5px;
-}
-
-.topbar .profile-button button:hover {
-  background-color: var(--vives-zwart);
-  color: white;
 }
 
 .profile {
