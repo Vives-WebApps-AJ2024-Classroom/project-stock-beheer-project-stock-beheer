@@ -19,8 +19,8 @@ const GitHubLoginButton = () => {
     if (accessToken) {
       fetch("https://api.github.com/user", {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
+          Authorization: `Bearer ${accessToken}`
+        }
       })
         .catch((error) => {
           localStorage.removeItem("githubAccessToken");
@@ -38,7 +38,7 @@ const GitHubLoginButton = () => {
               const response = await axios.post(`${backendUrl}/users`, {
                 username: userData.login,
                 displayname: userData.name || userData.login,
-                role: "student",
+                role: "student"
               });
 
               const userWithId = {
@@ -47,14 +47,14 @@ const GitHubLoginButton = () => {
                 name: response.data.displayname,
                 role: response.data.role,
                 id: response.data.id,
-                projects: response.data.projects,
+                projects: response.data.projects
               };
 
               setUser(userWithId); // Stel gebruiker in
 
               if (userData.login === adminLogin) {
                 await axios.put(`${backendUrl}/users/${response.data.id}`, {
-                  role: "admin",
+                  role: "admin"
                 });
               }
             }
@@ -81,8 +81,8 @@ const GitHubLoginButton = () => {
               localStorage.setItem("githubAccessToken", data.accessToken); // Sla het token op
               fetch("https://api.github.com/user", {
                 headers: {
-                  Authorization: `Bearer ${data.accessToken}`,
-                },
+                  Authorization: `Bearer ${data.accessToken}`
+                }
               })
                 .then((res) => res.json())
                 .then(async (userData) => {
@@ -91,7 +91,7 @@ const GitHubLoginButton = () => {
                       const response = await axios.post(`${backendUrl}/users`, {
                         username: userData.login,
                         displayname: userData.name || userData.login,
-                        role: "student",
+                        role: "student"
                       });
 
                       const userWithId = {
@@ -100,7 +100,7 @@ const GitHubLoginButton = () => {
                         name: response.data.displayname,
                         role: response.data.role,
                         id: response.data.id,
-                        projects: response.data.projects,
+                        projects: response.data.projects
                       };
 
                       setUser(userWithId); // Stel gebruiker in
@@ -109,7 +109,7 @@ const GitHubLoginButton = () => {
                         await axios.put(
                           `${backendUrl}/users/${response.data.id}`,
                           {
-                            role: "admin",
+                            role: "admin"
                           }
                         );
                       }
