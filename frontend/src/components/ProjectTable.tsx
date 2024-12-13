@@ -278,7 +278,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       omit: columnFilters.Totale_kostprijs_excl_BTW === "false",
       cell: (row: Row) => (
         <div title={row.Totale_kostprijs_excl_BTW.toString()}>
-          {row.Totale_kostprijs_excl_BTW}
+          € {row.Totale_kostprijs_excl_BTW}
         </div>
       ),
     },
@@ -381,10 +381,15 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
     try {
       const order = {
         ...data,
-        project_id: data.ID || selectedProjectId,
+        project_id: data.project_id === 0 ? selectedProjectId : data.project_id,
         Bestelling_door_financ_dienst_geplaatst:
           data.Bestelling_door_financ_dienst_geplaatst === "Ja" ? true : false,
       };
+      if (data.Bestelling_verzonden_verwachtte_aankomst.trim() !== "")
+        order.Status = "Verzonden";
+      if (data.Bestelling_ontvangen_datum.trim() !== "")
+        order.Status = "Ontvangen";
+      console.log(order);
       if (state === "new") {
         await axios.post(`${backendUrl}/products`, order);
       } else {
@@ -401,8 +406,11 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
   };
 
   const filteredRows = rows.filter((row) => {
-    return Object.values(row).some((value) =>
-      value?.toString().toLowerCase().includes(searchTerm.toLowerCase())
+    const terms = searchTerm.toLowerCase().split(",");
+    return terms.every((term) =>
+      Object.values(row).some((value) =>
+        value?.toString().toLowerCase().includes(term.trim())
+      )
     );
   });
 
@@ -481,10 +489,46 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
                 )}
               </div>
             </div>
+            <div className="flex fastFilters">
+              <div className="status flex">
+                <i
+                  className={`fa-solid fa-clock ${
+                    searchTerm === "Afwachting" ? "active" : ""
+                  }`}
+                  onClick={() => setSearchTerm("Afwachting")}
+                />
+                <i
+                  className={`fas fa-check ${
+                    searchTerm === "Goedgekeurd" ? "active" : ""
+                  }`}
+                  onClick={() => setSearchTerm("Goedgekeurd")}
+                />
+                <i
+                  className={`fas fa-times ${
+                    searchTerm === "Afgekeurd" ? "active" : ""
+                  }`}
+                  onClick={() => setSearchTerm("Afgekeurd")}
+                />
+                <i
+                  className={`fa-solid fa-truck-fast ${
+                    searchTerm === "Verzonden" ? "active" : ""
+                  }`}
+                  onClick={() => setSearchTerm("Verzonden")}
+                />
+                <i
+                  className={`fa-solid fa-box ${
+                    searchTerm === "Ontvangen" ? "active" : ""
+                  }`}
+                  onClick={() => setSearchTerm("Ontvangen")}
+                />
+              </div>
+            </div>
 
             <DataTable
               columns={columns}
               data={filteredRows}
+              defaultSortFieldId={3}
+              defaultSortAsc={false}
               pagination
               subHeader
               fixedHeader

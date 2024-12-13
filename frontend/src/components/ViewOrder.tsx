@@ -28,6 +28,7 @@ interface OrderFormData {
   Bestelling_verzonden_verwachtte_aankomst: string;
   Bestelling_ontvangen_datum: string;
   Opmerkingen: string;
+  project_id?: number;
 }
 
 const ViewOrder: React.FC<ViewOrderProps> = ({
@@ -62,6 +63,7 @@ const ViewOrder: React.FC<ViewOrderProps> = ({
       row?.Bestelling_verzonden_verwachtte_aankomst || " ",
     Bestelling_ontvangen_datum: row?.Bestelling_ontvangen_datum || " ",
     Opmerkingen: row?.Opmerkingen || "",
+    project_id: row?.project_id || 0,
   });
   const [state, setState] = useState(_state);
 
@@ -159,7 +161,7 @@ const ViewOrder: React.FC<ViewOrderProps> = ({
         )}
         <form onSubmit={handleSubmit} className="styled-form">
           {Object.keys(orderFormData).map((key) => {
-            if (key === "ID") {
+            if (key === "ID" || key === "project_id") {
               return null;
             }
             const isHiddenForNonAdmin =
