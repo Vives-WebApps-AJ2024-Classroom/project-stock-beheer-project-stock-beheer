@@ -34,10 +34,10 @@
   text-align: center;
 }
 
-/* Styling voor de checkboxes in een grid */
+/* Styling voor de checkboxes in een flex container */
 .popup .project-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  display: flex;
+  flex-wrap: wrap; /* Laat projecten naar een nieuwe regel gaan als ze niet passen */
   gap: 15px; /* Afstand tussen de checkboxen */
   margin-bottom: 20px;
 }
@@ -52,17 +52,25 @@
 .popup div {
   display: flex;
   align-items: center;
+  flex-wrap: wrap; /* Zorgt ervoor dat lange projectnamen op de volgende regel gaan als ze te lang zijn */
 }
 
 .popup div label {
   font-size: 1rem;
   color: #555;
+  max-width: 300px; /* Maximale breedte voor de projectnaam */
+  word-wrap: break-word; /* Laat de tekst netjes naar de volgende regel gaan als die te lang is */
 }
 
-/* Save knop */
+/* Knoppen naast elkaar in de popup */
+.popup .popup-actions {
+  display: flex;
+  justify-content: space-between; /* Zorgt ervoor dat de knoppen naast elkaar staan */
+  gap: 10px; /* Afstand tussen de knoppen */
+}
+
 .popup button {
-  display: block;
-  width: 100%;
+  flex: 1; /* Zorgt ervoor dat knoppen dezelfde breedte hebben */
   background-color: var(--vives-zwart); /* Groene kleur voor de knop */
   color: white;
   padding: 12px;
@@ -70,7 +78,6 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  margin: 20px;
   transition: background-color 0.3s ease;
 }
 
@@ -103,8 +110,8 @@
   border-radius: 5px;
   outline: none;
   transition: border-color 0.3s ease;
-  width: 260px; /* Zorgt ervoor dat de velden de volledige breedte van hun container innemen */
-  box-sizing: border-box; /* Zorgt ervoor dat padding en border niet de breedte beïnvloeden */
+  width: 260px;
+  box-sizing: border-box;
 }
 
 .form-input:focus {
