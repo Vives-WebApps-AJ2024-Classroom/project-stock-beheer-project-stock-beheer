@@ -27,6 +27,15 @@ input[type="text"] {
   transition: border-color 0.3s ease;
 }
 
+select {
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 250px;
+  transition: border-color 0.3s ease;
+}
+
 input[type="text"]:focus {
   border-color: var(--vives-rood);
   outline: none; /* Verwijdert de standaard focus rand */

@@ -53,9 +53,9 @@ const App: React.FC = () => {
         {currentView === "users" && user && user.role === "admin" && (
           <UserTable />
         )}
-        {currentView === "winkels" && user && user.role === "admin" && (
-          <WinkelTable />
-        )}
+        {currentView === "winkels" &&
+          user &&
+          (user.role === "admin" || user.role === "teacher") && <WinkelTable />}
       </div>
     </div>
   );

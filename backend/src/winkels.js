@@ -12,19 +12,21 @@ const getAllWinkels = (req, res) => {
 };
 
 const createWinkel = (req, res) => {
-  const { naam, link } = req.body;
+  const { naam, link, project_id } = req.body;
 
   if (!naam || !link) {
     return res.status(400).json({ error: "Naam and link are required" });
   }
 
-  const query = "INSERT INTO winkels (naam, link) VALUES (?, ?)";
+  const query = "INSERT INTO winkels (naam, link, project_id) VALUES (?, ?, ?)";
 
-  db.query(query, [naam, link], (err, result) => {
+  const queryValues = [naam, link, project_id || null];
+
+  db.query(query, queryValues, (err, result) => {
     if (err) {
       return res.status(500).json({ error: "Failed to create winkel" });
     }
-    res.status(201).json({ id: result.insertId, naam, link });
+    res.status(201).json({ id: result.insertId, naam, link, project_id });
   });
 };
 

@@ -82,5 +82,5 @@ module.exports = {
   getProductsByProjectId,
   createProject,
   deleteProject,
-  updateProject,
+  updateProject
 };

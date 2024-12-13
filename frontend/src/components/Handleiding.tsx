@@ -5,12 +5,12 @@ const BestellingHandleiding: React.FC = () => {
     <div className="handleiding-container">
       <h2>Handleiding bij Bestellingen</h2>
       <p>
-        Voor elk project is er een aparte tab onderaan deze pagina, enkel de
-        leden van die groep mogen aanpassingen doen aan hun tabblad.
+        Voor elk project is er een mogelijkheid om iets te bestellen jullie zien
+        jullie project staan wanneer je op de knop project drukt in de topbar.
       </p>
       <p>
-        Bestellingen mogen enkel nog geplaatst worden bij de winkels die in dit
-        Excel-document staan. Indien een winkel niet beschikbaar is in deze
+        Bestellingen mogen enkel nog geplaatst worden bij de winkels die in deze
+        website weergegeven staan. Indien een winkel niet beschikbaar is in deze
         lijst, dien je dit eerst aan te vragen aan jouw coach. Pas nadat jouw
         coach de goedkeuring heeft gegeven om bij een winkel die niet in de
         lijst zit jouw bestellingen te plaatsen, mag je die winkel ook
@@ -19,7 +19,7 @@ const BestellingHandleiding: React.FC = () => {
       </p>
       <p>
         Je brengt ten alle tijde jouw coach via e-mail op de hoogte van
-        wijzigingen binnen dit bestand. Wanneer je dus een nieuwe bestelling
+        wijzigingen binnen deze website. Wanneer je dus een nieuwe bestelling
         plaatst, stuur je een mail naar jouw coach waarin je dit vermeldt. Op
         deze manier kan de coach dit bekijken en al dan niet goedkeuren.
       </p>
@@ -37,7 +37,7 @@ const BestellingHandleiding: React.FC = () => {
         </a>
         . Op de website van Digi-Key kan je het Digi-Key Part Number
         terugvinden. Wanneer je dit nummer kopieert en plakt, moet je ervoor
-        zorgen dat dit nummer correct wordt ingevoerd in je Excel-bestand.
+        zorgen dat dit nummer correct wordt ingevoerd in je bestelling.
       </p>
     </div>
   );

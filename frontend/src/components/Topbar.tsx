@@ -16,7 +16,7 @@ const Topbar: React.FC<TopbarProps> = ({
   onViewChange,
   onProjectsClick,
   onLogoClick,
-  onAllOrdersSelect,
+  onAllOrdersSelect
 }) => {
   const { user } = useUser();
 
@@ -42,9 +42,13 @@ const Topbar: React.FC<TopbarProps> = ({
             </button>
           </>
         )}
-        {user && user.role === "admin" && (
+        {user && (user.role === "admin" || user.role === "teacher") && (
           <>
             <button onClick={() => onViewChange("winkels")}>Winkels</button>
+          </>
+        )}
+        {user && user.role === "admin" && (
+          <>
             <button onClick={() => onViewChange("users")}>Gebruikers</button>
           </>
         )}

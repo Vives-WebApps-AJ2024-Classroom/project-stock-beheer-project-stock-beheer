@@ -31,12 +31,19 @@ interface OrderFormData {
   project_id?: number;
 }
 
+interface Winkel {
+  ID: number;
+  naam: string;
+  link: string;
+  project_id?: number; // 'project_id' is optioneel omdat sommige winkels mogelijk geen project gekoppeld hebben
+}
+
 const ViewOrder: React.FC<ViewOrderProps> = ({
   onClose,
   onSave,
   _state,
   admin,
-  row,
+  row
 }) => {
   const { user } = useUser();
   const [orderFormData, setOrderFormData] = useState<OrderFormData>({
@@ -63,7 +70,7 @@ const ViewOrder: React.FC<ViewOrderProps> = ({
       row?.Bestelling_verzonden_verwachtte_aankomst || " ",
     Bestelling_ontvangen_datum: row?.Bestelling_ontvangen_datum || " ",
     Opmerkingen: row?.Opmerkingen || "",
-    project_id: row?.project_id || 0,
+    project_id: row?.project_id || 0
   });
   const [state, setState] = useState(_state);
 
@@ -71,24 +78,36 @@ const ViewOrder: React.FC<ViewOrderProps> = ({
     process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
 
   const [winkels, setWinkels] = useState<
-    { ID: number; naam: string; link: string }[]
+    { ID: number; naam: string; link: string; project_id?: number }[]
   >([]);
 
-  // Haal de lijst van winkels op bij het laden van de component
   useEffect(() => {
     const fetchWinkels = async () => {
       try {
         const response = await fetch(`${backendUrl}/winkels`);
-        const data = await response.json();
-        console.log("Fetched winkels:", data);
-        setWinkels(data); // Stel de winkel lijst in
+        const data: Winkel[] = await response.json();
+        console.log("Fetched winkels:", data); // Zorg ervoor dat de data wordt gelogd
+
+        // Controleer of de gebruiker een admin is
+        if (user && user.role === "admin") {
+          // Admins zien alle winkels
+          setWinkels(data);
+        } else if (user && user.projects) {
+          // Niet-admin gebruikers zien alleen winkels van hun projecten
+          const userWinkels = data.filter(
+            (winkel: Winkel) =>
+              !winkel.project_id || // Winkels zonder project_id zijn voor iedereen zichtbaar
+              user.projects.includes(winkel.project_id) // Alleen winkels van gekoppelde projecten
+          );
+          setWinkels(userWinkels);
+        }
       } catch (error) {
         console.error("Error fetching winkels:", error);
       }
     };
 
     fetchWinkels();
-  }, [backendUrl]);
+  }, [backendUrl, user]);
 
   const validateForm = (): boolean => {
     if (!orderFormData.Korte_omschrijving.trim()) {
@@ -131,7 +150,7 @@ const ViewOrder: React.FC<ViewOrderProps> = ({
     const { name, value } = e.target;
     setOrderFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: value
     }));
   };
 
@@ -175,7 +194,7 @@ const ViewOrder: React.FC<ViewOrderProps> = ({
                 "Bestelling_ingegeven_RQ_nummer",
                 "Bestelling_door_financ_dienst_geplaatst",
                 "Bestelling_verzonden_verwachtte_aankomst",
-                "Bestelling_ontvangen_datum",
+                "Bestelling_ontvangen_datum"
               ].includes(key);
 
             if ((state === "edit" || state === "new") && isHiddenForNonAdmin) {
@@ -194,7 +213,7 @@ const ViewOrder: React.FC<ViewOrderProps> = ({
                     onChange={(e) =>
                       setOrderFormData((prev) => ({
                         ...prev,
-                        [key]: e.target.checked ? "Ja" : "Nee",
+                        [key]: e.target.checked ? "Ja" : "Nee"
                       }))
                     }
                     className="form-input"
@@ -202,9 +221,9 @@ const ViewOrder: React.FC<ViewOrderProps> = ({
                   />
                 ) : key === "Winkel" ? (
                   <select
-                    id={key}
-                    name={key}
-                    value={orderFormData[key as keyof OrderFormData]}
+                    id="winkel"
+                    name="Winkel"
+                    value={orderFormData.Winkel}
                     onChange={handleChange}
                     className="form-input"
                     required
