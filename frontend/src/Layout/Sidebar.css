@@ -58,6 +58,10 @@
   color: white; /* Zorg ervoor dat de tekst wit blijft wanneer het item rood wordt */
 }
 
+.sidebar span {
+  overflow: hidden;
+}
+
 .project-button {
   width: 100%;
   padding: 10px;

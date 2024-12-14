@@ -135,7 +135,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onProjectSelect, onViewChange }) => {
                 autoFocus
               />
             ) : (
-              project.project_naam
+              <span>{project.project_naam}</span>
             )}
             {user && user.role === "admin" && (
               <>
