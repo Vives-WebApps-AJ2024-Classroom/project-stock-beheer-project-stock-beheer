@@ -101,10 +101,3 @@ i {
   margin-right: 10px;
   accent-color: var(--vives-rood);
 }
-
-.fastFilters {
-  display: flex;
-  justify-content: start;
-  align-items: center;
-  margin-bottom: 10px;
-}

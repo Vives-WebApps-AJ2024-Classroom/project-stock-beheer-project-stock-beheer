@@ -489,41 +489,6 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
                 )}
               </div>
             </div>
-            <div className="flex fastFilters">
-              <div className="status flex">
-                <i
-                  className={`fa-solid fa-clock ${
-                    searchTerm === "Afwachting" ? "active" : ""
-                  }`}
-                  onClick={() => setSearchTerm("Afwachting")}
-                />
-                <i
-                  className={`fas fa-check ${
-                    searchTerm === "Goedgekeurd" ? "active" : ""
-                  }`}
-                  onClick={() => setSearchTerm("Goedgekeurd")}
-                />
-                <i
-                  className={`fas fa-times ${
-                    searchTerm === "Afgekeurd" ? "active" : ""
-                  }`}
-                  onClick={() => setSearchTerm("Afgekeurd")}
-                />
-                <i
-                  className={`fa-solid fa-truck-fast ${
-                    searchTerm === "Verzonden" ? "active" : ""
-                  }`}
-                  onClick={() => setSearchTerm("Verzonden")}
-                />
-                <i
-                  className={`fa-solid fa-box ${
-                    searchTerm === "Ontvangen" ? "active" : ""
-                  }`}
-                  onClick={() => setSearchTerm("Ontvangen")}
-                />
-              </div>
-            </div>
-
             <DataTable
               columns={columns}
               data={filteredRows}
