@@ -421,6 +421,25 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
     });
   };
 
+  const downloadTable = () => {
+    const headers = Object.keys(rows[0]).join(";"); // Kolomnamen
+
+    const csv = rows.map((row) => {
+      return Object.values(row)
+        .map((value) => `"${String(value).replace(/"/g, '""')}"`) // Escape dubbele aanhalingstekens
+        .join(";"); // Waarden gescheiden door komma's
+    });
+
+    const csvData = [headers, ...csv].join("\n"); // Voeg headers en data samen
+    const blob = new Blob([csvData], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `bestellingen${project ? "_" + project.project_naam : ""}.csv`; // Bestandsnaam
+    a.click();
+  };
+
   return (
     <>
       <div className="container my-5" onClick={() => setColumnMenuOpen(false)}>
@@ -488,6 +507,16 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
                   </div>
                 )}
               </div>
+            </div>
+            <div className="smallButtons">
+              <i
+                className="fa-solid fa-arrows-rotate"
+                onClick={() => fetchData()}
+              />
+              <i
+                className="fa-solid fa-download"
+                onClick={() => downloadTable()}
+              />
             </div>
             <DataTable
               columns={columns}

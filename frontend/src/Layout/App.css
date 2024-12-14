@@ -28,3 +28,7 @@ body {
   height: 100vh;
   overflow: hidden; /* Zorg ervoor dat er geen horizontale scroll is wanneer de sidebar weg is */
 }
+
+* {
+  transition: all 0.3s ease-in-out; /* Voeg een overgang toe voor alle elementen op de pagina */
+}

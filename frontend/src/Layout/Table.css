@@ -101,3 +101,23 @@ i {
   margin-right: 10px;
   accent-color: var(--vives-rood);
 }
+
+.smallButtons {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  width: 100%;
+}
+
+.smallButtons i {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  background-color: #b3b3b3;
+  border: 2px solid rgb(71, 71, 71);
+}
+
+.smallButtons i:hover {
+  background-color: var(--vives-rood);
+}
