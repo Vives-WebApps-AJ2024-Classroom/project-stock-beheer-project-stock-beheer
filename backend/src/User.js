@@ -1,4 +1,6 @@
 const db = require("./dB");
+const nodemailer = require("nodemailer");
+require("dotenv").config();
 
 const createUser = (req, res) => {
   const { username, displayname, role, email } = req.body;
@@ -138,10 +140,45 @@ const getUserById = (req, res) => {
   });
 };
 
+const sendEmail = (req, res) => {
+  const { emails, subject, message } = req.body;
+  console.log(emails, subject, message);
+  console.log(process.env.GMAIL_USER, process.env.GMAIL_PASSWORD);
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.GMAIL_USER,
+      pass: process.env.GMAIL_PASSWORD,
+    },
+  });
+
+  console.log(transporter);
+
+  emails.forEach((email) => {
+    const mailOptions = {
+      from: process.env.GMAIL_USER,
+      to: email,
+      subject: subject,
+      text: message,
+    };
+    console.log("Sending email to", email);
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log("Error sending email to", email, error);
+      } else {
+        console.log("Email sent to", email, info.response);
+      }
+    });
+  });
+
+  res.status(200).json({ message: "Emails sent successfully" });
+};
+
 module.exports = {
   getAllUsers,
   getUserById,
   createUser,
   deleteUser,
   updateUser,
+  sendEmail,
 };

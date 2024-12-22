@@ -42,6 +42,7 @@ app.get("/users/:id", userController.getUserById);
 app.post("/users", userController.createUser);
 app.put("/users/:id", userController.updateUser);
 app.delete("/users/:id", userController.deleteUser);
+app.post("/users/email", userController.sendEmail);
 
 // Winkels-related routes
 app.get("/winkels", winkelsController.getAllWinkels);

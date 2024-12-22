@@ -150,7 +150,12 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       if (oldStatus !== status) {
         console.log(`Status changed from ${oldStatus} to ${status}`);
         setPreviousStatus(oldStatus); // Sla de oude status op voor latere vergelijking
-        sendEmail();
+        sendEmail(
+          row,
+          oldStatus,
+          status,
+          user?.name || user?.login || "Unknown"
+        );
       }
 
       fetchData(); // Vernieuw de data
@@ -162,7 +167,33 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
     }
   };
 
-  const sendEmail = () => {};
+  const sendEmail = async (
+    row: Row,
+    oldStatus: String,
+    status: String,
+    coach: String
+  ) => {
+    const projectUsers: any[] = [];
+    const users = await axios.get(`${backendUrl}/users`);
+    console.log(users.data);
+    users.data.forEach((user: any) => {
+      if (user.project_ids?.includes(selectedProjectId)) {
+        projectUsers.push(user);
+      }
+    });
+    const projectUserEmails = projectUsers
+      .filter((user: any) => user.email && user.email.length > 0)
+      .map((user: any) => user.email);
+
+    const subject = `Status update: bestelling ${row.Korte_omschrijving}`;
+    const message = `De status van de bestelling "${row.Korte_omschrijving}" is gewijzigd van "${oldStatus}" naar "${status}" door "${coach}".`;
+
+    axios.post(`${backendUrl}/users/email`, {
+      emails: projectUserEmails,
+      subject,
+      message,
+    });
+  };
 
   const columns = [
     {
