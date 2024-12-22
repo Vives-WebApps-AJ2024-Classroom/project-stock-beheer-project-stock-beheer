@@ -16,7 +16,7 @@ const Topbar: React.FC<TopbarProps> = ({
   onViewChange,
   onProjectsClick,
   onLogoClick,
-  onAllOrdersSelect
+  onAllOrdersSelect,
 }) => {
   const { user } = useUser();
 
@@ -52,6 +52,17 @@ const Topbar: React.FC<TopbarProps> = ({
             <button onClick={() => onViewChange("users")}>Gebruikers</button>
           </>
         )}
+        {user && (user.role === "admin" || user.role === "teacher") && (
+          <button
+            onClick={() => {
+              onAllOrdersSelect(1);
+              onViewChange("projects");
+            }}
+          >
+            Docenten Bestellingen
+          </button>
+        )}
+
         {user && user.role === "admin" && (
           <button
             onClick={() => {
@@ -62,6 +73,7 @@ const Topbar: React.FC<TopbarProps> = ({
             Alle Bestellingen
           </button>
         )}
+
         <Profile />
       </div>
     </div>

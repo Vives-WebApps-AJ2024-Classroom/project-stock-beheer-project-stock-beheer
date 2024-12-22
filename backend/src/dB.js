@@ -53,6 +53,31 @@ const createTables = () => {
     console.log("Table 'projects' created or already exists.");
   });
 
+  const checkProjectExistsQuery =
+    "SELECT COUNT(*) AS count FROM projects WHERE project_naam = 'Docenten'";
+
+  connection.query(checkProjectExistsQuery, (err, results) => {
+    if (err) {
+      console.error("Error checking if docent project exists:", err);
+      return;
+    }
+
+    if (results[0].count === 0) {
+      const insertProjectQuery =
+        "INSERT INTO projects (project_naam) VALUES ('Docenten')";
+
+      connection.query(insertProjectQuery, (err, result) => {
+        if (err) {
+          console.error("Failed to create docent project:", err);
+        } else {
+          console.log("Docent project created");
+        }
+      });
+    } else {
+      console.log("Docent project already exists");
+    }
+  });
+
   const createProductsTableQuery = `
     CREATE TABLE IF NOT EXISTS products (
       ID INT AUTO_INCREMENT PRIMARY KEY,

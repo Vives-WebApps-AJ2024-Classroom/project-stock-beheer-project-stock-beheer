@@ -44,7 +44,6 @@ const UserTable: React.FC = () => {
                 .map((projectId: string) => Number(projectId.trim()))
             : [],
         }));
-        console.log("Fetched users:", parsedUsers);
         setUsers(parsedUsers);
       })
       .catch((error) => {
@@ -146,9 +145,19 @@ const UserTable: React.FC = () => {
   };
 
   const handleRoleChange = (userId: number, newRole: string) => {
+    var userProjects = users.find((user) => user.id === userId)?.projects || [];
+    if (
+      (newRole === "admin" || newRole === "teacher") &&
+      !userProjects.includes(1)
+    ) {
+      userProjects.push(1); // Voeg het standaard project toe voor docenten
+    } else {
+      userProjects = userProjects.filter((project) => project !== 1);
+    }
     axios
       .put(`${backendUrl}/users/${userId}`, {
         role: newRole,
+        projects: userProjects.join(","),
       })
       .then(() => {
         setUsers((prevUsers) =>
@@ -185,6 +194,7 @@ const UserTable: React.FC = () => {
     if (selectedUser) {
       const projectString =
         selectedProjects.length > 0 ? selectedProjects.join(",") : "0";
+
       axios
         .put(`${backendUrl}/users/${selectedUser.id}`, {
           projects: projectString || "",

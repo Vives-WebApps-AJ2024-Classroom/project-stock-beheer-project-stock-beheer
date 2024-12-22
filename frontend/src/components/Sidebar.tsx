@@ -30,10 +30,11 @@ const Sidebar: React.FC<SidebarProps> = ({ onProjectSelect, onViewChange }) => {
         }
         const data = await response.json();
         if (user && user.role === "admin") {
-          setProjects(data);
+          setProjects(data.filter((project: Project) => project.id !== 1));
         } else if (user && user.projects) {
-          const userProjects = data.filter((project: Project) =>
-            user.projects?.includes(project.id)
+          const userProjects = data.filter(
+            (project: Project) =>
+              user.projects?.includes(project.id) && project.id !== 1
           );
           setProjects(userProjects);
         }

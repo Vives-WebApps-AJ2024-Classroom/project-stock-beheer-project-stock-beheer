@@ -220,7 +220,8 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
             <i className="fa-solid fa-truck-fast" />
           ) : (
             <>
-              {(user?.role === "teacher" || user?.role === "admin") &&
+              {((user?.role === "teacher" && selectedProjectId !== 1) ||
+                user?.role === "admin") &&
               row.Bestelling_ingegeven_RQ_nummer.trim() === "" ? (
                 <div className="status-buttons status">
                   <i
