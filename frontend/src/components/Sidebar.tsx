@@ -33,7 +33,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onProjectSelect, onViewChange }) => {
           setProjects(data);
         } else if (user && user.projects) {
           const userProjects = data.filter((project: Project) =>
-            user.projects.includes(project.id)
+            user.projects?.includes(project.id)
           );
           setProjects(userProjects);
         }

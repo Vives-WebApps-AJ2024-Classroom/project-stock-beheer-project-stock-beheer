@@ -22,8 +22,8 @@
   max-height: 90vh;
   overflow-y: auto;
   transition: transform 0.3s ease-out;
-  width: 100%;
-  max-width: 500px;
+  width: 600px;
+  max-width: 600px;
 }
 
 /* Title van de Popup */

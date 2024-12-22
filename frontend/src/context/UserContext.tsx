@@ -6,6 +6,7 @@ interface User {
   avatar_url: string;
   role: string;
   id: number;
+  email: string;
   projects: number[];
 }
 

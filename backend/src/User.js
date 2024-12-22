@@ -1,11 +1,11 @@
 const db = require("./dB");
 
 const createUser = (req, res) => {
-  const { username, displayname, role } = req.body;
+  const { username, displayname, role, email } = req.body;
   if (!username || !displayname || !role) {
     return res
       .status(400)
-      .json({ error: "Username, displayname and role required" });
+      .json({ error: "Username, displayname, role required" });
   }
 
   const checkUserQuery = "SELECT * FROM users WHERE username = ?";
@@ -19,19 +19,24 @@ const createUser = (req, res) => {
         role: results[0].role,
         username: results[0].username,
         displayname: results[0].displayname,
-        projects: results[0].project_ids
+        projects: results[0].project_ids,
+        email: results[0].email,
       });
     } else {
       const query =
-        "INSERT INTO users (username, displayname, role) VALUES (?, ?, ?)";
+        "INSERT INTO users (username, displayname, role, email) VALUES (?, ?, ?, ?)";
 
-      db.query(query, [username, displayname, role], (err, result) => {
+      db.query(query, [username, displayname, role, email], (err, result) => {
         if (err) {
           return res.status(500).json({ error: "Failed to create user" });
         }
-        res
-          .status(201)
-          .json({ id: result.insertId, role: role, username: username });
+        res.status(201).json({
+          id: result.insertId,
+          role: role,
+          username: username,
+          email: email,
+          displayname: displayname,
+        });
       });
     }
   });
@@ -66,7 +71,7 @@ const deleteUser = (req, res) => {
 
 const updateUser = (req, res) => {
   const { id } = req.params;
-  const { username, displayname, role, projects } = req.body;
+  const { username, displayname, role, projects, email } = req.body;
 
   let fields = [];
   let values = [];
@@ -86,6 +91,10 @@ const updateUser = (req, res) => {
   if (projects) {
     fields.push("project_ids = ?");
     values.push(projects);
+  }
+  if (email) {
+    fields.push("email = ?");
+    values.push(email);
   }
 
   if (fields.length === 0) {
@@ -122,7 +131,9 @@ const getUserById = (req, res) => {
       id: results[0].id,
       username: results[0].username,
       displayname: results[0].displayname,
-      role: results[0].role
+      role: results[0].role,
+      projects: results[0].project_ids,
+      email: results[0].email,
     });
   });
 };
@@ -132,5 +143,5 @@ module.exports = {
   getUserById,
   createUser,
   deleteUser,
-  updateUser
+  updateUser,
 };

@@ -24,7 +24,7 @@ const WinkelTable: React.FC = () => {
   const [newWinkel, setNewWinkel] = useState({
     naam: "",
     link: "",
-    project_id: null as number | null
+    project_id: null as number | null,
   }); // initialiseer project_id als null
   const backendUrl =
     process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
@@ -57,7 +57,7 @@ const WinkelTable: React.FC = () => {
           } else {
             // Voor een teacher, filter de projecten waaraan hij gekoppeld is
             const userProjects = response.data.filter((project: Project) =>
-              user.projects.includes(project.id)
+              user.projects?.includes(project.id)
             );
             console.log("Filtered projects for teacher:", userProjects); // Log de gefilterde projecten
             setProjects(userProjects);
@@ -75,7 +75,7 @@ const WinkelTable: React.FC = () => {
     {
       name: "Naam",
       selector: (row: Winkel) => row.naam,
-      sortable: true
+      sortable: true,
     },
     {
       name: "Link",
@@ -84,7 +84,7 @@ const WinkelTable: React.FC = () => {
           {row.link}
         </a>
       ),
-      sortable: false
+      sortable: false,
     },
     {
       name: "Project",
@@ -93,10 +93,10 @@ const WinkelTable: React.FC = () => {
         const project = projects.find(
           (project) => project.id === row.project_id
         );
-        return project ? project.project_naam : "-"; // Als er geen project is gekoppeld, toon een placeholder
+        return project ? project.project_naam : "Alle projecten"; // Als er geen project is gekoppeld, toon een placeholder
       },
-      sortable: true
-    }
+      sortable: true,
+    },
   ];
 
   // Functie voor het toevoegen van een nieuwe winkel
@@ -172,7 +172,9 @@ const WinkelTable: React.FC = () => {
               Selecteer een project
             </option>
             {/* Voeg een extra optie toe voor "Alle projecten" als de gebruiker een admin is */}
-            {user?.role === "admin" && <option value="">Alle projecten</option>}
+            {user?.role === "admin" && (
+              <option value="Alle projecten">Alle projecten</option>
+            )}
             {projects.map((project) => (
               <option key={project.id} value={project.id}>
                 {project.project_naam}

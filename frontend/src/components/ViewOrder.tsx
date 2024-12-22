@@ -7,6 +7,7 @@ interface ViewOrderProps {
   _state: string;
   admin: boolean;
   row?: OrderFormData;
+  project_id?: number;
 }
 
 interface OrderFormData {
@@ -43,7 +44,8 @@ const ViewOrder: React.FC<ViewOrderProps> = ({
   onSave,
   _state,
   admin,
-  row
+  row,
+  project_id,
 }) => {
   const { user } = useUser();
   const [orderFormData, setOrderFormData] = useState<OrderFormData>({
@@ -70,7 +72,7 @@ const ViewOrder: React.FC<ViewOrderProps> = ({
       row?.Bestelling_verzonden_verwachtte_aankomst || " ",
     Bestelling_ontvangen_datum: row?.Bestelling_ontvangen_datum || " ",
     Opmerkingen: row?.Opmerkingen || "",
-    project_id: row?.project_id || 0
+    project_id: row?.project_id || 0,
   });
   const [state, setState] = useState(_state);
 
@@ -93,11 +95,12 @@ const ViewOrder: React.FC<ViewOrderProps> = ({
           // Admins zien alle winkels
           setWinkels(data);
         } else if (user && user.projects) {
+          console.log(project_id);
           // Niet-admin gebruikers zien alleen winkels van hun projecten
           const userWinkels = data.filter(
             (winkel: Winkel) =>
               !winkel.project_id || // Winkels zonder project_id zijn voor iedereen zichtbaar
-              user.projects.includes(winkel.project_id) // Alleen winkels van gekoppelde projecten
+              winkel.project_id === project_id
           );
           setWinkels(userWinkels);
         }
@@ -105,9 +108,8 @@ const ViewOrder: React.FC<ViewOrderProps> = ({
         console.error("Error fetching winkels:", error);
       }
     };
-
     fetchWinkels();
-  }, [backendUrl, user]);
+  }, [backendUrl, user, project_id]);
 
   const validateForm = (): boolean => {
     if (!orderFormData.Korte_omschrijving.trim()) {
@@ -150,7 +152,7 @@ const ViewOrder: React.FC<ViewOrderProps> = ({
     const { name, value } = e.target;
     setOrderFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -194,7 +196,7 @@ const ViewOrder: React.FC<ViewOrderProps> = ({
                 "Bestelling_ingegeven_RQ_nummer",
                 "Bestelling_door_financ_dienst_geplaatst",
                 "Bestelling_verzonden_verwachtte_aankomst",
-                "Bestelling_ontvangen_datum"
+                "Bestelling_ontvangen_datum",
               ].includes(key);
 
             if ((state === "edit" || state === "new") && isHiddenForNonAdmin) {
@@ -213,7 +215,7 @@ const ViewOrder: React.FC<ViewOrderProps> = ({
                     onChange={(e) =>
                       setOrderFormData((prev) => ({
                         ...prev,
-                        [key]: e.target.checked ? "Ja" : "Nee"
+                        [key]: e.target.checked ? "Ja" : "Nee",
                       }))
                     }
                     className="form-input"

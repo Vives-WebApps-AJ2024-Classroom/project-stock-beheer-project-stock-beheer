@@ -5,7 +5,6 @@ import { useUser } from "../context/UserContext";
 
 const GitHubLoginButton = () => {
   const { user, setUser } = useUser();
-  const [loading, setLoading] = useState(true); // Voeg een laadstatus toe
   const backendUrl =
     process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
   const client_id =
@@ -14,13 +13,38 @@ const GitHubLoginButton = () => {
   const redirectUrl =
     process.env.REACT_APP_GITHUB_REDIRECT_URL || "http://localhost:3000";
 
+  const getUserEmail = async (username: string) => {
+    try {
+      const response = await axios.get(
+        `https://api.github.com/users/${username.replace(
+          /^.*com[/]([^/]*).*$/,
+          "$1"
+        )}/events/public`
+      );
+      const email = response.data
+        .filter((event: any) => event.type === "PushEvent")
+        .map((event: any) => event.payload.commits)
+        .flat()
+        .find((commit: any) => commit.author.email)?.author.email;
+
+      if (email) {
+        return email;
+      } else {
+        console.log("User email not found");
+        return "";
+      }
+    } catch (error) {
+      console.error("Error fetching user email:", error);
+      return null;
+    }
+  };
   useEffect(() => {
     const accessToken = localStorage.getItem("githubAccessToken");
     if (accessToken) {
       fetch("https://api.github.com/user", {
         headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
+          Authorization: `Bearer ${accessToken}`,
+        },
       })
         .catch((error) => {
           localStorage.removeItem("githubAccessToken");
@@ -33,12 +57,14 @@ const GitHubLoginButton = () => {
         })
         .then(async (userData) => {
           try {
-            console.log("GitHub user data:", userData);
             if (userData.login) {
+              const email = await getUserEmail(userData.login);
+
               const response = await axios.post(`${backendUrl}/users`, {
                 username: userData.login,
                 displayname: userData.name || userData.login,
-                role: "student"
+                role: "student",
+                email: email,
               });
 
               const userWithId = {
@@ -47,14 +73,15 @@ const GitHubLoginButton = () => {
                 name: response.data.displayname,
                 role: response.data.role,
                 id: response.data.id,
-                projects: response.data.projects
+                projects: response.data.projects,
+                email: response.data.email,
               };
 
               setUser(userWithId); // Stel gebruiker in
 
               if (userData.login === adminLogin) {
                 await axios.put(`${backendUrl}/users/${response.data.id}`, {
-                  role: "admin"
+                  role: "admin",
                 });
               }
             }
@@ -81,17 +108,20 @@ const GitHubLoginButton = () => {
               localStorage.setItem("githubAccessToken", data.accessToken); // Sla het token op
               fetch("https://api.github.com/user", {
                 headers: {
-                  Authorization: `Bearer ${data.accessToken}`
-                }
+                  Authorization: `Bearer ${data.accessToken}`,
+                },
               })
                 .then((res) => res.json())
                 .then(async (userData) => {
                   try {
                     if (userData.login) {
+                      const email = await getUserEmail(userData.login);
+
                       const response = await axios.post(`${backendUrl}/users`, {
                         username: userData.login,
                         displayname: userData.name || userData.login,
-                        role: "student"
+                        role: "student",
+                        email: email,
                       });
 
                       const userWithId = {
@@ -100,7 +130,8 @@ const GitHubLoginButton = () => {
                         name: response.data.displayname,
                         role: response.data.role,
                         id: response.data.id,
-                        projects: response.data.projects
+                        projects: response.data.projects,
+                        email: response.data.email,
                       };
 
                       setUser(userWithId); // Stel gebruiker in
@@ -109,7 +140,7 @@ const GitHubLoginButton = () => {
                         await axios.put(
                           `${backendUrl}/users/${response.data.id}`,
                           {
-                            role: "admin"
+                            role: "admin",
                           }
                         );
                       }
@@ -133,7 +164,7 @@ const GitHubLoginButton = () => {
           .catch((error) => console.error("Error tijdens login:", error));
       }
     }
-  }, [backendUrl, adminLogin, setUser]);
+  }, [backendUrl, adminLogin, setUser, user]);
 
   const handleLogin = () => {
     window.location.href = `https://github.com/login/oauth/authorize?client_id=${client_id}&redirect_uri=${redirectUrl}`;

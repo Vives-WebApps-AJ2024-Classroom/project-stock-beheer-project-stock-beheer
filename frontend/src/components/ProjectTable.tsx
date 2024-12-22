@@ -58,6 +58,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
   const [columnMenuOpen, setColumnMenuOpen] = useState(false);
   const [state, setState] = useState("view");
   const [selectedRow, setSelectedRow] = useState<Row | undefined>(undefined);
+  const [previousStatus, setPreviousStatus] = useState<string | null>(null);
 
   const { user } = useUser();
   interface Project {
@@ -75,7 +76,6 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       selectedProjectId === -1
         ? `${backendUrl}/products`
         : `${backendUrl}/projects/${selectedProjectId}/products`;
-    console.log(url);
     try {
       const response = await fetch(url);
       if (!response.ok) {
@@ -137,13 +137,23 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
     row,
     status,
   }: UpdateStatusParams): Promise<void> => {
+    const oldStatus = row.Status; // Bewaar de oude status voordat de update plaatsvindt
     try {
+      // Status bijwerken
       await axios.put(`${backendUrl}/products/${row.ID}`, {
         ...row,
         Status: status,
         Gekeurd_door_coach: user?.name || user?.login || "Unknown",
       });
-      fetchData();
+
+      // Vergelijk of de status daadwerkelijk is gewijzigd
+      if (oldStatus !== status) {
+        console.log(`Status changed from ${oldStatus} to ${status}`);
+        setPreviousStatus(oldStatus); // Sla de oude status op voor latere vergelijking
+        sendEmail();
+      }
+
+      fetchData(); // Vernieuw de data
     } catch (error) {
       console.error(`Error updating status to ${status}:`, error);
       alert(
@@ -151,6 +161,8 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
       );
     }
   };
+
+  const sendEmail = () => {};
 
   const columns = [
     {
@@ -535,6 +547,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
                 _state={state}
                 admin={user?.role === "admin"}
                 row={selectedRow}
+                project_id={selectedProjectId}
               />
             )}
           </div>

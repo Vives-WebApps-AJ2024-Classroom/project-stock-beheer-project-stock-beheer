@@ -11,7 +11,7 @@ try {
     host: process.env.MYSQL_HOST || "localhost",
     port: "3306",
     database: process.env.MYSQL_DATABASE || "Stock_Beheer",
-    insecureAuth: true
+    insecureAuth: true,
   });
 
   connection.connect((err) => {
@@ -92,7 +92,8 @@ const createTables = () => {
       username VARCHAR(255) NOT NULL,
       displayname VARCHAR(255) NOT NULL,
       role VARCHAR(255) NOT NULL,
-      project_ids VARCHAR(255)
+      project_ids VARCHAR(255),
+      email VARCHAR(255)
     );
   `;
 
