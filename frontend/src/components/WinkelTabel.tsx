@@ -29,6 +29,10 @@ const WinkelTable: React.FC = () => {
   const backendUrl =
     process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
 
+  useEffect(() => {
+    document.title = `Stock Beheer | Winkels`;
+  }, []);
+
   // Haal de winkels op van de backend
   useEffect(() => {
     axios

@@ -22,6 +22,10 @@ const UserTable: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedProjects, setSelectedProjects] = useState<number[]>([]);
 
+  useEffect(() => {
+    document.title = `Stock Beheer | Gebruikers`;
+  }, []);
+
   const backendUrl =
     process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
 
@@ -38,7 +42,7 @@ const UserTable: React.FC = () => {
             ? user.project_ids
                 .split(",")
                 .map((projectId: string) => Number(projectId.trim()))
-            : []
+            : [],
         }));
         console.log("Fetched users:", parsedUsers);
         setUsers(parsedUsers);
@@ -65,12 +69,12 @@ const UserTable: React.FC = () => {
     {
       name: "ID",
       selector: (row: User) => row.id,
-      sortable: true
+      sortable: true,
     },
     {
       name: "Naam",
       selector: (row: User) => row.name,
-      sortable: true
+      sortable: true,
     },
     {
       name: "Rol",
@@ -85,7 +89,7 @@ const UserTable: React.FC = () => {
           <option value="student">student</option>
         </select>
       ),
-      sortable: true
+      sortable: true,
     },
     {
       name: "Projecten",
@@ -108,7 +112,7 @@ const UserTable: React.FC = () => {
           </div>
         );
       },
-      sortable: false
+      sortable: false,
     },
     {
       name: "Verwijderen",
@@ -119,14 +123,14 @@ const UserTable: React.FC = () => {
             background: "transparent",
             border: "none",
             color: "red",
-            cursor: "pointer"
+            cursor: "pointer",
           }}
         >
           <i className="fas fa-trash"></i> {/* Font Awesome vuilbak icoon */}
         </button>
       ),
-      sortable: false
-    }
+      sortable: false,
+    },
   ];
 
   // Functie voor het openen van de popup
@@ -144,7 +148,7 @@ const UserTable: React.FC = () => {
   const handleRoleChange = (userId: number, newRole: string) => {
     axios
       .put(`${backendUrl}/users/${userId}`, {
-        role: newRole
+        role: newRole,
       })
       .then(() => {
         setUsers((prevUsers) =>
@@ -183,7 +187,7 @@ const UserTable: React.FC = () => {
         selectedProjects.length > 0 ? selectedProjects.join(",") : "0";
       axios
         .put(`${backendUrl}/users/${selectedUser.id}`, {
-          projects: projectString || ""
+          projects: projectString || "",
         })
         .then(() => {
           setUsers((prevUsers) =>

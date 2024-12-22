@@ -71,6 +71,14 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
   const backendUrl =
     process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
 
+  useEffect(() => {
+    document.title = `Stock Beheer | ${
+      selectedProjectId === -1
+        ? "Alle bestellingen"
+        : project?.project_naam || "Stock Beheer"
+    }`;
+  }, [selectedProjectId, project?.project_naam]);
+
   const fetchData = useCallback(async () => {
     const url =
       selectedProjectId === -1

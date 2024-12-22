@@ -121,5 +121,11 @@
 
 div .edit-order-button {
   background-color: var(--groen);
-  width: 40px;
+  max-width: 40px;
+  align-items: center;
+  justify-content: center;
+}
+
+div .edit-order-button > i {
+  transform: translate(-3px, -2px);
 }
