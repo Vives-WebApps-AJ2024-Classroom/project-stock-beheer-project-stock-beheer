@@ -131,13 +131,16 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
   interface UpdateStatusParams {
     row: Row;
     status: string;
+    oldStatus: string;
   }
 
   const updateStatus = async ({
     row,
     status,
+    oldStatus,
   }: UpdateStatusParams): Promise<void> => {
-    const oldStatus = row.Status; // Bewaar de oude status voordat de update plaatsvindt
+    console.log(`Updating status to ${status}...`);
+    console.log(row.Status);
     try {
       // Status bijwerken
       await axios.put(`${backendUrl}/products/${row.ID}`, {
@@ -169,9 +172,9 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
 
   const sendEmail = async (
     row: Row,
-    oldStatus: String,
-    status: String,
-    coach: String
+    oldStatus: string,
+    status: string,
+    coach: string
   ) => {
     const projectUsers: any[] = [];
     const users = await axios.get(`${backendUrl}/users`);
@@ -217,21 +220,39 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
                       row.Status === "Afwachting" ? "active" : ""
                     }`}
                     style={{ cursor: "pointer" }}
-                    onClick={() => updateStatus({ row, status: "Afwachting" })}
+                    onClick={() =>
+                      updateStatus({
+                        row,
+                        status: "Afwachting",
+                        oldStatus: row.Status,
+                      })
+                    }
                   />
                   <i
                     className={`fas fa-check ${
                       row.Status === "Goedgekeurd" ? "active" : ""
                     }`}
                     style={{ cursor: "pointer" }}
-                    onClick={() => updateStatus({ row, status: "Goedgekeurd" })}
+                    onClick={() =>
+                      updateStatus({
+                        row,
+                        status: "Goedgekeurd",
+                        oldStatus: row.Status,
+                      })
+                    }
                   />
                   <i
                     className={`fas fa-times ${
                       row.Status === "Afgekeurd" ? "active" : ""
                     }`}
                     style={{ cursor: "pointer" }}
-                    onClick={() => updateStatus({ row, status: "Afgekeurd" })}
+                    onClick={() =>
+                      updateStatus({
+                        row,
+                        status: "Afgekeurd",
+                        oldStatus: row.Status,
+                      })
+                    }
                   />
                 </div>
               ) : (
@@ -424,7 +445,10 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
     try {
       const order = {
         ...data,
-        project_id: data.project_id === 0 ? selectedProjectId : data.project_id,
+        project_id:
+          data.project_id === 0
+            ? selectedProjectId
+            : data.project_id || selectedProjectId,
         Bestelling_door_financ_dienst_geplaatst:
           data.Bestelling_door_financ_dienst_geplaatst === "Ja" ? true : false,
       };
@@ -437,6 +461,19 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
         await axios.post(`${backendUrl}/products`, order);
       } else {
         await axios.put(`${backendUrl}/products/${data.ID}`, order);
+      }
+
+      console.log(order.Status, data.Status);
+      if (order.Status !== data.Status) {
+        await updateStatus({
+          row: {
+            ...data,
+            Status: order.Status,
+            project_id: data.project_id || selectedProjectId,
+          }, // Update de row met de nieuwe status
+          status: order.Status, // Nieuwe status
+          oldStatus: data.Status, // Oude status
+        });
       }
       await fetchData(); // Zorgt dat nieuwe data direct geladen wordt
       setIsPopupOpen(false); // Sluit popup na succesvol opslaan

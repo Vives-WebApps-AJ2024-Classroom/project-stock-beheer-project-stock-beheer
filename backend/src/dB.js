@@ -69,7 +69,7 @@ const createTables = () => {
       Status VARCHAR(255) DEFAULT "Afwachting",
       Gekeurd_door_coach VARCHAR(255),
       Bestelling_ingegeven_RQ_nummer VARCHAR(255),
-      Bestelling_door_financ_dienst_geplaatst BOOLEAN DEFAULT FALSE,
+      Bestelling_door_financ_dienst_geplaatst VARCHAR(255),
       Bestelling_verzonden_verwachtte_aankomst VARCHAR(255),
       Bestelling_ontvangen_datum VARCHAR(255),
       Opmerkingen TEXT,
