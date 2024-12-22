@@ -264,7 +264,14 @@ const ViewOrder: React.FC<ViewOrderProps> = ({
                     value={(orderFormData as any)[key]}
                     onChange={handleChange}
                     className="form-input"
-                    required={key !== "URL" && key !== "Opmerkingen"}
+                    required={
+                      key !== "URL" &&
+                      key !== "Opmerkingen" &&
+                      key !== "Bestelling_verzonden_verwachtte_aankomst" &&
+                      key !== "Bestelling_ontvangen_datum" &&
+                      key !== "Bestelling_door_financ_dienst_geplaatst" &&
+                      key !== "Bestelling_ingegeven_RQ_nummer"
+                    }
                     disabled={state.includes("view")}
                   />
                 )}

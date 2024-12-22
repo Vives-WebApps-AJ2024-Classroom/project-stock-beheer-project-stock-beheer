@@ -21,8 +21,8 @@ interface Row {
   Gekeurd_door_coach: string;
   Bestelling_ingegeven_RQ_nummer: string;
   Bestelling_door_financ_dienst_geplaatst: string;
-  Bestelling_verzonden_verwachtte_aankomst: string;
-  Bestelling_ontvangen_datum: string;
+  Bestelling_verzonden_verwachtte_aankomst: string | "";
+  Bestelling_ontvangen_datum: string | "";
   Opmerkingen: string;
   project_id: number;
 }
