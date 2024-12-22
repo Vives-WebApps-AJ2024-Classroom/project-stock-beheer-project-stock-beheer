@@ -67,7 +67,7 @@ const ViewOrder: React.FC<ViewOrderProps> = ({
     Gekeurd_door_coach: row?.Gekeurd_door_coach || " ",
     Bestelling_ingegeven_RQ_nummer: row?.Bestelling_ingegeven_RQ_nummer || " ",
     Bestelling_door_financ_dienst_geplaatst:
-      !!row?.Bestelling_door_financ_dienst_geplaatst ? "Ja" : "Nee",
+      row?.Bestelling_door_financ_dienst_geplaatst === "Ja" ? "Ja" : "Nee",
     Bestelling_verzonden_verwachtte_aankomst:
       row?.Bestelling_verzonden_verwachtte_aankomst || " ",
     Bestelling_ontvangen_datum: row?.Bestelling_ontvangen_datum || " ",
@@ -182,7 +182,13 @@ const ViewOrder: React.FC<ViewOrderProps> = ({
         )}
         <form onSubmit={handleSubmit} className="styled-form">
           {Object.keys(orderFormData).map((key) => {
-            if (key === "ID" || key === "project_id") {
+            if (
+              key === "ID" ||
+              key === "project_id" ||
+              key === "Gekeurd_door_coach" ||
+              key === "Aangevraagd_door" ||
+              key === "Status"
+            ) {
               return null;
             }
             const isHiddenForNonAdmin =
@@ -211,7 +217,10 @@ const ViewOrder: React.FC<ViewOrderProps> = ({
                     type="checkbox"
                     id={key}
                     name={key}
-                    checked={orderFormData[key as keyof OrderFormData] === "Ja"}
+                    checked={
+                      orderFormData.Bestelling_door_financ_dienst_geplaatst ===
+                      "Ja"
+                    }
                     onChange={(e) =>
                       setOrderFormData((prev) => ({
                         ...prev,

@@ -450,7 +450,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
             ? selectedProjectId
             : data.project_id || selectedProjectId,
         Bestelling_door_financ_dienst_geplaatst:
-          data.Bestelling_door_financ_dienst_geplaatst === "Ja" ? true : false,
+          data.Bestelling_door_financ_dienst_geplaatst === "Ja" ? "Ja" : "Nee",
       };
       if (data.Bestelling_verzonden_verwachtte_aankomst.trim() !== "")
         order.Status = "Verzonden";

@@ -65,7 +65,7 @@ const createProduct = (req, res) => {
     Aantal_dagen_levertijd,
     Goedgekeurd_door_coach = false,
     Bestelling_ingegeven_RQ_nummer = null,
-    Bestelling_door_financ_dienst_geplaatst = false,
+    Bestelling_door_financ_dienst_geplaatst = null,
     Bestelling_verzonden_verwachtte_aankomst = null,
     Bestelling_ontvangen_datum = null,
     Opmerkingen = null,

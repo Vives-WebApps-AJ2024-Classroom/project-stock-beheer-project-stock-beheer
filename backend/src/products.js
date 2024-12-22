@@ -34,7 +34,7 @@ const createProduct = (req, res) => {
     Status = "Afwachting",
     Gekeurd_door_coach = null,
     Bestelling_ingegeven_RQ_nummer = null,
-    Bestelling_door_financ_dienst_geplaatst = false,
+    Bestelling_door_financ_dienst_geplaatst = null,
     Bestelling_verzonden_verwachtte_aankomst = null,
     Bestelling_ontvangen_datum = null,
     Opmerkingen = null,
