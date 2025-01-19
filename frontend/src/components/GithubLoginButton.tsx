@@ -58,7 +58,7 @@ const GitHubLoginButton = () => {
           try {
             if (userData.login) {
               const email = await getUserEmail(userData.login);
-
+              console.log(await axios.get(`${backendUrl}/users`));
               const response = await axios.post(`${backendUrl}/users`, {
                 username: userData.login,
                 displayname: userData.name || userData.login,
@@ -115,7 +115,6 @@ const GitHubLoginButton = () => {
                   try {
                     if (userData.login) {
                       const email = await getUserEmail(userData.login);
-
                       const response = await axios.post(`${backendUrl}/users`, {
                         username: userData.login,
                         displayname: userData.name || userData.login,
@@ -163,7 +162,7 @@ const GitHubLoginButton = () => {
           .catch((error) => console.error("Error tijdens login:", error));
       }
     }
-  }, [backendUrl, adminLogin, setUser, user]);
+  }, [backendUrl, adminLogin, setUser]);
 
   const handleLogin = () => {
     window.location.href = `https://github.com/login/oauth/authorize?client_id=${client_id}&redirect_uri=${redirectUrl}`;

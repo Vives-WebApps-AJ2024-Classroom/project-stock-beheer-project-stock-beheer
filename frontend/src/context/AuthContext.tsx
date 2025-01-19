@@ -42,6 +42,7 @@ const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       );
 
       if (!userExists) {
+        console.log("creating user 1");
         await axios.post(`${backendUrl}/users`, {
           name: account.name,
           role: "student",
