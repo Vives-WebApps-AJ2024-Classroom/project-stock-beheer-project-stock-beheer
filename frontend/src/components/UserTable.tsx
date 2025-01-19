@@ -84,7 +84,7 @@ const UserTable: React.FC = () => {
           defaultValue={row.role}
         >
           <option value="admin">admin</option>
-          <option value="teacher">teacher</option>
+          <option value="teacher">docent</option>
           <option value="student">student</option>
         </select>
       ),
