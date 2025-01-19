@@ -550,7 +550,7 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
             )}
             <div>
               <h5>Totale kostprijs excl. BTW:</h5>
-              <h2>€{totaleKost}</h2>
+              <h2>€{totaleKost.toFixed(2)}</h2>
             </div>
             <div className="flex">
               <input
