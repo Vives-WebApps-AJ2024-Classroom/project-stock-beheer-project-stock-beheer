@@ -41,8 +41,6 @@ const createProduct = (req, res) => {
     project_id,
   } = req.body;
 
-  // Log body voor debuggen
-  console.log("Request body:", req.body);
 
   // Controleer verplichte velden
   if (

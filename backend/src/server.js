@@ -2,18 +2,16 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const app = express();
-const port = process.env.BACKEND_PORT || 5000;
-const url = process.env.BACKEND_URL || "http://localhost";
 const axios = require("axios");
 
 const projectsController = require("./projects");
 const winkelsController = require("./winkels");
 const userController = require("./User");
 const productsController = require("./products");
-const clientId = process.env.GITHUB_CLIENT_ID || "Ov23li5gezrPiarupgQe";
-const clientSecret =
-  process.env.GITHUB_CLIENT_SECRET ||
-  "dfeeaa7e407eea89214c20b5eded066f33d6c779";
+const port = process.env.BACKEND_PORT;
+const url = process.env.BACKEND_URL;
+const clientId = process.env.GITHUB_CLIENT_ID;
+const clientSecret = process.env.GITHUB_CLIENT_SECRET;
 
 app.use(
   cors({

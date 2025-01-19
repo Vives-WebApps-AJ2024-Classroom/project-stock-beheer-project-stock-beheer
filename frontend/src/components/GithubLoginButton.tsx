@@ -5,13 +5,12 @@ import { useUser } from "../context/UserContext";
 
 const GitHubLoginButton = () => {
   const { user, setUser } = useUser();
-  const backendUrl =
-    process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
-  const client_id =
-    process.env.REACT_APP_GITHUB_CLIENT_ID || "Ov23li5gezrPiarupgQe";
-  const adminLogin = process.env.REACT_APP_ADMIN_LOGIN || "imawizzard";
-  const redirectUrl =
-    process.env.REACT_APP_GITHUB_REDIRECT_URL || "http://localhost:3000";
+  const backendPort = process.env.REACT_APP_BACKEND_PORT;
+  const backendUrl = process.env.REACT_APP_BACKEND_URL + ":" + backendPort;
+  const client_id = process.env.REACT_APP_GITHUB_CLIENT_ID;
+  const adminLogin = process.env.REACT_APP_ADMIN_LOGIN;
+  const redirectUrl = process.env.REACT_APP_GITHUB_REDIRECT_URL;
+  console.log("client_id", client_id);
 
   const getUserEmail = async (username: string) => {
     try {

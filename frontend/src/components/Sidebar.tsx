@@ -17,8 +17,8 @@ const Sidebar: React.FC<SidebarProps> = ({ onProjectSelect, onViewChange }) => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [editingProjectId, setEditingProjectId] = useState<number | null>(null);
   const [newProjectName, setNewProjectName] = useState<string>("");
-  const backendUrl =
-    process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
+  const backendPort = process.env.REACT_APP_BACKEND_PORT;
+  const backendUrl = process.env.REACT_APP_BACKEND_URL + ":" + backendPort;
   const { user } = useUser();
 
   useEffect(() => {

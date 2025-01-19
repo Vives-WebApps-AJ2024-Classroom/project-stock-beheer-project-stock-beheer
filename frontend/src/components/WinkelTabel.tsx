@@ -26,8 +26,8 @@ const WinkelTable: React.FC = () => {
     link: "",
     project_id: null as number | null,
   }); // initialiseer project_id als null
-  const backendUrl =
-    process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
+  const backendPort = process.env.REACT_APP_BACKEND_PORT;
+  const backendUrl = process.env.REACT_APP_BACKEND_URL + ":" + backendPort;
 
   useEffect(() => {
     document.title = `Stock Beheer | Winkels`;

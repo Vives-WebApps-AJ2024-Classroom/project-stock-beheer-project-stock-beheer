@@ -76,8 +76,8 @@ const ViewOrder: React.FC<ViewOrderProps> = ({
   });
   const [state, setState] = useState(_state);
 
-  const backendUrl =
-    process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
+  const backendPort = process.env.REACT_APP_BACKEND_PORT;
+  const backendUrl = process.env.REACT_APP_BACKEND_URL + ":" + backendPort;
 
   const [winkels, setWinkels] = useState<
     { ID: number; naam: string; link: string; project_id?: number }[]

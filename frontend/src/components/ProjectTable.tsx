@@ -68,8 +68,8 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
 
   const [totaleKost, setTotaleKost] = useState<number>(0);
   const [project, setProject] = useState<Project | null>(null);
-  const backendUrl =
-    process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
+  const backendPort = process.env.REACT_APP_BACKEND_PORT;
+  const backendUrl = process.env.REACT_APP_BACKEND_URL + ":" + backendPort;
 
   useEffect(() => {
     document.title = `Stock Beheer | ${
@@ -186,7 +186,6 @@ function ProjectTable({ selectedProjectId }: { selectedProjectId: number }) {
   ) => {
     const projectUsers: any[] = [];
     const users = await axios.get(`${backendUrl}/users`);
-    console.log(users.data);
     users.data.forEach((user: any) => {
       if (user.project_ids?.includes(selectedProjectId)) {
         projectUsers.push(user);

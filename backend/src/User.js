@@ -142,8 +142,6 @@ const getUserById = (req, res) => {
 
 const sendEmail = (req, res) => {
   const { emails, subject, message } = req.body;
-  console.log(emails, subject, message);
-  console.log(process.env.GMAIL_USER, process.env.GMAIL_PASSWORD);
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -152,8 +150,6 @@ const sendEmail = (req, res) => {
     },
   });
 
-  console.log(transporter);
-
   emails.forEach((email) => {
     const mailOptions = {
       from: process.env.GMAIL_USER,
@@ -161,12 +157,11 @@ const sendEmail = (req, res) => {
       subject: subject,
       text: message,
     };
-    console.log("Sending email to", email);
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         console.log("Error sending email to", email, error);
       } else {
-        console.log("Email sent to", email, info.response);
+        console.log("Email sent to", email);
       }
     });
   });

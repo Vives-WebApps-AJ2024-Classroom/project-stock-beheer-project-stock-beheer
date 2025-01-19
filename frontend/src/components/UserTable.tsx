@@ -26,8 +26,8 @@ const UserTable: React.FC = () => {
     document.title = `Stock Beheer | Gebruikers`;
   }, []);
 
-  const backendUrl =
-    process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
+  const backendPort = process.env.REACT_APP_BACKEND_PORT;
+  const backendUrl = process.env.REACT_APP_BACKEND_URL + ":" + backendPort;
 
   // Haal gebruikers op
   useEffect(() => {
