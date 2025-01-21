@@ -1,0 +1,46 @@
+button {
+  background-color: var(--vives-rood);
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 5px;
+  height: 40px;
+  font-size: 14px;
+}
+
+.container {
+  margin: 0 auto;
+  padding: 30px;
+  font-family: "Arial", sans-serif;
+  background-color: #f7f7f7;
+  border-radius: 8px;
+}
+
+input[type="text"] {
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 250px;
+  margin-right: 10px;
+  transition: border-color 0.3s ease;
+}
+
+select {
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 250px;
+  transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus {
+  border-color: var(--vives-rood);
+  outline: none; /* Verwijdert de standaard focus rand */
+}
+
+input[type="text"]::placeholder {
+  color: #888;
+}

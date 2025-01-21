@@ -1,0 +1,112 @@
+/* Sidebar container */
+.sidebar {
+  width: 300px;
+  background-color: var(--vives-zwart);
+  color: white;
+  padding: 20px;
+  height: 100vh;
+  position: fixed;
+  top: 60px;
+  left: 0;
+  z-index: 500;
+  overflow-y: auto;
+  box-sizing: border-box;
+  border-right: 2px solid var(--vives-rood);
+  transition: transform 0.3s ease-in-out; /* Voeg een transitie toe voor een soepele overgang */
+}
+
+.sidebar.hidden {
+  transform: translateX(
+    -100%
+  ); /* Verberg de sidebar door deze naar links buiten het scherm te schuiven */
+}
+
+/* Titel van de sidebar */
+.sidebar h3 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  font-weight: bold;
+  color: var(--vives-rood); /* Rood voor de titel om het te onderscheiden */
+}
+
+/* Stijl voor de lijst van projecten */
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Stijl voor elk projectitem */
+.sidebar ul li {
+  padding: 12px 20px;
+  margin: 10px 0;
+  border-radius: 6px; /* Rond de hoeken af voor een modernere look */
+  cursor: pointer;
+  background-color: var(
+    --vives-zwart
+  ); /* Zelfde als de achtergrond van de sidebar */
+  font-size: 1rem; /* Verhoogde lettergrootte voor leesbaarheid */
+  display: flex;
+  align-items: center;
+}
+
+/* Toevoeging van project-button klasse voor een specifiek uiterlijk van de knoppen */
+.sidebar ul li:hover {
+  background-color: var(
+    --vives-rood
+  ); /* Wanneer je over een item hovert, wordt het rood */
+  color: white; /* Zorg ervoor dat de tekst wit blijft wanneer het item rood wordt */
+}
+
+.sidebar span {
+  overflow: hidden;
+}
+
+.project-button {
+  width: 100%;
+  padding: 10px;
+  background-color: var(
+    --vives-rood
+  ); /* Rood als achtergrondkleur van de knoppen */
+  color: white;
+  border: none;
+  border-radius: 6px; /* Zelfde afgeronde hoeken als de li items */
+  text-align: left;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-bottom: 10px; /* Ruimte tussen knoppen */
+}
+
+.project-button:hover {
+  background-color: darkred; /* Donkerder rood als hover effect voor de knoppen */
+}
+
+.edit-project-button {
+  background: none;
+}
+
+.delete-project-button {
+  background: none;
+}
+
+.edit-project-input {
+  width: 80px !important;
+}
+
+/* Foutmelding in de sidebar */
+.error {
+  color: red;
+  font-size: 1rem;
+  margin-top: 15px;
+}
+
+/* Voeg een subtiele schaduw toe aan de sidebar voor diepte */
+.sidebar {
+  box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Styling voor de laadindicator */
+.sidebar p {
+  color: white;
+  font-size: 1rem;
+}

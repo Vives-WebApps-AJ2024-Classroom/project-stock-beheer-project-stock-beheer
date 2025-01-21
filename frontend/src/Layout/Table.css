@@ -1,0 +1,123 @@
+/* Algemene stijlen voor de container (optimaal voor centreren) */
+.container {
+  overflow: hidden; /* Verbergt alles wat buiten de container valt */
+  margin: 0 auto; /* Maakt de container gecentreerd ten opzichte van de viewport */
+  padding: 20px; /* Voegt ruimte toe rondom de inhoud */
+  font-family: "Arial", sans-serif;
+  background-color: #f7f7f7;
+  border-radius: 8px;
+  width: 90%; /* Zorgt ervoor dat de container niet de volledige breedte van het scherm gebruikt */ /* Beperk de breedte zodat de tabel niet te groot wordt */
+}
+
+.TableTitle {
+  display: flex;
+  justify-content: space-between;
+  width: 100%; /* Zorg ervoor dat de titel de hele breedte van de container gebruikt */
+}
+
+.TableTitle button {
+  background-color: var(--vives-rood);
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  height: 40px;
+  margin-top: 20px;
+}
+
+.rdt_TableRow {
+  height: 70px;
+  white-space: normal;
+  word-wrap: break-word;
+  line-height: 1.5;
+  padding: 10px; /* Optioneel, voor meer ruimte */
+}
+
+.status-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transform: translateX(-15px);
+  width: 100%;
+}
+
+.status i {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+
+i {
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  height: 10px;
+  margin: 1px;
+  width: 10px;
+}
+
+.fa-check {
+  background-color: var(--groen);
+}
+
+.fa-clock {
+  background-color: gray;
+}
+
+.fa-times {
+  background-color: var(--vives-rood);
+}
+
+.fa-truck-fast {
+  background-color: var(--blauw);
+}
+
+.fa-box {
+  background-color: var(--oranje);
+}
+
+.status-buttons .active {
+  border: 3px solid var(--vives-zwart);
+}
+
+.column-menu {
+  position: absolute;
+  width: 750px;
+  column-count: 2;
+  top: 100%;
+  right: 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  z-index: 1000;
+}
+
+.column-menu input {
+  margin-right: 10px;
+  accent-color: var(--vives-rood);
+}
+
+.smallButtons {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  width: 100%;
+}
+
+.smallButtons i {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  background-color: #b3b3b3;
+  border: 2px solid rgb(71, 71, 71);
+}
+
+.smallButtons i:hover {
+  background-color: var(--vives-rood);
+}

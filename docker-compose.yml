@@ -1,0 +1,42 @@
+version: "3.8"
+services:
+  backend:
+    build: ./Backend/
+    ports:
+      - "${BACKEND_PORT}:5000"
+    restart: always
+    env_file:
+      - .env
+
+  frontend:
+    build:
+      context: ./frontend/
+      args:
+        BACKEND_URL: "${BACKEND_URL}"
+        BACKEND_PORT: "${BACKEND_PORT}"
+        GITHUB_CLIENT_ID: "${GITHUB_CLIENT_ID}"
+        GITHUB_REDIRECT_URL: "${GITHUB_REDIRECT_URL}"
+        ADMIN_LOGIN: "${ADMIN_LOGIN}"
+    restart: always
+    env_file:
+      - ./.env
+    ports:
+      - "80:3000"
+    depends_on:
+      - backend
+
+  database:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "${MYSQL_ALLOW_EMPTY_PASSWORD}"
+      MYSQL_USER: "${MYSQL_USER}"
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+      MYSQL_DATABASE: "${MYSQL_DATABASE}"
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3308:3306"
+
+volumes:
+  db_data:
